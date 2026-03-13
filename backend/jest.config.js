@@ -1,0 +1,12 @@
+/** @type {import('@jest/types').Config.ProjectConfig} */
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/test/**/*.test.ts'],
+  moduleFileExtensions: ['ts', 'js', 'json'],
+  globals: {
+    'ts-jest': {
+      diagnostics: false,
+    },
+  },
+};

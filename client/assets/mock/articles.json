@@ -1,0 +1,50 @@
+[
+  {
+    "feedId": 1,
+    "guid": "bbc-1",
+    "url": "https://www.bbc.co.uk/news/world-us-canada-12345678",
+    "title": "US election: Biden and Trump set for first debate",
+    "summary": "The first presidential debate between Joe Biden and Donald Trump is scheduled for Thursday evening.",
+    "content": "The first presidential debate between Joe Biden and Donald Trump is scheduled for Thursday evening. The event will be moderated by CNN and is expected to draw millions of viewers.",
+    "author": "BBC News",
+    "publishedAt": 1710000000000,
+    "fetchedAt": 1710000000000,
+    "imageUrl": "https://ichef.bbci.co.uk/news/1024/branded_news/12345/production/_123456789_gettyimages-123456789.jpg"
+  },
+  {
+    "feedId": 1,
+    "guid": "bbc-2",
+    "url": "https://www.bbc.co.uk/news/technology-12345679",
+    "title": "AI breakthrough: New model achieves human-level reasoning",
+    "summary": "Researchers announce a new AI model that can reason like humans in complex scenarios.",
+    "content": "A team of researchers has developed an AI model capable of human-level reasoning in complex problem-solving tasks. The breakthrough could revolutionize fields like medicine and engineering.",
+    "author": "BBC News",
+    "publishedAt": 1709990000000,
+    "fetchedAt": 1709990000000,
+    "imageUrl": "https://ichef.bbci.co.uk/news/1024/branded_news/12346/production/_123456790_ai.jpg"
+  },
+  {
+    "feedId": 2,
+    "guid": "cnn-1",
+    "url": "https://edition.cnn.com/politics/live-news/biden-trump-debate/index.html",
+    "title": "Biden-Trump debate live updates",
+    "summary": "Live coverage of the first presidential debate between Biden and Trump.",
+    "content": "CNN is providing live updates from the first presidential debate. Key moments include opening statements and rebuttals on major issues.",
+    "author": "CNN Politics",
+    "publishedAt": 1710000000000,
+    "fetchedAt": 1710000000000,
+    "imageUrl": "https://cdn.cnn.com/cnnnext/dam/assets/1234567890-debate-thumb.jpg"
+  },
+  {
+    "feedId": 3,
+    "guid": "npr-1",
+    "url": "https://www.npr.org/2024/03/13/1234567890/climate-change-report",
+    "title": "New climate report warns of urgent action needed",
+    "summary": "Scientists release a comprehensive report on climate change impacts and solutions.",
+    "content": "A new international report highlights the urgent need for action on climate change. The findings emphasize the importance of reducing emissions and adapting to changing conditions.",
+    "author": "NPR Environment",
+    "publishedAt": 1709980000000,
+    "fetchedAt": 1709980000000,
+    "imageUrl": "https://media.npr.org/assets/img/2024/03/13/climate-report_wide.jpg"
+  }
+]
