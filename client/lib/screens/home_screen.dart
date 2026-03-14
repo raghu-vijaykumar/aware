@@ -5,6 +5,8 @@ import '../providers/app_state.dart';
 import '../widgets/feed_list.dart';
 import '../widgets/saved_articles.dart';
 import '../widgets/settings_screen.dart';
+import 'subscriptions_screen.dart';
+import 'marketplace_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     FeedList(),
+    SubscriptionsScreen(),
+    MarketplaceScreen(),
     SavedArticles(),
     SettingsScreen(),
   ];
@@ -47,6 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Feeds',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.subscriptions),
+            label: 'Subscriptions',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.store),
+            label: 'Marketplace',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.star),
             label: 'Saved',
           ),
@@ -57,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }

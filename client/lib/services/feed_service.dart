@@ -64,13 +64,23 @@ class FeedService {
           item.getElement('content')?.innerText;
       final author = item.getElement('author')?.innerText ??
           item.getElement('dc:creator')?.innerText;
-      final imageUrl = item
+      String? imageUrl = item
           .findAllElements('enclosure')
           .firstWhere(
             (e) => e.getAttribute('type')?.startsWith('image/') == true,
             orElse: () => XmlElement(XmlName('')),
           )
           .getAttribute('url');
+
+      imageUrl ??= item.getElement('media:content')?.getAttribute('url');
+      imageUrl ??= item.getElement('media:thumbnail')?.getAttribute('url');
+
+      if (imageUrl == null && (content?.isNotEmpty ?? false)) {
+        final regex =
+            RegExp("<img[^>]+src=[\"']([^\"']+)[\"']", caseSensitive: false);
+        final imgMatch = regex.firstMatch(content!);
+        imageUrl = imgMatch?.group(1);
+      }
 
       return Article(
         feedId: 0,

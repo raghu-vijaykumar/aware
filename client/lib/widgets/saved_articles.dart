@@ -43,7 +43,11 @@ class _SavedArticlesState extends State<SavedArticles> {
         future: _savedFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            );
           }
 
           if (snapshot.hasError) {
@@ -65,7 +69,7 @@ class _SavedArticlesState extends State<SavedArticles> {
                 subtitle: Text(article.summary ?? ''),
                 trailing: IconButton(
                   icon: const Icon(Icons.star),
-                  color: Colors.amber,
+                  color: Theme.of(context).colorScheme.secondary,
                   onPressed: () async {
                     await context
                         .read<AppState>()

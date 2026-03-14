@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'providers/app_state.dart';
-import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
+import 'theme/theme.dart';
 
 void main() {
   // Initialize FFI-based sqflite for desktop platforms (Windows/macOS/Linux).
@@ -32,13 +33,16 @@ class MyApp extends StatelessWidget {
           return state;
         }),
       ],
-      child: MaterialApp(
-        title: 'aware',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4DD0E1)),
-          useMaterial3: true,
-        ),
-        home: const HomeScreen(),
+      child: Consumer<AppState>(
+        builder: (context, appState, child) {
+          return MaterialApp(
+            title: 'aware',
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: appState.themeMode,
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

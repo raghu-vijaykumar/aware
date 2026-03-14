@@ -96,7 +96,10 @@ class _FeedListState extends State<FeedList> {
           floatingActionButton: FloatingActionButton(
             onPressed: _isAdding ? null : () => _showAddFeedDialog(context),
             child: _isAdding
-                ? const CircularProgressIndicator(color: Colors.white)
+                ? CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    strokeWidth: 2,
+                  )
                 : const Icon(Icons.add),
           ),
         );

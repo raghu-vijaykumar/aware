@@ -46,8 +46,58 @@ class SettingsScreen extends StatelessWidget {
               ListTile(
                 title: const Text('Theme'),
                 subtitle: const Text('Light / Dark / System'),
-                onTap: () {
-                  // TODO: Theme selector
+                onTap: () async {
+                  final selected = await showDialog<ThemeMode>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Select Theme'),
+                        content: Consumer<AppState>(
+                          builder: (context, appState, child) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RadioListTile<ThemeMode>(
+                                  value: ThemeMode.system,
+                                  groupValue: appState.themeMode,
+                                  title: const Text('System'),
+                                  onChanged: (mode) {
+                                    if (mode != null) {
+                                      Navigator.of(context).pop(mode);
+                                    }
+                                  },
+                                ),
+                                RadioListTile<ThemeMode>(
+                                  value: ThemeMode.light,
+                                  groupValue: appState.themeMode,
+                                  title: const Text('Light'),
+                                  onChanged: (mode) {
+                                    if (mode != null) {
+                                      Navigator.of(context).pop(mode);
+                                    }
+                                  },
+                                ),
+                                RadioListTile<ThemeMode>(
+                                  value: ThemeMode.dark,
+                                  groupValue: appState.themeMode,
+                                  title: const Text('Dark'),
+                                  onChanged: (mode) {
+                                    if (mode != null) {
+                                      Navigator.of(context).pop(mode);
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+
+                  if (selected != null) {
+                    await context.read<AppState>().setThemeMode(selected);
+                  }
                 },
               ),
               ListTile(

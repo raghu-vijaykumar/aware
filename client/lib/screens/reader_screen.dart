@@ -1,8 +1,17 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:html2md/html2md.dart' as html2md;
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 import '../models/article.dart';
 import '../providers/app_state.dart';
+import '../theme/theme.dart';
 
 class ReaderScreen extends StatefulWidget {
   final List<Article> articles;
@@ -18,6 +27,7 @@ class ReaderScreen extends StatefulWidget {
 class _ReaderScreenState extends State<ReaderScreen> {
   late PageController _pageController;
   late int _currentIndex;
+  bool _showWebView = false;
 
   @override
   void initState() {
@@ -63,10 +73,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
             onPressed: () => _toggleStarred(article, starred: !isStarred),
           ),
           IconButton(
-            icon: const Icon(Icons.open_in_new),
-            onPressed: () {
-              // TODO: Open in browser
-            },
+            icon: Icon(_showWebView ? Icons.article : Icons.open_in_new),
+            onPressed: article.url != null
+                ? () {
+                    setState(() {
+                      _showWebView = !_showWebView;
+                    });
+                  }
+                : null,
+            tooltip: _showWebView ? 'Show text view' : 'Show web view',
           ),
         ],
       ),
@@ -81,30 +96,76 @@ class _ReaderScreenState extends State<ReaderScreen> {
         },
         itemBuilder: (context, index) {
           final item = widget.articles[index];
+          if (_showWebView &&
+              item.url != null &&
+              (Platform.isAndroid || Platform.isIOS)) {
+            final controller = webview.WebViewController()
+              ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
+              ..loadRequest(Uri.parse(item.url!));
+
+            return SafeArea(
+              child: webview.WebViewWidget(
+                controller: controller,
+                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                  Factory<VerticalDragGestureRecognizer>(
+                      () => VerticalDragGestureRecognizer()),
+                },
+              ),
+            );
+          }
+
+          if (_showWebView && item.url != null) {
+            // Platform does not support embedded WebView in this build (e.g., Windows).
+            return const Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.s24),
+                child: Text(
+                  'In-app WebView is only supported on Android/iOS.\nShowing text view instead.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(AppSpacing.s16),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (item.imageUrl != null && item.imageUrl!.isNotEmpty) ...[
+                    Image.network(item.imageUrl!),
+                    const SizedBox(height: AppSpacing.s16),
+                  ],
                   Text(
                     item.title ?? 'Untitled',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.s8),
                   if (item.author != null) ...[
                     Text('By ${item.author!}',
                         style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.s8),
                   ],
                   if (item.summary != null) ...[
                     Text(item.summary!,
                         style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.s16),
                   ],
-                  if (item.content != null) ...[
-                    Text(item.content!,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                  if (item.rawData != null) ...[
+                    const SizedBox(height: AppSpacing.s16),
+                    MarkdownBody(
+                      data: _htmlToMarkdown(item.rawData!),
+                      onTapLink: (_, href, __) => _handleMarkdownLink(href),
+                      styleSheet:
+                          MarkdownStyleSheet.fromTheme(Theme.of(context))
+                              .copyWith(
+                        p: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(height: 1.4),
+                      ),
+                    ),
                   ],
                 ],
               ),
@@ -115,7 +176,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
       bottomNavigationBar: BottomAppBar(
         elevation: 1,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s16, vertical: AppSpacing.s8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -131,5 +193,28 @@ class _ReaderScreenState extends State<ReaderScreen> {
         ),
       ),
     );
+  }
+
+  String _htmlToMarkdown(String html) {
+    final trimmed = html.trim();
+    if (trimmed.isEmpty) {
+      return '';
+    }
+    return html2md.convert(trimmed);
+  }
+
+  Future<void> _handleMarkdownLink(String? href) async {
+    if (href == null || href.isEmpty) {
+      return;
+    }
+    final uri = Uri.tryParse(href);
+    if (uri == null) {
+      return;
+    }
+    if (!await canLaunchUrl(uri)) {
+      return;
+    }
+
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
