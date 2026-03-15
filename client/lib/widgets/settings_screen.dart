@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_state.dart';
 import '../screens/login_screen.dart';
+import '../screens/subscriptions_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -41,6 +42,17 @@ class SettingsScreen extends StatelessWidget {
                           ));
                         },
                       ),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.subscriptions),
+                title: const Text('Subscriptions'),
+                subtitle: const Text('Manage the feeds you follow'),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const SubscriptionsScreen(),
+                  ));
+                },
               ),
               const Divider(),
               ListTile(

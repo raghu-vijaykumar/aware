@@ -65,43 +65,9 @@ class _FeedListState extends State<FeedList> {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Feeds'),
-          ),
-          body: RefreshIndicator(
-            onRefresh: appState.loadFeeds,
-            child: ListView.builder(
-              itemCount: appState.feeds.length,
-              itemBuilder: (context, index) {
-                final feed = appState.feeds[index];
-                return ListTile(
-                  leading: feed.iconUrl != null
-                      ? Image.network(feed.iconUrl!, width: 40, height: 40)
-                      : const Icon(Icons.rss_feed),
-                  title: Text(feed.title ?? 'Untitled Feed'),
-                  subtitle: Text(feed.description ?? ''),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ArticleListScreen(
-                        feedId: feed.id ?? 0,
-                        feedTitle: feed.title ?? 'Feed',
-                      ),
-                    ));
-                  },
-                );
-              },
-            ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: _isAdding ? null : () => _showAddFeedDialog(context),
-            child: _isAdding
-                ? CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    strokeWidth: 2,
-                  )
-                : const Icon(Icons.add),
-          ),
+        return ArticleListScreen(
+          allFeeds: true,
+          feedTitle: 'Feeds',
         );
       },
     );

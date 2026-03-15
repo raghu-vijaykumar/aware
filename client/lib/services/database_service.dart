@@ -10,6 +10,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   Database? _database;
+  bool _ensuredLikedColumn = false;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -21,9 +22,10 @@ class DatabaseService {
     final path = join(await getDatabasesPath(), 'aware.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
+      onOpen: _onOpen,
     );
   }
 
@@ -67,6 +69,7 @@ class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         article_guid TEXT UNIQUE NOT NULL,
         read_at INTEGER,
+        liked_at INTEGER,
         starred_at INTEGER,
         tags TEXT
       )
@@ -94,6 +97,24 @@ class DatabaseService {
       await db.execute('ALTER TABLE feeds ADD COLUMN category TEXT');
       await db.execute('ALTER TABLE feeds ADD COLUMN curator TEXT');
       await db.execute('ALTER TABLE feeds ADD COLUMN paused INTEGER DEFAULT 0');
+    }
+    if (oldVersion < 3) {
+      // Add liked_at only if it doesn't already exist (defensive for partial upgrades).
+      final columns = await db.rawQuery('PRAGMA table_info(user_article_state)');
+      final hasLiked =
+          columns.any((c) => (c['name'] as String?)?.toLowerCase() == 'liked_at');
+      if (!hasLiked) {
+        await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+      }
+    }
+  }
+
+  Future<void> _onOpen(Database db) async {
+    // Defensive: ensure liked_at exists even if a prior migration was skipped.
+    final columns = await db.rawQuery('PRAGMA table_info(user_article_state)');
+    final hasLiked = columns.any((c) => c['name'] == 'liked_at');
+    if (!hasLiked) {
+      await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
     }
   }
 
@@ -140,9 +161,19 @@ class DatabaseService {
     return List.generate(maps.length, (i) => Article.fromMap(maps[i]));
   }
 
+  Future<List<Article>> getAllArticles() async {
+    final db = await database;
+    final maps = await db.rawQuery('''
+      SELECT * FROM articles
+      ORDER BY COALESCE(published_at, fetched_at) DESC
+    ''');
+    return List.generate(maps.length, (i) => Article.fromMap(maps[i]));
+  }
+
   // User state operations
   Future<int> insertUserState(UserArticleState state) async {
     final db = await database;
+    await _ensureLikedColumn(db);
     return await db.insert('user_article_state', state.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -159,12 +190,14 @@ class DatabaseService {
 
   Future<List<UserArticleState>> getAllUserState() async {
     final db = await database;
+    await _ensureLikedColumn(db);
     final maps = await db.query('user_article_state');
     return maps.map((m) => UserArticleState.fromMap(m)).toList();
   }
 
   Future<List<String>> getStarredArticleGuids() async {
     final db = await database;
+    await _ensureLikedColumn(db);
     final maps = await db.query(
       'user_article_state',
       columns: ['article_guid'],
@@ -176,6 +209,7 @@ class DatabaseService {
 
   Future<List<Article>> getStarredArticles() async {
     final db = await database;
+    await _ensureLikedColumn(db);
     final maps = await db.rawQuery('''
       SELECT a.* FROM articles a
       INNER JOIN user_article_state u
@@ -189,6 +223,7 @@ class DatabaseService {
 
   Future<List<String>> getReadArticleGuids() async {
     final db = await database;
+    await _ensureLikedColumn(db);
     final maps = await db.query(
       'user_article_state',
       columns: ['article_guid'],
@@ -196,5 +231,16 @@ class DatabaseService {
     );
 
     return maps.map((m) => m['article_guid'] as String).toList();
+  }
+
+  Future<void> _ensureLikedColumn(Database db) async {
+    if (_ensuredLikedColumn) return;
+    final columns = await db.rawQuery('PRAGMA table_info(user_article_state)');
+    final hasLiked =
+        columns.any((c) => (c['name'] as String?)?.toLowerCase() == 'liked_at');
+    if (!hasLiked) {
+      await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+    }
+    _ensuredLikedColumn = true;
   }
 }

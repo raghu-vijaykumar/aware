@@ -51,33 +51,13 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                       ? Image.network(feed.iconUrl!, width: 40, height: 40)
                       : const Icon(Icons.rss_feed, size: 40),
                   title: Text(feed.title ?? 'Untitled Feed'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(feed.description ?? ''),
-                      const SizedBox(height: AppSpacing.s8),
-                      Row(
-                        children: [
-                          if (feed.category != null)
-                            Chip(
-                              label: Text(feed.category!),
-                              backgroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                              labelStyle: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer,
-                              ),
-                            ),
-                          const SizedBox(width: 8),
-                          if (feed.curator != null)
-                            Text('by ${feed.curator}',
-                                style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
-                    ],
-                  ),
+                  subtitle: feed.paused
+                      ? Text('Paused',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Theme.of(context).hintColor))
+                      : null,
                   trailing: PopupMenuButton<String>(
                     onSelected: (value) async {
                       switch (value) {

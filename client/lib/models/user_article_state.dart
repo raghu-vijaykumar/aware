@@ -2,6 +2,7 @@ class UserArticleState {
   final int? id;
   final String articleGuid;
   final int? readAt;
+  final int? likedAt;
   final int? starredAt;
   final String? tags;
 
@@ -9,6 +10,7 @@ class UserArticleState {
     this.id,
     required this.articleGuid,
     this.readAt,
+    this.likedAt,
     this.starredAt,
     this.tags,
   });
@@ -18,6 +20,7 @@ class UserArticleState {
       'id': id,
       'article_guid': articleGuid,
       'read_at': readAt,
+      'liked_at': likedAt,
       'starred_at': starredAt,
       'tags': tags,
     };
@@ -28,6 +31,7 @@ class UserArticleState {
       id: map['id'],
       articleGuid: map['article_guid'],
       readAt: map['read_at'],
+      likedAt: map['liked_at'],
       starredAt: map['starred_at'],
       tags: map['tags'],
     );

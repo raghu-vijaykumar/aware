@@ -16,12 +16,10 @@ class AppTheme {
     final colorScheme = seedScheme.copyWith(
       secondary: AppColors.secondary,
       secondaryContainer: AppColors.secondaryContainer,
-      background: AppColors.background,
       surface: AppColors.surface,
       error: AppColors.error,
       onPrimary: AppColors.onPrimary,
       onSecondary: AppColors.onSecondary,
-      onBackground: AppColors.textPrimary,
       onSurface: AppColors.textPrimary,
       onError: AppColors.onPrimary,
       shadow: AppColors.textPrimary.withOpacity(0.12),
@@ -31,8 +29,8 @@ class AppTheme {
       useMaterial3: true,
       primarySwatch: AppColors.primarySwatch,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.background,
-      canvasColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.surface,
+      canvasColor: colorScheme.surface,
       cardColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
@@ -94,12 +92,10 @@ class AppTheme {
 
     final colorScheme = seedScheme.copyWith(
       secondary: AppColors.secondary,
-      background: AppColors.darkBackground,
       surface: AppColors.darkSurface,
       error: AppColors.error,
       onPrimary: AppColors.onPrimary,
       onSecondary: AppColors.onSecondary,
-      onBackground: AppColors.darkOnSurface,
       onSurface: AppColors.darkOnSurface,
       onError: AppColors.onPrimary,
       shadow: AppColors.darkOnSurface.withOpacity(0.18),
@@ -109,8 +105,8 @@ class AppTheme {
       useMaterial3: true,
       primarySwatch: AppColors.primarySwatch,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.background,
-      canvasColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.surface,
+      canvasColor: colorScheme.surface,
       cardColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,

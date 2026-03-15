@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
+import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart' as webview;
@@ -28,6 +29,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   late PageController _pageController;
   late int _currentIndex;
   bool _showWebView = false;
+  bool _loadingReader = false;
+  final Map<String, String> _readerCache = {};
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     // Mark the initial article as read after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _markRead(widget.articles[_currentIndex]);
+      _prefetchReader(widget.articles[_currentIndex]);
     });
   }
 
@@ -79,9 +83,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     setState(() {
                       _showWebView = !_showWebView;
                     });
+                    if (!_showWebView) {
+                      _prefetchReader(article);
+                    }
                   }
                 : null,
-            tooltip: _showWebView ? 'Show text view' : 'Show web view',
+            tooltip: _showWebView ? 'Show reader' : 'Show web view',
           ),
         ],
       ),
@@ -93,9 +100,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
             _currentIndex = index;
           });
           _markRead(widget.articles[index]);
+          _prefetchReader(widget.articles[index]);
         },
         itemBuilder: (context, index) {
           final item = widget.articles[index];
+          if (_loadingReader && !_showWebView) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
           if (_showWebView &&
               item.url != null &&
               (Platform.isAndroid || Platform.isIOS)) {
@@ -118,7 +130,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
             // Platform does not support embedded WebView in this build (e.g., Windows).
             return const Center(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.s24),
+                padding: EdgeInsets.all(AppSpacing.s24),
                 child: Text(
                   'In-app WebView is only supported on Android/iOS.\nShowing text view instead.',
                   textAlign: TextAlign.center,
@@ -147,26 +159,18 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: AppSpacing.s8),
                   ],
-                  if (item.summary != null) ...[
-                    Text(item.summary!,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: AppSpacing.s16),
-                  ],
-                  if (item.rawData != null) ...[
-                    const SizedBox(height: AppSpacing.s16),
-                    MarkdownBody(
-                      data: _htmlToMarkdown(item.rawData!),
-                      onTapLink: (_, href, __) => _handleMarkdownLink(href),
-                      styleSheet:
-                          MarkdownStyleSheet.fromTheme(Theme.of(context))
-                              .copyWith(
-                        p: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(height: 1.4),
-                      ),
+                  const SizedBox(height: AppSpacing.s16),
+                  MarkdownBody(
+                    data: _htmlToMarkdown(_bodyHtml(item)),
+                    onTapLink: (_, href, __) => _handleMarkdownLink(href),
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                        .copyWith(
+                      p: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(height: 1.4),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
@@ -201,6 +205,36 @@ class _ReaderScreenState extends State<ReaderScreen> {
       return '';
     }
     return html2md.convert(trimmed);
+  }
+
+  String _bodyHtml(Article article) {
+    final cached = _readerCache[article.guid];
+    if (cached != null) return cached;
+    // Prefer full content, then summary, then rawData; default empty.
+    return article.content ?? article.summary ?? article.rawData ?? '';
+  }
+
+  Future<void> _prefetchReader(Article article) async {
+    if (article.url == null) return;
+    if (_readerCache.containsKey(article.guid)) return;
+
+    setState(() {
+      _loadingReader = true;
+    });
+
+    try {
+      final parsed = await readability.parseAsync(article.url!);
+      final content = parsed.content ?? parsed.textContent ?? '';
+      if (content.trim().isNotEmpty) {
+        _readerCache[article.guid] = content;
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingReader = false;
+        });
+      }
+    }
   }
 
   Future<void> _handleMarkdownLink(String? href) async {

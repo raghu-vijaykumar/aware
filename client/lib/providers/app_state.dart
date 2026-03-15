@@ -109,10 +109,27 @@ class AppState extends ChangeNotifier {
     return await _db.getArticlesForFeed(feedId);
   }
 
+  Future<List<Article>> getAllArticles() async {
+    return await _db.getAllArticles();
+  }
+
   Future<void> markArticleRead(String guid, {bool read = true}) async {
     final state = UserArticleState(
       articleGuid: guid,
       readAt: read ? DateTime.now().millisecondsSinceEpoch : null,
+      likedAt: _articleStateCache[guid]?.likedAt,
+      starredAt: _articleStateCache[guid]?.starredAt,
+    );
+    await _db.insertUserState(state);
+    _articleStateCache[guid] = state;
+    notifyListeners();
+  }
+
+  Future<void> markArticleLiked(String guid, {bool liked = true}) async {
+    final state = UserArticleState(
+      articleGuid: guid,
+      readAt: _articleStateCache[guid]?.readAt,
+      likedAt: liked ? DateTime.now().millisecondsSinceEpoch : null,
       starredAt: _articleStateCache[guid]?.starredAt,
     );
     await _db.insertUserState(state);
@@ -124,6 +141,7 @@ class AppState extends ChangeNotifier {
     final state = UserArticleState(
       articleGuid: guid,
       readAt: _articleStateCache[guid]?.readAt,
+      likedAt: _articleStateCache[guid]?.likedAt,
       starredAt: starred ? DateTime.now().millisecondsSinceEpoch : null,
     );
     await _db.insertUserState(state);

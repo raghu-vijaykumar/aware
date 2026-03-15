@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:xml/xml.dart';
 
 import '../models/article.dart';
@@ -54,9 +57,12 @@ class FeedService {
           item.getElement('link')?.getAttribute('href') ??
           '';
       final publishedText = item.getElement('pubDate')?.innerText ??
-          item.getElement('published')?.innerText;
+          item.getElement('published')?.innerText ??
+          item.getElement('updated')?.innerText ??
+          item.getElement('dc:date')?.innerText ??
+          item.getElement('date')?.innerText;
       final publishedAt = publishedText != null
-          ? DateTime.tryParse(publishedText)?.millisecondsSinceEpoch
+          ? _parseDate(publishedText)?.millisecondsSinceEpoch
           : null;
       final summary = item.getElement('description')?.innerText ??
           item.getElement('summary')?.innerText;
@@ -93,10 +99,61 @@ class FeedService {
         publishedAt: publishedAt,
         fetchedAt: DateTime.now().millisecondsSinceEpoch,
         imageUrl: imageUrl,
-        rawData: response.body,
+        // Prefer rich HTML body; fall back to summary; lastly the item XML.
+        rawData: content ?? summary ?? item.toXmlString(),
       );
     }).toList();
 
     return articles;
+  }
+
+  DateTime? _parseDate(String raw) {
+    final value = raw.trim();
+
+    // Try ISO-8601 first (covers Atom <updated> like 2026-02-27T17:01:01.584Z).
+    final iso = DateTime.tryParse(value);
+    if (iso != null) return iso.toLocal();
+
+    // Common RSS/Atom/HTTP date formats (ordered by likelihood).
+    const patternsWithZone = [
+      "EEE, dd MMM yyyy HH:mm:ss Z", // Mon, 02 Mar 2026 20:00:39 +0000
+      "EEE, dd MMM yyyy HH:mm:ss zzz", // Fri, 27 Feb 2026 17:01:01 GMT
+      "EEE, dd MMM yyyy HH:mm Z",
+      "EEE, dd MMM yyyy HH:mm zzz",
+      "dd MMM yyyy HH:mm:ss Z",
+      "dd MMM yyyy HH:mm:ss zzz",
+      "yyyy-MM-dd'T'HH:mm:ss.SSSZ", // 2026-02-27T17:01:01.584Z
+      "yyyy-MM-dd'T'HH:mm:ssZ",
+      "yyyy-MM-dd HH:mm:ss Z",
+      "yyyy-MM-dd HH:mm Z",
+    ];
+
+    for (final pattern in patternsWithZone) {
+      try {
+        return DateFormat(pattern, 'en_US').parseUtc(value).toLocal();
+      } catch (_) {}
+    }
+
+    const patternsNoZone = [
+      "EEE, dd MMM yyyy HH:mm:ss",
+      "EEE, dd MMM yyyy HH:mm",
+      "yyyy-MM-dd'T'HH:mm:ss",
+      "yyyy-MM-dd HH:mm:ss",
+      "yyyy-MM-dd HH:mm",
+      "yyyy-MM-dd",
+    ];
+
+    for (final pattern in patternsNoZone) {
+      try {
+        return DateFormat(pattern, 'en_US').parse(value, true).toLocal();
+      } catch (_) {}
+    }
+
+    // Fallback to HTTP-date parser (GMT only).
+    try {
+      return HttpDate.parse(value).toLocal();
+    } catch (_) {}
+
+    return null;
   }
 }
