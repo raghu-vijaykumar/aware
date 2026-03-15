@@ -34,6 +34,15 @@ class AppState extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   ThemeMode get themeMode => _themeMode;
 
+  double _speechRate = 1.0;
+  double get speechRate => _speechRate;
+
+  String? _voiceId;
+  String? get voiceId => _voiceId;
+
+  bool _autoPlayNext = false;
+  bool get autoPlayNext => _autoPlayNext;
+
   final Map<String, UserArticleState> _articleStateCache = {};
 
   bool _isInitialized = false;
@@ -58,6 +67,9 @@ class AppState extends ChangeNotifier {
 
     final prefs = await SharedPreferences.getInstance();
     final savedTheme = prefs.getString('app_theme_mode');
+    _speechRate = prefs.getDouble('app_tts_rate') ?? 1.0;
+    _voiceId = prefs.getString('app_tts_voice_id');
+    _autoPlayNext = prefs.getBool('app_tts_autoplay_next') ?? false;
     if (savedTheme != null) {
       switch (savedTheme) {
         case 'light':
@@ -183,6 +195,31 @@ class AppState extends ChangeNotifier {
             ? 'dark'
             : 'system';
     await prefs.setString('app_theme_mode', value);
+    notifyListeners();
+  }
+
+  Future<void> setSpeechRate(double rate) async {
+    _speechRate = rate.clamp(0.5, 1.5);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('app_tts_rate', _speechRate);
+    notifyListeners();
+  }
+
+  Future<void> setVoiceId(String? voiceId) async {
+    _voiceId = voiceId;
+    final prefs = await SharedPreferences.getInstance();
+    if (voiceId == null) {
+      await prefs.remove('app_tts_voice_id');
+    } else {
+      await prefs.setString('app_tts_voice_id', voiceId);
+    }
+    notifyListeners();
+  }
+
+  Future<void> setAutoPlayNext(bool enabled) async {
+    _autoPlayNext = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('app_tts_autoplay_next', enabled);
     notifyListeners();
   }
 

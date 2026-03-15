@@ -7,6 +7,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart' as webview;
 
@@ -31,18 +32,46 @@ class _ReaderScreenState extends State<ReaderScreen> {
   bool _showWebView = false;
   bool _loadingReader = false;
   final Map<String, String> _readerCache = {};
+  final FlutterTts _tts = FlutterTts();
+  bool _isPlaying = false;
+  bool _isPaused = false;
+  double _progress = 0.0;
+  bool _startingAudio = false;
+  int _currentParagraphIndex = 0;
+  int _offsetBase = 0;
+  bool _pendingAutoPlay = false;
+  String _plainText = '';
+  List<String> _paragraphs = [];
+  List<int> _paragraphOffsets = [];
+  final Map<int, List<GlobalKey>> _paragraphKeysByArticle = {};
+  final Map<int, ScrollController> _scrollControllers = {};
+  double? _lastAppliedRate;
+  String? _lastAppliedVoice;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
+    _attachTtsHandlers();
 
     // Mark the initial article as read after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _markRead(widget.articles[_currentIndex]);
       _prefetchReader(widget.articles[_currentIndex]);
+      _updateTextForArticle(widget.articles[_currentIndex], _currentIndex);
+      _prefetchUpcomingArticles(2);
     });
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    for (final controller in _scrollControllers.values) {
+      controller.dispose();
+    }
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _toggleStarred(Article article, {required bool starred}) async {
@@ -59,6 +88,212 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void _markRead(Article article) async {
     final appState = context.read<AppState>();
     await appState.markArticleRead(article.guid, read: true);
+  }
+
+  void _attachTtsHandlers() {
+    _tts.setStartHandler(() {
+      setState(() {
+        _isPlaying = true;
+        _isPaused = false;
+      });
+    });
+    _tts.setProgressHandler((String text, int start, int end, String? word) {
+      if (_plainText.isEmpty) return;
+      final absolute = (_offsetBase + start).clamp(0, _plainText.length);
+      final pct = absolute / _plainText.length;
+      final paragraphIdx =
+          _paragraphOffsets.lastIndexWhere((element) => element <= absolute);
+      setState(() {
+        _progress = pct;
+        if (paragraphIdx >= 0) {
+          _currentParagraphIndex = paragraphIdx;
+        }
+      });
+      if (paragraphIdx >= 0) {
+        _scrollToParagraph(paragraphIdx);
+      }
+    });
+    _tts.setCompletionHandler(() {
+      setState(() {
+        _isPlaying = false;
+        _isPaused = false;
+        _progress = 1.0;
+      });
+      final appState = context.read<AppState>();
+      final hasNext = _currentIndex < widget.articles.length - 1;
+      if (hasNext && appState.autoPlayNext) {
+        _goToArticle(_currentIndex + 1, autoplay: true);
+      }
+    });
+    _tts.setCancelHandler(() {
+      setState(() {
+        _isPlaying = false;
+        _isPaused = false;
+      });
+    });
+    _tts.setPauseHandler(() {
+      setState(() {
+        _isPaused = true;
+      });
+    });
+    _tts.setContinueHandler(() {
+      setState(() {
+        _isPaused = false;
+        _isPlaying = true;
+      });
+    });
+  }
+
+  Future<void> _applyVoiceSettings(AppState appState) async {
+    if (_lastAppliedRate != appState.speechRate) {
+      _lastAppliedRate = appState.speechRate;
+      await _tts.setSpeechRate(appState.speechRate);
+    }
+    if (_lastAppliedVoice != appState.voiceId) {
+      _lastAppliedVoice = appState.voiceId;
+      if (appState.voiceId != null) {
+        final parts = appState.voiceId!.split('|');
+        final name = parts.isNotEmpty ? parts[0] : null;
+        final locale = parts.length > 1 ? parts[1] : null;
+        await _tts.setVoice({
+          if (name != null) 'name': name,
+          if (locale != null) 'locale': locale,
+        });
+      } else {
+        // Best-effort reset to platform default by sending an empty voice map.
+        try {
+          await _tts.setVoice({'name': '', 'locale': ''});
+        } catch (_) {
+          // ignore on platforms that don't support resetting voice
+        }
+      }
+    }
+  }
+
+  void _updateTextForArticle(Article article, int articleIndex) {
+    final markdown = _htmlToMarkdown(_bodyHtml(article));
+    final parts = markdown
+        .split(RegExp(r'\n{2,}'))
+        .map((p) => p.trim())
+        .where((p) => p.isNotEmpty)
+        .map(_sanitizeForTts)
+        .toList();
+    var offset = 0;
+    final offsets = <int>[];
+    for (final p in parts) {
+      offsets.add(offset);
+      offset += p.length + 2; // include the paragraph break
+    }
+    setState(() {
+      _paragraphs = parts;
+      _paragraphOffsets = offsets;
+      _plainText = parts.join('\n\n');
+      _paragraphKeysByArticle[articleIndex] =
+          List.generate(parts.length, (_) => GlobalKey());
+      _progress = 0;
+      _currentParagraphIndex = 0;
+      _offsetBase = 0;
+    });
+  }
+
+  String _sanitizeForTts(String input) {
+    var text = input;
+    // Strip markdown links, keep link text.
+    text = text.replaceAll(RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'), r'$1');
+    // Remove bare URLs.
+    text = text.replaceAll(RegExp(r'https?:\/\/\S+'), '');
+    // Collapse extra whitespace.
+    text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return text;
+  }
+
+  Future<void> _startPlayback({int paragraphIndex = 0}) async {
+    if (_paragraphs.isEmpty) return;
+    final appState = context.read<AppState>();
+    setState(() => _startingAudio = true);
+    try {
+      await _applyVoiceSettings(appState);
+      final start = paragraphIndex.clamp(0, _paragraphs.length - 1);
+      _offsetBase = _paragraphOffsets[start];
+      final text = _plainText.substring(_offsetBase);
+      await _tts.stop();
+      await _tts.speak(text);
+      setState(() {
+        _isPlaying = true;
+        _isPaused = false;
+        _currentParagraphIndex = start;
+        _progress = _plainText.isEmpty ? 0 : _offsetBase / _plainText.length;
+      });
+      _scrollToParagraph(start);
+    } finally {
+      if (mounted) {
+        setState(() => _startingAudio = false);
+      }
+    }
+  }
+
+  Future<void> _pausePlayback() async {
+    await _tts.pause();
+  }
+
+  Future<void> _resumePlayback() async {
+    // Resume by restarting from the current paragraph (platforms lack resume()).
+    await _startPlayback(paragraphIndex: _currentParagraphIndex);
+  }
+
+  Future<void> _stopPlayback() async {
+    await _tts.stop();
+    setState(() {
+      _isPlaying = false;
+      _isPaused = false;
+      _progress = 0;
+    });
+  }
+
+  void _seekToProgress(double value) {
+    if (_plainText.isEmpty) return;
+    final targetOffset = (value * _plainText.length).round();
+    final paragraphIdx = _paragraphOffsets.lastIndexWhere(
+        (offset) => offset <= targetOffset && offset + 1 < _plainText.length);
+    final idx = paragraphIdx < 0 ? 0 : paragraphIdx;
+    _startPlayback(paragraphIndex: idx);
+  }
+
+  void _prefetchUpcomingArticles(int count) {
+    for (int i = 1; i <= count; i++) {
+      final nextIndex = _currentIndex + i;
+      if (nextIndex < widget.articles.length) {
+        _prefetchReader(widget.articles[nextIndex]);
+      }
+    }
+  }
+
+  void _goToArticle(int index, {bool autoplay = false}) {
+    if (index < 0 || index >= widget.articles.length) return;
+    _pendingAutoPlay = autoplay;
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToParagraph(int paragraphIdx) {
+    final keys = _paragraphKeysByArticle[_currentIndex];
+    final controller = _scrollControllers[_currentIndex];
+    if (keys == null || controller == null || !controller.hasClients) return;
+    if (paragraphIdx < 0 || paragraphIdx >= keys.length) return;
+    final key = keys[paragraphIdx];
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Scrollable.ensureVisible(
+        ctx,
+        alignment: 0.1,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -101,6 +336,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
           });
           _markRead(widget.articles[index]);
           _prefetchReader(widget.articles[index]);
+          _updateTextForArticle(widget.articles[index], index);
+          if (_pendingAutoPlay) {
+            _pendingAutoPlay = false;
+            _startPlayback(paragraphIndex: 0);
+          } else {
+            _prefetchUpcomingArticles(1);
+          }
         },
         itemBuilder: (context, index) {
           final item = widget.articles[index];
@@ -141,38 +383,102 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
           return Padding(
             padding: const EdgeInsets.all(AppSpacing.s16),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (item.imageUrl != null && item.imageUrl!.isNotEmpty) ...[
-                    Image.network(item.imageUrl!),
-                    const SizedBox(height: AppSpacing.s16),
-                  ],
-                  Text(
-                    item.title ?? 'Untitled',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  if (item.author != null) ...[
-                    Text('By ${item.author!}',
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: AppSpacing.s8),
-                  ],
-                  const SizedBox(height: AppSpacing.s16),
-                  MarkdownBody(
-                    data: _htmlToMarkdown(_bodyHtml(item)),
-                    onTapLink: (_, href, __) => _handleMarkdownLink(href),
-                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                        .copyWith(
-                      p: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(height: 1.4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (item.imageUrl != null && item.imageUrl!.isNotEmpty) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: SizedBox(
+                      height: 180,
+                      width: double.infinity,
+                      child: Image.network(
+                        item.imageUrl!,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.s12),
                 ],
-              ),
+                Text(
+                  item.title ?? 'Untitled',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                if (item.author != null) ...[
+                  Text('By ${item.author!}',
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  const SizedBox(height: AppSpacing.s8),
+                ],
+                const SizedBox(height: AppSpacing.s16),
+                _buildAudioControls(item),
+                const SizedBox(height: AppSpacing.s12),
+                Builder(builder: (context) {
+                  final scrollController = _scrollControllers.putIfAbsent(
+                      index, () => ScrollController());
+                  final paraKeys =
+                      _paragraphKeysByArticle[index] ?? const <GlobalKey>[];
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (final entry in _paragraphs.asMap().entries) ...[
+                            GestureDetector(
+                              onTap: () =>
+                                  _startPlayback(paragraphIndex: entry.key),
+                              child: Container(
+                                key: paraKeys.isNotEmpty &&
+                                        entry.key < paraKeys.length
+                                    ? paraKeys[entry.key]
+                                    : null,
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 6.0),
+                                padding: const EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  color: _currentParagraphIndex == entry.key &&
+                                          _isPlaying
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer
+                                          .withOpacity(0.45)
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant
+                                          .withOpacity(0.25),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: SelectableText(
+                                  entry.value,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(height: 1.4),
+                                ),
+                              ),
+                            ),
+                          ],
+                          if (_paragraphs.isEmpty)
+                            MarkdownBody(
+                              data: _htmlToMarkdown(_bodyHtml(item)),
+                              onTapLink: (_, href, __) =>
+                                  _handleMarkdownLink(href),
+                              styleSheet: MarkdownStyleSheet.fromTheme(
+                                      Theme.of(context))
+                                  .copyWith(
+                                p: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(height: 1.4),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ],
             ),
           );
         },
@@ -185,13 +491,25 @@ class _ReaderScreenState extends State<ReaderScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('${_currentIndex + 1}/${widget.articles.length}'),
+              _UnreadBadge(articles: widget.articles),
+              const SizedBox(width: 12),
               IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: () {
-                  _pageController.jumpToPage(_currentIndex);
-                },
+                icon: Icon(
+                  context.watch<AppState>().autoPlayNext
+                      ? Icons.play_arrow
+                      : Icons.pause,
+                ),
+                onPressed: () => context.read<AppState>().setAutoPlayNext(
+                      !context.watch<AppState>().autoPlayNext,
+                    ),
               ),
+              const SizedBox(width: 12),
+              if (_currentIndex < widget.articles.length - 1)
+                IconButton(
+                  icon: const Icon(Icons.skip_next),
+                  onPressed: () =>
+                      _goToArticle(_currentIndex + 1, autoplay: true),
+                ),
             ],
           ),
         ),
@@ -227,6 +545,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final content = parsed.content ?? parsed.textContent ?? '';
       if (content.trim().isNotEmpty) {
         _readerCache[article.guid] = content;
+        if (mounted && article.guid == widget.articles[_currentIndex].guid) {
+          _updateTextForArticle(article, widget.articles.indexOf(article));
+        }
       }
     } finally {
       if (mounted) {
@@ -250,5 +571,91 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
 
     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
+  Widget _buildAudioControls(Article article) {
+    final canPlay = _paragraphs.isNotEmpty;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            IconButton(
+              icon: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (_startingAudio)
+                    const SizedBox(
+                      width: 38,
+                      height: 38,
+                      child: CircularProgressIndicator(strokeWidth: 2.4),
+                    ),
+                  Icon(
+                    _isPlaying && !_isPaused
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_fill,
+                    size: 32,
+                  ),
+                ],
+              ),
+              onPressed: canPlay && !_startingAudio
+                  ? () {
+                      if (_isPlaying && !_isPaused) {
+                        _pausePlayback();
+                      } else if (_isPaused) {
+                        _resumePlayback();
+                      } else {
+                        _startPlayback(paragraphIndex: _currentParagraphIndex);
+                      }
+                    }
+                  : null,
+            ),
+            IconButton(
+              icon: const Icon(Icons.stop_circle, size: 28),
+              onPressed: (_isPlaying || _isPaused) && !_startingAudio
+                  ? _stopPlayback
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Slider(
+                value: _progress.clamp(0.0, 1.0),
+                onChanged:
+                    canPlay ? (v) => setState(() => _progress = v) : null,
+                onChangeEnd: canPlay ? _seekToProgress : null,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text('${((_progress) * 100).floor()}%'),
+          ],
+        ),
+        if (canPlay)
+          Text(
+            'Tap a paragraph to jump. Playing paragraph ${_currentParagraphIndex + 1}/${_paragraphs.length}',
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: Theme.of(context).hintColor),
+          )
+        else
+          const Text('Read-aloud not available for this article.'),
+      ],
+    );
+  }
+}
+
+class _UnreadBadge extends StatelessWidget {
+  final List<Article> articles;
+  const _UnreadBadge({required this.articles});
+
+  @override
+  Widget build(BuildContext context) {
+    final unread = articles
+        .where((a) =>
+            context.read<AppState>().getArticleState(a.guid)?.readAt == null)
+        .length;
+    return Chip(
+      label: Text('Unread: $unread'),
+    );
   }
 }

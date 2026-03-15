@@ -1,12 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_state.dart';
 import '../screens/login_screen.dart';
 import '../screens/subscriptions_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final FlutterTts _flutterTts = FlutterTts();
+  List<Map<String, String>> _voices = [];
+  bool _loadingVoices = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVoices();
+  }
+
+  @override
+  void dispose() {
+    _flutterTts.stop();
+    super.dispose();
+  }
+
+  Future<void> _loadVoices() async {
+    setState(() => _loadingVoices = true);
+    try {
+      final data = await _flutterTts.getVoices;
+      // Some platforms return List<dynamic> with maps.
+      final mapped = (data as List)
+          .whereType<Map>()
+          .map((v) => {
+                'name': '${v['name'] ?? v['voice'] ?? ''}',
+                'locale': '${v['locale'] ?? ''}',
+              })
+          .where((v) => v['name']!.isNotEmpty)
+          .toSet()
+          .toList();
+      mapped.sort((a, b) => a['name']!.compareTo(b['name']!));
+      if (mounted) {
+        setState(() {
+          _voices = mapped;
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _loadingVoices = false);
+      }
+    }
+  }
+
+  String _voiceKey(Map<String, String> voice) =>
+      '${voice['name']}|${voice['locale']}';
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +105,88 @@ class SettingsScreen extends StatelessWidget {
                           ));
                         },
                       ),
+              ),
+              const Divider(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Voice & Read aloud',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.speed),
+                title: const Text('Default narration speed'),
+                subtitle: Consumer<AppState>(
+                  builder: (context, appState, _) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Slider(
+                        value: appState.speechRate,
+                        min: 0.5,
+                        max: 1.5,
+                        divisions: 10,
+                        label: '${appState.speechRate.toStringAsFixed(2)}x',
+                        onChanged: (value) =>
+                            context.read<AppState>().setSpeechRate(value),
+                      ),
+                      Text('${appState.speechRate.toStringAsFixed(2)}x'),
+                    ],
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.record_voice_over),
+                title: const Text('Default voice'),
+                subtitle: _loadingVoices
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: LinearProgressIndicator(),
+                      )
+                    : Consumer<AppState>(
+                        builder: (context, appState, _) {
+                          final current = appState.voiceId;
+                          return DropdownButton<String?>(
+                            isExpanded: true,
+                            value: current != null &&
+                                    _voices.any((v) =>
+                                        _voiceKey(v) ==
+                                        current)
+                                ? current
+                                : null,
+                            hint: const Text('System default'),
+                            items: [
+                              const DropdownMenuItem<String?>(
+                                value: null,
+                                child: Text('System default'),
+                              ),
+                              ..._voices.map(
+                                (voice) => DropdownMenuItem<String?>(
+                                  value: _voiceKey(voice),
+                                  child: Text(
+                                      '${voice['name']} (${voice['locale']})'),
+                                ),
+                              ),
+                            ],
+                            onChanged: (value) async {
+                              await context.read<AppState>().setVoiceId(value);
+                            },
+                          );
+                        },
+                      ),
+              ),
+              SwitchListTile(
+                title: const Text('Auto-play next article'),
+                subtitle:
+                    const Text('When narration finishes, move to the next item'),
+                value:
+                    context.select<AppState, bool>((s) => s.autoPlayNext),
+                onChanged: (value) =>
+                    context.read<AppState>().setAutoPlayNext(value),
               ),
               const Divider(),
               Padding(

@@ -389,7 +389,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   }
 
   List<Article> _applyFilters(List<Article> articles, List<Feed> feeds) {
-    return articles.where((article) {
+    final filtered = articles.where((article) {
       // Read filter
       final state = context.read<AppState>().getArticleState(article.guid);
       if (_unreadOnly && state?.readAt != null) return false;
@@ -461,6 +461,21 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
       return true;
     }).toList();
+
+    filtered.sort((a, b) {
+      final aState = context.read<AppState>().getArticleState(a.guid);
+      final bState = context.read<AppState>().getArticleState(b.guid);
+      final aUnread = aState?.readAt == null;
+      final bUnread = bState?.readAt == null;
+      if (aUnread != bUnread) {
+        return aUnread ? -1 : 1; // unread first
+      }
+      final aTime = a.publishedAt ?? a.fetchedAt ?? 0;
+      final bTime = b.publishedAt ?? b.fetchedAt ?? 0;
+      return bTime.compareTo(aTime); // newest first within groups
+    });
+
+    return filtered;
   }
 
   int _wordCount(String? text) {
