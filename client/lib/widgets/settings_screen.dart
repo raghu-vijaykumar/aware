@@ -18,6 +18,17 @@ class SettingsScreen extends StatelessWidget {
         builder: (context, appState, child) {
           return ListView(
             children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Account',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
               ListTile(
                 title: const Text('Account'),
                 subtitle: Text(appState.isLoggedIn
@@ -44,19 +55,57 @@ class SettingsScreen extends StatelessWidget {
                       ),
               ),
               const Divider(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Subscriptions',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
               ListTile(
                 leading: const Icon(Icons.subscriptions),
-                title: const Text('Subscriptions'),
-                subtitle: const Text('Manage the feeds you follow'),
+                title: const Text('Manage Subscriptions'),
+                subtitle: const Text('Add or remove the feeds you follow'),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const SubscriptionsScreen(),
                   ));
                 },
               ),
-              const Divider(),
               ListTile(
-                title: const Text('Theme'),
+                leading: const Icon(Icons.file_upload),
+                title: const Text('Import Subscriptions'),
+                subtitle: const Text('Import via OPML file'),
+                onTap: () {
+                  // TODO: OPML import
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.file_download),
+                title: const Text('Export Subscriptions'),
+                subtitle: const Text('Export your feeds to OPML'),
+                onTap: () {
+                  // TODO: OPML export
+                },
+              ),
+              const Divider(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Themes',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                title: const Text('Themes'),
                 subtitle: const Text('Light / Dark / System'),
                 onTap: () async {
                   final selected = await showDialog<ThemeMode>(
@@ -110,34 +159,6 @@ class SettingsScreen extends StatelessWidget {
                   if (selected != null) {
                     await context.read<AppState>().setThemeMode(selected);
                   }
-                },
-              ),
-              ListTile(
-                title: const Text('Sync'),
-                subtitle: const Text('Sync read/star state to server'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.sync),
-                  onPressed: appState.isLoggedIn
-                      ? () async {
-                          await appState.syncState();
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Sync completed')),
-                          );
-                        }
-                      : null,
-                ),
-              ),
-              ListTile(
-                title: const Text('Import OPML'),
-                onTap: () {
-                  // TODO: OPML import
-                },
-              ),
-              ListTile(
-                title: const Text('Export OPML'),
-                onTap: () {
-                  // TODO: OPML export
                 },
               ),
             ],

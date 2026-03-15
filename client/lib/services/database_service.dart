@@ -170,6 +170,12 @@ class DatabaseService {
     return List.generate(maps.length, (i) => Article.fromMap(maps[i]));
   }
 
+  Future<Set<String>> getAllArticleGuids() async {
+    final db = await database;
+    final rows = await db.query('articles', columns: ['guid']);
+    return rows.map((row) => row['guid'] as String).toSet();
+  }
+
   // User state operations
   Future<int> insertUserState(UserArticleState state) async {
     final db = await database;

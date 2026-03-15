@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/article.dart';
+import '../models/feed.dart';
 import '../providers/app_state.dart';
 import '../theme/theme.dart';
 import 'reader_screen.dart';
@@ -22,12 +23,13 @@ class ArticleListScreen extends StatefulWidget {
 class _ArticleListScreenState extends State<ArticleListScreen> {
   late Future<List<Article>> _articlesFuture;
 
-  _MediaFilter _mediaFilter = _MediaFilter.all;
   _LengthFilter _lengthFilter = _LengthFilter.all;
   _TimeWindow _timeWindow = _TimeWindow.all;
-  String? _selectedAuthor;
+  String? _selectedSource;
   String? _keyword;
   bool _unreadOnly = false;
+  bool _likedOnly = false;
+  bool _savedOnly = false;
 
   @override
   void initState() {
@@ -82,7 +84,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
             final cardShadowColor =
                 colorScheme.shadow.withOpacity(isLight ? 0.25 : 0.55);
 
-            final filteredArticles = _applyFilters(articles);
+            final filteredArticles = _applyFilters(articles, appState.feeds);
 
             return Column(
               children: [
@@ -91,6 +93,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                   textTheme: textTheme,
                   colorScheme: colorScheme,
                   articles: articles,
+                  feeds: appState.feeds,
                 ),
                 Expanded(
                   child: filteredArticles.isEmpty
@@ -213,7 +216,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                         ),
                                         const SizedBox(height: AppSpacing.s4),
                                         Text(
-                                          _articleSource(article),
+                                          _articleSource(article, appState.feeds),
                                           style: textTheme.bodySmall?.copyWith(
                                             color: colorScheme.onSurfaceVariant,
                                             fontWeight: FontWeight.w600,
@@ -376,23 +379,22 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
         sharePositionOrigin: const Rect.fromLTWH(0, 0, 0, 0));
   }
 
-  String _articleSource(Article article) {
-    final host = article.url != null ? Uri.tryParse(article.url!)?.host : null;
-    final source = (host != null && host.isNotEmpty) ? host : widget.feedTitle;
+  String _articleSource(Article article, List<Feed> feeds) {
+    final source = _sourceLabel(article, feeds);
     final author = article.author?.trim();
     if (author != null && author.isNotEmpty) {
-      return '$source • $author';
+      return '$source - $author';
     }
     return source;
   }
 
-  List<Article> _applyFilters(List<Article> articles) {
+  List<Article> _applyFilters(List<Article> articles, List<Feed> feeds) {
     return articles.where((article) {
       // Read filter
-      if (_unreadOnly) {
-        final state = context.read<AppState>().getArticleState(article.guid);
-        if (state?.readAt != null) return false;
-      }
+      final state = context.read<AppState>().getArticleState(article.guid);
+      if (_unreadOnly && state?.readAt != null) return false;
+      if (_likedOnly && state?.likedAt == null) return false;
+      if (_savedOnly && state?.starredAt == null) return false;
 
       // Time window filter
       final published = article.publishedAt ?? article.fetchedAt;
@@ -413,23 +415,6 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
           case _TimeWindow.all:
             break;
         }
-      }
-
-      // Media filter
-      final hasImage = (article.imageUrl ?? '').isNotEmpty;
-      final hasLink = (article.url ?? '').isNotEmpty;
-      switch (_mediaFilter) {
-        case _MediaFilter.withImages:
-          if (!hasImage) return false;
-          break;
-        case _MediaFilter.textOnly:
-          if (hasImage) return false;
-          break;
-        case _MediaFilter.hasLink:
-          if (!hasLink) return false;
-          break;
-        case _MediaFilter.all:
-          break;
       }
 
       // Length filter based on summary/content word count
@@ -454,10 +439,11 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
           break;
       }
 
-      // Author filter
-      if (_selectedAuthor != null &&
-          _selectedAuthor!.isNotEmpty &&
-          article.author?.trim() != _selectedAuthor) {
+      // Source filter
+      final articleSource = _sourceLabel(article, feeds);
+      if (_selectedSource != null &&
+          _selectedSource!.isNotEmpty &&
+          articleSource != _selectedSource) {
         return false;
       }
 
@@ -491,6 +477,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   Widget _buildQuickFilters(
     BuildContext context, {
     required List<Article> articles,
+    required List<Feed> feeds,
     required TextTheme textTheme,
     required ColorScheme colorScheme,
   }) {
@@ -499,26 +486,52 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
           AppSpacing.s16, AppSpacing.s12, AppSpacing.s16, AppSpacing.s8),
       child: Row(
         children: [
-          ChoiceChip(
-            label: const Text('Unread only'),
-            selected: _unreadOnly,
-            onSelected: (_) => setState(() => _unreadOnly = !_unreadOnly),
-          ),
-          const SizedBox(width: AppSpacing.s8),
-          ChoiceChip(
-            label: const Text('Last 24h'),
-            selected: _timeWindow == _TimeWindow.last24h,
-            onSelected: (_) => setState(() => _timeWindow =
-                _timeWindow == _TimeWindow.last24h
-                    ? _TimeWindow.all
-                    : _TimeWindow.last24h),
-          ),
-          const Spacer(),
           TextButton.icon(
-            onPressed: () =>
-                _openFilterDrawer(context, articles, textTheme, colorScheme),
+            onPressed: () => _openFilterDrawer(
+                context, articles, feeds, textTheme, colorScheme),
             icon: const Icon(Icons.filter_list),
             label: const Text('Filters'),
+          ),
+          const SizedBox(width: AppSpacing.s12),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              reverse: true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ChoiceChip(
+                    label: const Text('Unread'),
+                    selected: _unreadOnly,
+                    onSelected: (_) =>
+                        setState(() => _unreadOnly = !_unreadOnly),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  ChoiceChip(
+                    label: const Text('Liked'),
+                    selected: _likedOnly,
+                    onSelected: (_) =>
+                        setState(() => _likedOnly = !_likedOnly),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  ChoiceChip(
+                    label: const Text('Saved'),
+                    selected: _savedOnly,
+                    onSelected: (_) =>
+                        setState(() => _savedOnly = !_savedOnly),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  ChoiceChip(
+                    label: const Text('Last 24h'),
+                    selected: _timeWindow == _TimeWindow.last24h,
+                    onSelected: (_) => setState(() => _timeWindow =
+                        _timeWindow == _TimeWindow.last24h
+                            ? _TimeWindow.all
+                            : _TimeWindow.last24h),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -526,8 +539,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   }
 
   void _openFilterDrawer(BuildContext context, List<Article> articles,
-      TextTheme textTheme, ColorScheme colorScheme) {
-    final topAuthors = _topAuthors(articles);
+      List<Feed> feeds, TextTheme textTheme, ColorScheme colorScheme) {
+    final topSources = _topSources(articles, feeds);
     final keywordController = TextEditingController(text: _keyword ?? '');
 
     showModalBottomSheet(
@@ -541,192 +554,181 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
               setState(cb);
             }
 
-            return DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.85,
-              minChildSize: 0.4,
-              maxChildSize: 0.95,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: AppSpacing.s16,
-                    right: AppSpacing.s16,
-                    top: AppSpacing.s16,
-                    bottom:
-                        MediaQuery.of(context).viewInsets.bottom + AppSpacing.s16,
-                  ),
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text('Filters', style: textTheme.titleMedium),
-                            const Spacer(),
-                            IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text('Media type', style: textTheme.labelLarge),
-                        Wrap(
-                          spacing: AppSpacing.s8,
-                          children: [
-                            ChoiceChip(
-                              label: const Text('All'),
-                              selected: _mediaFilter == _MediaFilter.all,
-                              onSelected: (_) =>
-                                  update(() => _mediaFilter = _MediaFilter.all),
-                            ),
-                            ChoiceChip(
-                              label: const Text('With images'),
-                              selected: _mediaFilter == _MediaFilter.withImages,
-                              onSelected: (_) => update(
-                                  () => _mediaFilter = _MediaFilter.withImages),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Text only'),
-                              selected: _mediaFilter == _MediaFilter.textOnly,
-                              onSelected: (_) => update(
-                                  () => _mediaFilter = _MediaFilter.textOnly),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Has link'),
-                              selected: _mediaFilter == _MediaFilter.hasLink,
-                              onSelected: (_) =>
-                                  update(() => _mediaFilter = _MediaFilter.hasLink),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text('Time window', style: textTheme.labelLarge),
-                        Wrap(
-                          spacing: AppSpacing.s8,
-                          children: [
-                            ChoiceChip(
-                              label: const Text('All'),
-                              selected: _timeWindow == _TimeWindow.all,
-                              onSelected: (_) =>
-                                  update(() => _timeWindow = _TimeWindow.all),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Last 24h'),
-                              selected: _timeWindow == _TimeWindow.last24h,
-                              onSelected: (_) =>
-                                  update(() => _timeWindow = _TimeWindow.last24h),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Last 7d'),
-                              selected: _timeWindow == _TimeWindow.last7d,
-                              onSelected: (_) =>
-                                  update(() => _timeWindow = _TimeWindow.last7d),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Last 30d'),
-                              selected: _timeWindow == _TimeWindow.last30d,
-                              onSelected: (_) =>
-                                  update(() => _timeWindow = _TimeWindow.last30d),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text('Length / preview', style: textTheme.labelLarge),
-                        Wrap(
-                          spacing: AppSpacing.s8,
-                          children: [
-                            ChoiceChip(
-                              label: const Text('Any'),
-                              selected: _lengthFilter == _LengthFilter.all,
-                              onSelected: (_) =>
-                                  update(() => _lengthFilter = _LengthFilter.all),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Short <100w'),
-                              selected: _lengthFilter == _LengthFilter.short,
-                              onSelected: (_) =>
-                                  update(() => _lengthFilter = _LengthFilter.short),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Medium 100-300'),
-                              selected: _lengthFilter == _LengthFilter.medium,
-                              onSelected: (_) =>
-                                  update(() => _lengthFilter = _LengthFilter.medium),
-                            ),
-                            ChoiceChip(
-                              label: const Text('Long >300'),
-                              selected: _lengthFilter == _LengthFilter.long,
-                              onSelected: (_) =>
-                                  update(() => _lengthFilter = _LengthFilter.long),
-                            ),
-                            ChoiceChip(
-                              label: const Text('2+ paragraphs'),
-                              selected:
-                                  _lengthFilter == _LengthFilter.multiParagraph,
-                              onSelected: (_) => update(() =>
-                                  _lengthFilter = _LengthFilter.multiParagraph),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text('Authors', style: textTheme.labelLarge),
-                        Wrap(
-                          spacing: AppSpacing.s8,
-                          children: [
-                            ChoiceChip(
-                              label: const Text('All authors'),
-                              selected: _selectedAuthor == null,
-                              onSelected: (_) =>
-                                  update(() => _selectedAuthor = null),
-                            ),
-                            for (final author in topAuthors)
-                              ChoiceChip(
-                                label: Text(author),
-                                selected: _selectedAuthor == author,
-                                onSelected: (_) =>
-                                    update(() => _selectedAuthor = author),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.s12),
-                        Text('Keyword', style: textTheme.labelLarge),
-                        TextField(
-                          controller: keywordController,
-                          decoration: const InputDecoration(
-                            hintText: 'Title, summary, or content',
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: AppSpacing.s16,
+                  right: AppSpacing.s16,
+                  top: AppSpacing.s16,
+                  bottom:
+                      MediaQuery.of(context).viewInsets.bottom + AppSpacing.s16,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Text('Filters', style: textTheme.titleMedium),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
-                          onChanged: (value) => update(() => _keyword =
-                              value.trim().isEmpty ? null : value.trim()),
-                        ),
-                        const SizedBox(height: AppSpacing.s16),
-                        Row(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                update(() {
-                                  _mediaFilter = _MediaFilter.all;
-                                  _lengthFilter = _LengthFilter.all;
-                                  _timeWindow = _TimeWindow.all;
-                                  _selectedAuthor = null;
-                                  _keyword = null;
-                                });
-                              },
-                              child: const Text('Reset'),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.s12),
+                      Text('Engagement', style: textTheme.labelLarge),
+                      Wrap(
+                        spacing: AppSpacing.s8,
+                        children: [
+                          ChoiceChip(
+                            label: const Text('Unread only'),
+                            selected: _unreadOnly,
+                            onSelected: (_) =>
+                                update(() => _unreadOnly = !_unreadOnly),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Liked'),
+                            selected: _likedOnly,
+                            onSelected: (_) =>
+                                update(() => _likedOnly = !_likedOnly),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Saved'),
+                            selected: _savedOnly,
+                            onSelected: (_) =>
+                                update(() => _savedOnly = !_savedOnly),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.s12),
+                      Text('Length / preview', style: textTheme.labelLarge),
+                      Wrap(
+                        spacing: AppSpacing.s8,
+                        children: [
+                          ChoiceChip(
+                            label: const Text('Any'),
+                            selected: _lengthFilter == _LengthFilter.all,
+                            onSelected: (_) =>
+                                update(() => _lengthFilter = _LengthFilter.all),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Short <100w'),
+                            selected: _lengthFilter == _LengthFilter.short,
+                            onSelected: (_) =>
+                                update(() => _lengthFilter = _LengthFilter.short),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Medium 100-300'),
+                            selected: _lengthFilter == _LengthFilter.medium,
+                            onSelected: (_) => update(
+                                () => _lengthFilter = _LengthFilter.medium),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Long >300'),
+                            selected: _lengthFilter == _LengthFilter.long,
+                            onSelected: (_) =>
+                                update(() => _lengthFilter = _LengthFilter.long),
+                          ),
+                          ChoiceChip(
+                            label: const Text('2+ paragraphs'),
+                            selected: _lengthFilter == _LengthFilter.multiParagraph,
+                            onSelected: (_) => update(() =>
+                                _lengthFilter = _LengthFilter.multiParagraph),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.s12),
+                      Text('Time window', style: textTheme.labelLarge),
+                      Wrap(
+                        spacing: AppSpacing.s8,
+                        children: [
+                          ChoiceChip(
+                            label: const Text('All'),
+                            selected: _timeWindow == _TimeWindow.all,
+                            onSelected: (_) =>
+                                update(() => _timeWindow = _TimeWindow.all),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Last 24h'),
+                            selected: _timeWindow == _TimeWindow.last24h,
+                            onSelected: (_) =>
+                                update(() => _timeWindow = _TimeWindow.last24h),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Last 7d'),
+                            selected: _timeWindow == _TimeWindow.last7d,
+                            onSelected: (_) =>
+                                update(() => _timeWindow = _TimeWindow.last7d),
+                          ),
+                          ChoiceChip(
+                            label: const Text('Last 30d'),
+                            selected: _timeWindow == _TimeWindow.last30d,
+                            onSelected: (_) =>
+                                update(() => _timeWindow = _TimeWindow.last30d),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.s12),
+                      Text('Sources', style: textTheme.labelLarge),
+                      Wrap(
+                        spacing: AppSpacing.s8,
+                        children: [
+                          ChoiceChip(
+                            label: const Text('All sources'),
+                            selected: _selectedSource == null,
+                            onSelected: (_) =>
+                                update(() => _selectedSource = null),
+                          ),
+                          for (final source in topSources)
+                            ChoiceChip(
+                              label: Text(source),
+                              selected: _selectedSource == source,
+                              onSelected: (_) =>
+                                  update(() => _selectedSource = source),
                             ),
-                            const Spacer(),
-                            ElevatedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('Done'),
-                            ),
-                          ],
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.s12),
+                      Text('Keyword', style: textTheme.labelLarge),
+                      TextField(
+                        controller: keywordController,
+                        decoration: const InputDecoration(
+                          hintText: 'Title, summary, or content',
                         ),
-                      ],
-                    ),
+                        onChanged: (value) => update(() => _keyword =
+                            value.trim().isEmpty ? null : value.trim()),
+                      ),
+                      const SizedBox(height: AppSpacing.s16),
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              update(() {
+                                _lengthFilter = _LengthFilter.all;
+                                _timeWindow = _TimeWindow.all;
+                                _selectedSource = null;
+                                _keyword = null;
+                                _unreadOnly = false;
+                                _likedOnly = false;
+                                _savedOnly = false;
+                              });
+                            },
+                            child: const Text('Reset'),
+                          ),
+                          const Spacer(),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Done'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              },
+                ),
+              ),
             );
           },
         );
@@ -734,16 +736,38 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     );
   }
 
-  List<String> _topAuthors(List<Article> articles, {int maxAuthors = 5}) {
+  List<String> _topSources(List<Article> articles, List<Feed> feeds,
+      {int maxSources = 5}) {
     final counts = <String, int>{};
     for (final article in articles) {
-      final author = article.author?.trim();
-      if (author == null || author.isEmpty) continue;
-      counts[author] = (counts[author] ?? 0) + 1;
+      final source = _sourceLabel(article, feeds);
+      if (source.isEmpty) continue;
+      counts[source] = (counts[source] ?? 0) + 1;
     }
     final sorted = counts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    return sorted.take(maxAuthors).map((e) => e.key).toList();
+    return sorted.take(maxSources).map((e) => e.key).toList();
+  }
+
+  String _sourceLabel(Article article, List<Feed> feeds) {
+    final feedTitle = _feedTitleFor(article, feeds);
+    if (feedTitle != null && feedTitle.isNotEmpty) return feedTitle;
+
+    final host = article.url != null ? Uri.tryParse(article.url!)?.host : null;
+    if (host != null && host.isNotEmpty) return host;
+
+    return widget.feedTitle;
+  }
+
+  String? _feedTitleFor(Article article, List<Feed> feeds) {
+    for (final feed in feeds) {
+      if (feed.id == article.feedId) {
+        final title = feed.title?.trim();
+        if (title != null && title.isNotEmpty) return title;
+        break;
+      }
+    }
+    return null;
   }
 
   String _relativeTimeLabel(Article article) {
@@ -782,8 +806,6 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     return article.publishedAt != null ? label : '$label (fetched)';
   }
 }
-
-enum _MediaFilter { all, withImages, textOnly, hasLink }
 
 enum _LengthFilter { all, short, medium, long, multiParagraph }
 
