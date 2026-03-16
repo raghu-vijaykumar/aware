@@ -47,6 +47,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final Map<int, ScrollController> _scrollControllers = {};
   double? _lastAppliedRate;
   String? _lastAppliedVoice;
+  DateTime? _lastScrollTime;
 
   @override
   void initState() {
@@ -54,6 +55,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
     _attachTtsHandlers();
+
+    // Preload TTS engine to remove first-play lag
+    _tts.setSpeechRate(0.5);
+    _tts.setVolume(1.0);
+    _tts.setPitch(1.0);
 
     // Mark the initial article as read after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -103,24 +109,32 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final pct = absolute / _plainText.length;
       final paragraphIdx =
           _paragraphOffsets.lastIndexWhere((element) => element <= absolute);
-      setState(() {
-        _progress = pct;
-        if (paragraphIdx >= 0) {
+      if (paragraphIdx >= 0 && paragraphIdx != _currentParagraphIndex) {
+        setState(() {
           _currentParagraphIndex = paragraphIdx;
-        }
-      });
-      if (paragraphIdx >= 0) {
+        });
         _scrollToParagraph(paragraphIdx);
       }
+      setState(() {
+        _progress = pct;
+      });
     });
-    _tts.setCompletionHandler(() {
+    _tts.setCompletionHandler(() async {
+      final next = _currentParagraphIndex + 1;
+
+      if (next < _paragraphs.length) {
+        await _playParagraph(next);
+        return;
+      }
+
       setState(() {
         _isPlaying = false;
-        _isPaused = false;
         _progress = 1.0;
       });
+
       final appState = context.read<AppState>();
       final hasNext = _currentIndex < widget.articles.length - 1;
+
       if (hasNext && appState.autoPlayNext) {
         _goToArticle(_currentIndex + 1, autoplay: true);
       }
@@ -177,6 +191,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         .map((p) => p.trim())
         .where((p) => p.isNotEmpty)
         .map(_sanitizeForTts)
+        .where((p) => !_isMostlySymbols(p))
         .toList();
     var offset = 0;
     final offsets = <int>[];
@@ -207,29 +222,56 @@ class _ReaderScreenState extends State<ReaderScreen> {
     return text;
   }
 
+  bool _isMostlySymbols(String paragraph) {
+    // Count non-whitespace characters
+    final nonWhitespace = paragraph.replaceAll(RegExp(r'\s'), '');
+    if (nonWhitespace.isEmpty) return false;
+
+    // Count symbol characters (non-alphanumeric, non-punctuation)
+    final symbolCount = nonWhitespace
+        .replaceAll(RegExp(r'[a-zA-Z0-9\s.,!?;:()"\-\[\]]'), '')
+        .length;
+
+    // If more than 60% of non-whitespace characters are symbols, consider it mostly symbols
+    return symbolCount / nonWhitespace.length > 0.6;
+  }
+
   Future<void> _startPlayback({int paragraphIndex = 0}) async {
     if (_paragraphs.isEmpty) return;
+
     final appState = context.read<AppState>();
-    setState(() => _startingAudio = true);
-    try {
-      await _applyVoiceSettings(appState);
-      final start = paragraphIndex.clamp(0, _paragraphs.length - 1);
-      _offsetBase = _paragraphOffsets[start];
-      final text = _plainText.substring(_offsetBase);
-      await _tts.stop();
-      await _tts.speak(text);
+
+    await _applyVoiceSettings(appState);
+
+    setState(() {
+      _isPlaying = true;
+      _isPaused = false;
+      _currentParagraphIndex = paragraphIndex;
+    });
+
+    await _playParagraph(paragraphIndex);
+  }
+
+  Future<void> _playParagraph(int index) async {
+    if (index >= _paragraphs.length) {
       setState(() {
-        _isPlaying = true;
-        _isPaused = false;
-        _currentParagraphIndex = start;
-        _progress = _plainText.isEmpty ? 0 : _offsetBase / _plainText.length;
+        _isPlaying = false;
+        _progress = 1;
       });
-      _scrollToParagraph(start);
-    } finally {
-      if (mounted) {
-        setState(() => _startingAudio = false);
-      }
+      return;
     }
+
+    final text = _paragraphs[index];
+
+    await _tts.stop();
+    await _tts.speak(text);
+
+    setState(() {
+      _currentParagraphIndex = index;
+      _progress = index / _paragraphs.length;
+    });
+
+    _scrollToParagraph(index);
   }
 
   Future<void> _pausePlayback() async {
@@ -281,19 +323,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void _scrollToParagraph(int paragraphIdx) {
     final keys = _paragraphKeysByArticle[_currentIndex];
     final controller = _scrollControllers[_currentIndex];
-    if (keys == null || controller == null || !controller.hasClients) return;
+
+    if (keys == null || controller == null) return;
     if (paragraphIdx < 0 || paragraphIdx >= keys.length) return;
-    final key = keys[paragraphIdx];
-    final ctx = key.currentContext;
+
+    final ctx = keys[paragraphIdx].currentContext;
     if (ctx == null) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Scrollable.ensureVisible(
-        ctx,
-        alignment: 0.1,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
-    });
+
+    Scrollable.ensureVisible(
+      ctx,
+      alignment: 0.2,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -330,9 +372,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
       body: PageView.builder(
         controller: _pageController,
         itemCount: widget.articles.length,
-        onPageChanged: (index) {
+        physics: const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
+        onPageChanged: (index) async {
+          await _tts.stop();
           setState(() {
             _currentIndex = index;
+            _isPlaying = false;
+            _isPaused = false;
+            _progress = 0;
           });
           _markRead(widget.articles[index]);
           _prefetchReader(widget.articles[index]);
@@ -492,24 +539,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _UnreadBadge(articles: widget.articles),
-              const SizedBox(width: 12),
+              const Spacer(),
               IconButton(
-                icon: Icon(
-                  context.watch<AppState>().autoPlayNext
-                      ? Icons.play_arrow
-                      : Icons.pause,
-                ),
-                onPressed: () => context.read<AppState>().setAutoPlayNext(
-                      !context.watch<AppState>().autoPlayNext,
-                    ),
+                icon: const Icon(Icons.skip_previous),
+                onPressed: _currentIndex > 0
+                    ? () => _goToArticle(_currentIndex - 1)
+                    : null,
+                tooltip: 'Previous article',
               ),
-              const SizedBox(width: 12),
-              if (_currentIndex < widget.articles.length - 1)
-                IconButton(
-                  icon: const Icon(Icons.skip_next),
-                  onPressed: () =>
-                      _goToArticle(_currentIndex + 1, autoplay: true),
-                ),
+              IconButton(
+                icon: const Icon(Icons.skip_next),
+                onPressed: _currentIndex < widget.articles.length - 1
+                    ? () => _goToArticle(_currentIndex + 1)
+                    : null,
+                tooltip: 'Next article',
+              ),
             ],
           ),
         ),
@@ -652,7 +696,7 @@ class _UnreadBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final unread = articles
         .where((a) =>
-            context.read<AppState>().getArticleState(a.guid)?.readAt == null)
+            context.watch<AppState>().getArticleState(a.guid)?.readAt == null)
         .length;
     return Chip(
       label: Text('Unread: $unread'),

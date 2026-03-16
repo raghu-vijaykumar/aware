@@ -42,6 +42,11 @@ class NotificationService {
     }
     if (kIsWeb) return;
 
+    // Wait for initialization to complete before showing notification
+    if (!_initialized) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
     final title = '$count new articles available to read';
     const body = 'Across your subscriptions';
 
@@ -60,11 +65,16 @@ class NotificationService {
       ),
     );
 
-    await _plugin.show(
-      _summaryNotificationId,
-      title,
-      body,
-      notificationDetails,
-    );
+    try {
+      await _plugin.show(
+        _summaryNotificationId,
+        title,
+        body,
+        notificationDetails,
+      );
+    } catch (e) {
+      // Log the error but don't crash the background task
+      print('Notification error: $e');
+    }
   }
 }
