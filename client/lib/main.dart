@@ -51,6 +51,15 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.dark(),
             themeMode: appState.themeMode,
             home: const SplashScreen(),
+            builder: (context, child) {
+              final mediaQuery = MediaQuery.of(context);
+              return MediaQuery(
+                data: mediaQuery.copyWith(
+                  textScaleFactor: appState.textScaleFactor,
+                ),
+                child: child ?? const SizedBox.shrink(),
+              );
+            },
           );
         },
       ),

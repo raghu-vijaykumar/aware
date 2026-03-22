@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../providers/app_state.dart';
 import '../screens/login_screen.dart';
 import '../screens/subscriptions_screen.dart';
+import '../services/opml_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,8 +22,64 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final FlutterTts _flutterTts = FlutterTts();
+  final OpmlService _opml = OpmlService();
   List<Map<String, String>> _voices = [];
   bool _loadingVoices = false;
+  static const List<String> _coolVoiceNames = [
+    'Aurora',
+    'Echo',
+    'Zephyr',
+    'Nimbus',
+    'Drift',
+    'Lumen',
+    'Harbor',
+    'Orbit',
+    'Pulse',
+    'Sierra',
+    'Nova',
+    'Atlas',
+    'Canyon',
+    'Glacier',
+    'Solaris',
+    'Prism',
+    'Quartz',
+    'Voyage',
+    'Summit',
+    'Mesa',
+  ];
+
+  String _coolVoiceLabel(Map<String, String> voice, int index) {
+    final cool = _coolVoiceNames[index % _coolVoiceNames.length];
+    final locale = voice['locale'];
+    final origin = voice['name'] ?? 'Voice';
+    final localeText =
+        (locale != null && locale.isNotEmpty) ? locale : 'global';
+    return '$cool - $origin ($localeText)';
+  }
+
+  List<Map<String, String>> _pickTopVoices(List<Map<String, String>> voices) {
+    // Prefer a small set of common English locales; fall back to any first five.
+    const preferredLocales = ['en-US', 'en-GB', 'en-IN', 'en-AU', 'en-CA'];
+    final selected = <Map<String, String>>[];
+
+    for (final loc in preferredLocales) {
+      final match = voices.firstWhere(
+        (v) => (v['locale'] ?? '').startsWith(loc),
+        orElse: () => {},
+      );
+      if (match.isNotEmpty && !selected.contains(match)) {
+        selected.add(match);
+      }
+      if (selected.length >= 5) break;
+    }
+
+    for (final v in voices) {
+      if (selected.length >= 5) break;
+      if (!selected.contains(v)) selected.add(v);
+    }
+
+    return selected.take(5).toList();
+  }
 
   @override
   void initState() {
@@ -47,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       mapped.sort((a, b) => a['name']!.compareTo(b['name']!));
       if (mounted) {
         setState(() {
-          _voices = mapped;
+          _voices = _pickTopVoices(mapped);
         });
       }
     } finally {
@@ -60,6 +123,98 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _voiceKey(Map<String, String> voice) =>
       '${voice['name']}|${voice['locale']}';
 
+  Future<void> _importSubscriptions() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['opml', 'xml'],
+      withData: true,
+    );
+
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.first;
+    try {
+      final content = file.bytes != null
+          ? utf8.decode(file.bytes!)
+          : await File(file.path!).readAsString();
+
+      final urls = _opml.extractFeedUrls(content);
+      if (urls.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No feeds found in OPML')),
+        );
+        return;
+      }
+
+      final appState = context.read<AppState>();
+      var added = 0;
+      for (final url in urls) {
+        final already = appState.feeds.any((f) => f.url == url);
+        if (already) continue;
+        try {
+          await appState.addFeedFromUrl(url);
+          added++;
+        } catch (err) {
+          debugPrint('Failed to import $url: $err');
+        }
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            added > 0
+                ? 'Imported $added feed${added == 1 ? '' : 's'}'
+                : 'All feeds were already added',
+          ),
+        ),
+      );
+    } catch (err) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Import failed: $err')),
+      );
+    }
+  }
+
+  Future<void> _exportSubscriptions() async {
+    final appState = context.read<AppState>();
+    final feeds = appState.feeds;
+    if (feeds.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No subscriptions to export')),
+      );
+      return;
+    }
+
+    try {
+      final opmlContent = _opml.buildOpml(feeds);
+      final dir = await getTemporaryDirectory();
+      final filePath =
+          '${dir.path}/aware-subscriptions-${DateTime.now().millisecondsSinceEpoch}.opml';
+      final file = File(filePath);
+      await file.writeAsString(opmlContent);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'Aware subscriptions export',
+        subject: 'Aware subscriptions export',
+      );
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Exported ${feeds.length} feed(s)')),
+      );
+    } catch (err) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Export failed: $err')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,8 +226,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           return ListView(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
                 child: Text(
                   'Account',
                   style: Theme.of(context)
@@ -108,8 +263,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
                 child: Text(
                   'Voice & Read aloud',
                   style: Theme.of(context)
@@ -127,14 +282,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Slider(
                         value: appState.speechRate,
-                        min: 0.5,
-                        max: 1.5,
-                        divisions: 10,
-                        label: '${appState.speechRate.toStringAsFixed(2)}x',
+                        min: AppState.speechRateMinRatio,
+                        max: AppState.speechRateMaxRatio,
+                        divisions: ((AppState.speechRateMaxRatio -
+                                    AppState.speechRateMinRatio) /
+                                0.1)
+                            .round(),
+                        label: '${appState.speechRate.toStringAsFixed(1)}x',
                         onChanged: (value) =>
                             context.read<AppState>().setSpeechRate(value),
                       ),
-                      Text('${appState.speechRate.toStringAsFixed(2)}x'),
+                      Text(
+                        '${appState.speechRate.toStringAsFixed(1)}x (1x = calm default)',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 ),
@@ -153,9 +314,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           return DropdownButton<String?>(
                             isExpanded: true,
                             value: current != null &&
-                                    _voices.any((v) =>
-                                        _voiceKey(v) ==
-                                        current)
+                                    _voices.any((v) => _voiceKey(v) == current)
                                 ? current
                                 : null,
                             hint: const Text('System default'),
@@ -164,13 +323,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 value: null,
                                 child: Text('System default'),
                               ),
-                              ..._voices.map(
-                                (voice) => DropdownMenuItem<String?>(
-                                  value: _voiceKey(voice),
-                                  child: Text(
-                                      '${voice['name']} (${voice['locale']})'),
-                                ),
-                              ),
+                              ..._voices.asMap().entries.map(
+                                    (entry) => DropdownMenuItem<String?>(
+                                      value: _voiceKey(entry.value),
+                                      child: Text(
+                                        _coolVoiceLabel(entry.value, entry.key),
+                                      ),
+                                    ),
+                                  ),
                             ],
                             onChanged: (value) async {
                               await context.read<AppState>().setVoiceId(value);
@@ -181,17 +341,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               SwitchListTile(
                 title: const Text('Auto-play next article'),
-                subtitle:
-                    const Text('When narration finishes, move to the next item'),
-                value:
-                    context.select<AppState, bool>((s) => s.autoPlayNext),
+                subtitle: const Text(
+                    'When narration finishes, move to the next item'),
+                value: context.select<AppState, bool>((s) => s.autoPlayNext),
                 onChanged: (value) =>
                     context.read<AppState>().setAutoPlayNext(value),
               ),
               const Divider(),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Accessibility',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: const Text('Text size'),
+                subtitle: Consumer<AppState>(
+                  builder: (context, appState, _) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Slider(
+                        min: AppState.textScaleMin,
+                        max: AppState.textScaleMax,
+                        divisions:
+                            ((AppState.textScaleMax - AppState.textScaleMin) /
+                                    0.05)
+                                .round(),
+                        value: appState.textScaleFactor,
+                        label: '${(appState.textScaleFactor * 100).round()}%',
+                        onChanged: (value) =>
+                            context.read<AppState>().setTextScaleFactor(value),
+                      ),
+                      Text(
+                        'Applies across the app, including articles and navigation.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'The quick brown fox jumps over the lazy dog.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
                 child: Text(
                   'Subscriptions',
                   style: Theme.of(context)
@@ -214,22 +417,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: const Icon(Icons.file_upload),
                 title: const Text('Import Subscriptions'),
                 subtitle: const Text('Import via OPML file'),
-                onTap: () {
-                  // TODO: OPML import
-                },
+                onTap: _importSubscriptions,
               ),
               ListTile(
                 leading: const Icon(Icons.file_download),
                 title: const Text('Export Subscriptions'),
                 subtitle: const Text('Export your feeds to OPML'),
-                onTap: () {
-                  // TODO: OPML export
-                },
+                onTap: _exportSubscriptions,
               ),
               const Divider(),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
                 child: Text(
                   'Themes',
                   style: Theme.of(context)

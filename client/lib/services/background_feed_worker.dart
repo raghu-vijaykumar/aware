@@ -66,7 +66,8 @@ class BackgroundFeedWorker {
     await NotificationService.ensureInitialized();
     await Workmanager().initialize(
       backgroundFeedDispatcher,
-      isInDebugMode: kDebugMode,
+      // Suppress Workmanager's debug foreground notification.
+      isInDebugMode: false,
     );
   }
 
@@ -75,6 +76,7 @@ class BackgroundFeedWorker {
     await Workmanager().registerPeriodicTask(
       kFeedRefreshTask,
       kFeedRefreshTask,
+      inputData: const {'trigger': 'periodic_refresh'},
       frequency: const Duration(hours: 1),
       initialDelay: const Duration(minutes: 15),
       existingWorkPolicy: ExistingWorkPolicy.keep,

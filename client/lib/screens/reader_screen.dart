@@ -5,6 +5,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
+import 'package:html/parser.dart' as html_parser;
+import 'package:html/dom.dart' as dom;
 import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -41,11 +43,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
   int _offsetBase = 0;
   bool _pendingAutoPlay = false;
   String _plainText = '';
+  List<String> _paragraphMarkdown = [];
   List<String> _paragraphs = [];
   List<int> _paragraphOffsets = [];
   final Map<int, List<GlobalKey>> _paragraphKeysByArticle = {};
   final Map<int, ScrollController> _scrollControllers = {};
-  double? _lastAppliedRate;
+  final Map<int, bool> _headerCollapsedByArticle = {};
+  double? _lastAppliedTtsRate;
   String? _lastAppliedVoice;
   DateTime? _lastScrollTime;
 
@@ -57,7 +61,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _attachTtsHandlers();
 
     // Preload TTS engine to remove first-play lag
-    _tts.setSpeechRate(0.5);
+    _tts.setSpeechRate(AppState.speechRateBase);
     _tts.setVolume(1.0);
     _tts.setPitch(1.0);
 
@@ -159,9 +163,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   Future<void> _applyVoiceSettings(AppState appState) async {
-    if (_lastAppliedRate != appState.speechRate) {
-      _lastAppliedRate = appState.speechRate;
-      await _tts.setSpeechRate(appState.speechRate);
+    final targetRate = appState.speechRateTts;
+    if (_lastAppliedTtsRate != targetRate) {
+      _lastAppliedTtsRate = targetRate;
+      await _tts.setSpeechRate(targetRate);
     }
     if (_lastAppliedVoice != appState.voiceId) {
       _lastAppliedVoice = appState.voiceId;
@@ -185,30 +190,160 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   void _updateTextForArticle(Article article, int articleIndex) {
-    final markdown = _htmlToMarkdown(_bodyHtml(article));
-    final parts = markdown
-        .split(RegExp(r'\n{2,}'))
-        .map((p) => p.trim())
-        .where((p) => p.isNotEmpty)
-        .map(_sanitizeForTts)
-        .where((p) => !_isMostlySymbols(p))
-        .toList();
+    final html = _bodyHtml(article);
+    final markdown = _htmlToMarkdown(html);
+    final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown);
+
+    final cleanedParagraphs = <String>[];
+    final ttsParagraphs = <String>[];
+
+    for (final para in markdownParagraphs) {
+      final sanitized = _sanitizeForTts(para);
+      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+      cleanedParagraphs.add(para);
+      ttsParagraphs.add(sanitized);
+    }
+
+    // As a fallback for feeds with no clear paragraph breaks, use readability text content.
+    if (cleanedParagraphs.isEmpty || ttsParagraphs.isEmpty) {
+      final textParagraphs = _extractParagraphsFromHtml(html);
+      for (final para in textParagraphs) {
+        final sanitized = _sanitizeForTts(para);
+        if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+        cleanedParagraphs.add(para);
+        ttsParagraphs.add(sanitized);
+      }
+    }
+
+    // Still nothing usable.
+    if (cleanedParagraphs.isEmpty || ttsParagraphs.isEmpty) {
+      setState(() {
+        _paragraphMarkdown = [];
+        _paragraphs = [];
+        _paragraphOffsets = [];
+        _plainText = '';
+        _paragraphKeysByArticle[articleIndex] = const <GlobalKey>[];
+        _progress = 0;
+        _currentParagraphIndex = 0;
+        _offsetBase = 0;
+      });
+      return;
+    }
+
     var offset = 0;
     final offsets = <int>[];
-    for (final p in parts) {
+    for (final p in ttsParagraphs) {
       offsets.add(offset);
       offset += p.length + 2; // include the paragraph break
     }
     setState(() {
-      _paragraphs = parts;
+      _paragraphMarkdown = cleanedParagraphs;
+      _paragraphs = ttsParagraphs;
       _paragraphOffsets = offsets;
-      _plainText = parts.join('\n\n');
+      _plainText = ttsParagraphs.join('\n\n');
       _paragraphKeysByArticle[articleIndex] =
-          List.generate(parts.length, (_) => GlobalKey());
+          List.generate(ttsParagraphs.length, (_) => GlobalKey());
+      _headerCollapsedByArticle[articleIndex] = false;
       _progress = 0;
       _currentParagraphIndex = 0;
       _offsetBase = 0;
     });
+  }
+
+  List<String> _splitMarkdownIntoParagraphs(String markdown) {
+    final lines = markdown.split('\n');
+    final buffer = StringBuffer();
+    final paragraphs = <String>[];
+
+    void flush() {
+      if (buffer.length == 0) return;
+      final text = buffer.toString().trim();
+      if (text.isNotEmpty) {
+        paragraphs.add(text);
+      }
+      buffer.clear();
+    }
+
+    for (final rawLine in lines) {
+      final line = rawLine.trimRight();
+      final isBlank = line.trim().isEmpty;
+
+      if (isBlank) {
+        flush();
+        continue;
+      }
+
+      buffer.writeln(line);
+    }
+
+    flush();
+    return paragraphs;
+  }
+
+  List<String> _extractParagraphsFromHtml(String html) {
+    final doc = html_parser.parse(html);
+    // Drop common noise containers before collecting text.
+    const junkSelectors = 'script,style,noscript,template,svg,nav,footer,header';
+    for (final node in doc.querySelectorAll(junkSelectors)) {
+      node.remove();
+    }
+
+    final paragraphs = <String>[];
+
+    bool isBlockLike(dom.Element el) {
+      const blockTags = {
+        'p',
+        'li',
+        'blockquote',
+        'pre',
+        'code',
+        'article',
+        'section',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6'
+      };
+      return blockTags.contains(el.localName);
+    }
+
+    void collect(dom.Node node) {
+      if (node is dom.Element && isBlockLike(node)) {
+        final text = node.text.trim();
+        if (text.isNotEmpty) {
+          paragraphs.add(text);
+        }
+        return;
+      }
+      for (final child in node.nodes) {
+        collect(child);
+      }
+    }
+
+    if (doc.body != null) {
+      collect(doc.body!);
+    } else {
+      collect(doc.documentElement ?? doc);
+    }
+
+    return paragraphs;
+  }
+
+  void _handleScroll(ScrollController controller, int articleIndex) {
+    if (articleIndex != _currentIndex) return;
+    const collapseAt = 140.0;
+    const expandAt = 80.0;
+    final collapsed = _headerCollapsedByArticle[articleIndex] ?? false;
+    if (!controller.hasClients) return;
+    final offset = controller.offset;
+
+    if (!collapsed && offset > collapseAt) {
+      setState(() => _headerCollapsedByArticle[articleIndex] = true);
+    } else if (collapsed && offset < expandAt) {
+      setState(() => _headerCollapsedByArticle[articleIndex] = false);
+    }
   }
 
   String _sanitizeForTts(String input) {
@@ -217,6 +352,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
     text = text.replaceAll(RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'), r'$1');
     // Remove bare URLs.
     text = text.replaceAll(RegExp(r'https?:\/\/\S+'), '');
+    // Drop common markdown emphasis markers that can surface as spoken symbols.
+    text = text.replaceAllMapped(
+        RegExp(r'(^|\s)[*_]{1,3}(?=\w)'), (m) => m[1] ?? ''); // leading * or _
+    text = text.replaceAllMapped(
+        RegExp(r'(\w)[*_]{1,3}(?=\s|$)'), (m) => m[1] ?? ''); // trailing * or _
+    // Remove decorative markdown lines (----, ****, ===).
+    text = text.replaceAll(RegExp(r'^[*_`~\-=]{3,}\s*', multiLine: true), ' ');
+    // Replace standalone bullet symbols.
+    text = text.replaceAll(RegExp(r'(^|\s)[•·◦▷▶►∘▫▪❖➤➔]+(\s|$)'), ' ');
+    // Collapse long runs of punctuation so the TTS doesn't read each mark individually.
+    text = text.replaceAll(RegExp(r'([!?,.;:]){2,}'), r'$1');
+    // Remove tiny standalone symbol tokens (e.g., lone emojis or ASCII art fragments).
+    text = text.replaceAll(RegExp(r'(^|\s)[^\w\s]{1,3}(?=\s|$)'), ' ');
     // Collapse extra whitespace.
     text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
     return text;
@@ -227,12 +375,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final nonWhitespace = paragraph.replaceAll(RegExp(r'\s'), '');
     if (nonWhitespace.isEmpty) return false;
 
-    // Count symbol characters (non-alphanumeric, non-punctuation)
+    final alphaNumCount =
+        RegExp(r'[a-zA-Z0-9]').allMatches(nonWhitespace).length;
+    // Count symbol characters (non-alphanumeric, non-basic punctuation)
     final symbolCount = nonWhitespace
-        .replaceAll(RegExp(r'[a-zA-Z0-9\s.,!?;:()"\-\[\]]'), '')
+        .replaceAll(RegExp(r'[a-zA-Z0-9.,!?;:()"\-\[\]]'), '')
         .length;
 
-    // If more than 60% of non-whitespace characters are symbols, consider it mostly symbols
+    // Treat as noise if mostly symbols, or if almost no alphanumeric characters exist.
+    if (alphaNumCount <= 2 && symbolCount > 0) return true;
     return symbolCount / nonWhitespace.length > 0.6;
   }
 
@@ -243,10 +394,18 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
     await _applyVoiceSettings(appState);
 
+    // Set before TTS events fire so progress/highlight map to the tapped paragraph.
+    _offsetBase = paragraphIndex < _paragraphOffsets.length
+        ? _paragraphOffsets[paragraphIndex]
+        : 0;
+
     setState(() {
       _isPlaying = true;
       _isPaused = false;
       _currentParagraphIndex = paragraphIndex;
+      _progress = _plainText.isNotEmpty
+          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
+          : 0.0;
     });
 
     await _playParagraph(paragraphIndex);
@@ -263,12 +422,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
     final text = _paragraphs[index];
 
+    // Track absolute offset so progress callbacks stay aligned after jumps.
+    _offsetBase = index < _paragraphOffsets.length
+        ? _paragraphOffsets[index]
+        : 0;
+
     await _tts.stop();
     await _tts.speak(text);
 
     setState(() {
       _currentParagraphIndex = index;
-      _progress = index / _paragraphs.length;
+      _progress = _plainText.isNotEmpty
+          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
+          : 0.0;
     });
 
     _scrollToParagraph(index);
@@ -340,6 +506,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafe = MediaQuery.of(context).padding.bottom;
+    const baseBottomBarHeight = 132.0;
+    final readerBottomPadding = baseBottomBarHeight + bottomSafe + 12;
     final appState = context.watch<AppState>();
     final article = widget.articles[_currentIndex];
     final state = appState.getArticleState(article.guid);
@@ -369,191 +538,240 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ),
         ],
       ),
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: widget.articles.length,
-        physics: const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
-        onPageChanged: (index) async {
-          await _tts.stop();
-          setState(() {
-            _currentIndex = index;
-            _isPlaying = false;
-            _isPaused = false;
-            _progress = 0;
-          });
-          _markRead(widget.articles[index]);
-          _prefetchReader(widget.articles[index]);
-          _updateTextForArticle(widget.articles[index], index);
-          if (_pendingAutoPlay) {
-            _pendingAutoPlay = false;
-            _startPlayback(paragraphIndex: 0);
-          } else {
-            _prefetchUpcomingArticles(1);
-          }
-        },
-        itemBuilder: (context, index) {
-          final item = widget.articles[index];
-          if (_loadingReader && !_showWebView) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: widget.articles.length,
+            physics:
+                const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
+            onPageChanged: (index) async {
+              await _tts.stop();
+              setState(() {
+                _currentIndex = index;
+                _isPlaying = false;
+                _isPaused = false;
+                _progress = 0;
+              });
+              _markRead(widget.articles[index]);
+              _prefetchReader(widget.articles[index]);
+              _updateTextForArticle(widget.articles[index], index);
+              if (_pendingAutoPlay) {
+                _pendingAutoPlay = false;
+                _startPlayback(paragraphIndex: 0);
+              } else {
+                _prefetchUpcomingArticles(1);
+              }
+            },
+            itemBuilder: (context, index) {
+              final item = widget.articles[index];
+              final headerCollapsed = _headerCollapsedByArticle[index] ?? false;
 
-          if (_showWebView &&
-              item.url != null &&
-              (Platform.isAndroid || Platform.isIOS)) {
-            final controller = webview.WebViewController()
-              ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
-              ..loadRequest(Uri.parse(item.url!));
+              if (_loadingReader && !_showWebView) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            return SafeArea(
-              child: webview.WebViewWidget(
-                controller: controller,
-                gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                  Factory<VerticalDragGestureRecognizer>(
-                      () => VerticalDragGestureRecognizer()),
-                },
-              ),
-            );
-          }
+              if (_showWebView &&
+                  item.url != null &&
+                  (Platform.isAndroid || Platform.isIOS)) {
+                final controller = webview.WebViewController()
+                  ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
+                  ..loadRequest(Uri.parse(item.url!));
 
-          if (_showWebView && item.url != null) {
-            // Platform does not support embedded WebView in this build (e.g., Windows).
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(AppSpacing.s24),
-                child: Text(
-                  'In-app WebView is only supported on Android/iOS.\nShowing text view instead.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
+                return SafeArea(
+                  child: webview.WebViewWidget(
+                    controller: controller,
+                    gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                      Factory<VerticalDragGestureRecognizer>(
+                          () => VerticalDragGestureRecognizer()),
+                    },
+                  ),
+                );
+              }
 
-          return Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (item.imageUrl != null && item.imageUrl!.isNotEmpty) ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: SizedBox(
-                      height: 180,
-                      width: double.infinity,
-                      child: Image.network(
-                        item.imageUrl!,
-                        fit: BoxFit.cover,
-                      ),
+              if (_showWebView && item.url != null) {
+                // Platform does not support embedded WebView in this build (e.g., Windows).
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(AppSpacing.s24),
+                    child: Text(
+                      'In-app WebView is only supported on Android/iOS.\nShowing text view instead.',
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.s12),
-                ],
-                Text(
-                  item.title ?? 'Untitled',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: AppSpacing.s8),
-                if (item.author != null) ...[
-                  Text('By ${item.author!}',
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: AppSpacing.s8),
-                ],
-                const SizedBox(height: AppSpacing.s16),
-                _buildAudioControls(item),
-                const SizedBox(height: AppSpacing.s12),
-                Builder(builder: (context) {
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.all(AppSpacing.s16),
+                child: Builder(builder: (context) {
                   final scrollController = _scrollControllers.putIfAbsent(
-                      index, () => ScrollController());
-                  final paraKeys =
-                      _paragraphKeysByArticle[index] ?? const <GlobalKey>[];
-                  return Expanded(
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          for (final entry in _paragraphs.asMap().entries) ...[
-                            GestureDetector(
-                              onTap: () =>
-                                  _startPlayback(paragraphIndex: entry.key),
-                              child: Container(
-                                key: paraKeys.isNotEmpty &&
-                                        entry.key < paraKeys.length
-                                    ? paraKeys[entry.key]
-                                    : null,
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 6.0),
-                                padding: const EdgeInsets.all(12.0),
-                                decoration: BoxDecoration(
-                                  color: _currentParagraphIndex == entry.key &&
-                                          _isPlaying
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer
-                                          .withOpacity(0.45)
-                                      : Theme.of(context)
-                                          .colorScheme
-                                          .surfaceVariant
-                                          .withOpacity(0.25),
-                                  borderRadius: BorderRadius.circular(12),
+                    index,
+                    () {
+                      final c = ScrollController();
+                      c.addListener(() => _handleScroll(c, index));
+                      return c;
+                },
+              );
+              final paraKeys =
+                  _paragraphKeysByArticle[index] ?? const <GlobalKey>[];
+              return SingleChildScrollView(
+                controller: scrollController,
+                padding: EdgeInsets.only(bottom: readerBottomPadding),
+                child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          child: headerCollapsed
+                              ? const SizedBox.shrink()
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (item.imageUrl != null &&
+                                        item.imageUrl!.isNotEmpty) ...[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: SizedBox(
+                                          height: 180,
+                                          width: double.infinity,
+                                          child: Image.network(
+                                            item.imageUrl!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: AppSpacing.s12),
+                                    ],
+                                    Text(
+                                      item.title ?? 'Untitled',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall,
+                                    ),
+                                    const SizedBox(height: AppSpacing.s8),
+                                    if (item.author != null) ...[
+                                      Text('By ${item.author!}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium),
+                                      const SizedBox(height: AppSpacing.s8),
+                                    ],
+                                    const SizedBox(height: AppSpacing.s16),
+                                  ],
                                 ),
-                                child: SelectableText(
-                                  entry.value,
-                                  style: Theme.of(context)
+                        ),
+                        for (final entry
+                            in _paragraphMarkdown.asMap().entries) ...[
+                          GestureDetector(
+                            onTap: () =>
+                                _startPlayback(paragraphIndex: entry.key),
+                            child: Container(
+                              key: paraKeys.isNotEmpty &&
+                                      entry.key < paraKeys.length
+                                  ? paraKeys[entry.key]
+                                  : null,
+                              margin:
+                                  const EdgeInsets.symmetric(vertical: 6.0),
+                              padding: const EdgeInsets.all(12.0),
+                              decoration: BoxDecoration(
+                                color: _currentParagraphIndex == entry.key &&
+                                        _isPlaying
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer
+                                        .withOpacity(0.45)
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .surfaceVariant
+                                        .withOpacity(0.25),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: MarkdownBody(
+                                data: entry.value,
+                                onTapLink: (_, href, __) =>
+                                    _handleMarkdownLink(href),
+                                styleSheet:
+                                    MarkdownStyleSheet.fromTheme(
+                                            Theme.of(context))
+                                        .copyWith(
+                                  p: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
                                       ?.copyWith(height: 1.4),
                                 ),
                               ),
                             ),
-                          ],
-                          if (_paragraphs.isEmpty)
-                            MarkdownBody(
-                              data: _htmlToMarkdown(_bodyHtml(item)),
-                              onTapLink: (_, href, __) =>
-                                  _handleMarkdownLink(href),
-                              styleSheet: MarkdownStyleSheet.fromTheme(
-                                      Theme.of(context))
-                                  .copyWith(
-                                p: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(height: 1.4),
-                              ),
-                            ),
+                          ),
                         ],
-                      ),
+                        if (_paragraphMarkdown.isEmpty)
+                          MarkdownBody(
+                            data: _htmlToMarkdown(_bodyHtml(item)),
+                            onTapLink: (_, href, __) =>
+                                _handleMarkdownLink(href),
+                            styleSheet:
+                                MarkdownStyleSheet.fromTheme(Theme.of(context))
+                                    .copyWith(
+                              p: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(height: 1.4),
+                            ),
+                          ),
+                      ],
                     ),
                   );
                 }),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 1,
-        child: Padding(
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Container(
           padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s16, vertical: AppSpacing.s8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).shadowColor.withOpacity(0.12),
+                blurRadius: 12,
+                offset: const Offset(0, -4),
+              ),
+            ],
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(16),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _UnreadBadge(articles: widget.articles),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.skip_previous),
-                onPressed: _currentIndex > 0
-                    ? () => _goToArticle(_currentIndex - 1)
-                    : null,
-                tooltip: 'Previous article',
+              Row(
+                children: [
+                  _UnreadBadge(articles: widget.articles),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.skip_previous),
+                    onPressed: _currentIndex > 0
+                        ? () => _goToArticle(_currentIndex - 1)
+                        : null,
+                    tooltip: 'Previous article',
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed: _currentIndex < widget.articles.length - 1
+                        ? () => _goToArticle(_currentIndex + 1)
+                        : null,
+                    tooltip: 'Next article',
+                  ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(Icons.skip_next),
-                onPressed: _currentIndex < widget.articles.length - 1
-                    ? () => _goToArticle(_currentIndex + 1)
-                    : null,
-                tooltip: 'Next article',
-              ),
+              const SizedBox(height: 8),
+              _buildAudioControls(article),
             ],
           ),
         ),
@@ -566,7 +784,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (trimmed.isEmpty) {
       return '';
     }
-    return html2md.convert(trimmed);
+    final doc = html_parser.parse(trimmed);
+    // Remove scripts/styles/trackers that end up as junk paragraphs.
+    const junkSelectors = 'script,style,noscript,template,svg,nav,footer,header';
+    for (final node in doc.querySelectorAll(junkSelectors)) {
+      node.remove();
+    }
+    final cleaned = doc.body?.innerHtml ?? trimmed;
+    return html2md.convert(cleaned);
   }
 
   String _bodyHtml(Article article) {

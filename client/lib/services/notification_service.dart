@@ -47,13 +47,15 @@ class NotificationService {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
-    final title = '$count new articles available to read';
-    const body = 'Across your subscriptions';
+    final title =
+        count == 1 ? 'Fetched 1 new article' : 'Fetched $count new articles';
+    const body = 'Ready to read — open Aware to start.';
 
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
         _channelId,
         _channelName,
+        styleInformation: BigTextStyleInformation(body),
         importance: Importance.high,
         priority: Priority.high,
         ticker: 'New articles',

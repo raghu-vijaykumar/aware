@@ -74,6 +74,7 @@ dependencies:
   html2md: ^1.3.2
   readability: ^0.2.2
   flutter_tts: ^3.8.5
+  file_picker: ^8.0.0
 
 dev_dependencies:
   flutter_test:
