@@ -76,6 +76,9 @@ dependencies:
   readability: ^0.2.2
   flutter_tts: ^3.8.5
   file_picker: ^8.0.0
+  audio_service: ^0.18.17
+  audio_session: ^0.1.25
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:

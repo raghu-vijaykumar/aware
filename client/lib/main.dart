@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,7 @@ import 'providers/app_state.dart';
 import 'screens/splash_screen.dart';
 import 'services/background_feed_worker.dart';
 import 'services/notification_service.dart';
+import 'services/reader_audio_service.dart';
 import 'theme/theme.dart';
 
 Future<void> main() async {
@@ -28,6 +30,23 @@ Future<void> main() async {
   }
 
   runApp(const MyApp());
+
+  unawaited(_initializePostLaunchServices());
+}
+
+Future<void> _initializePostLaunchServices() async {
+  try {
+    await ReaderAudioService.ensureInitialized();
+  } catch (error, stackTrace) {
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stackTrace,
+        library: 'reader_audio_service',
+        context: ErrorDescription('while initializing background audio'),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

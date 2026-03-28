@@ -11,12 +11,12 @@ import 'package:html/dom.dart' as dom;
 import 'package:markdown/markdown.dart' as md;
 import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 import '../models/article.dart';
 import '../providers/app_state.dart';
+import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
 import '../theme/theme.dart';
 
@@ -39,14 +39,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final Map<String, String> _readerCache = {};
   final Set<String> _prefetchInFlight = {};
   final DatabaseService _db = DatabaseService();
-  final FlutterTts _tts = FlutterTts();
+  StreamSubscription<ReaderPlaybackSnapshot>? _readerStateSubscription;
   bool _isPlaying = false;
   bool _isPaused = false;
+  bool _isBuffering = false;
   double _progress = 0.0;
-  final bool _startingAudio = false;
   int _currentParagraphIndex = 0;
-  int _offsetBase = 0;
-  bool _pendingAutoPlay = false;
   String _markdownContent = '';
   String _plainText = '';
   List<String> _paragraphs = [];
@@ -56,12 +54,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final Map<int, bool> _headerCollapsedByArticle = {};
   final Map<int, double> _scrollProgressByArticle = {};
   final Map<int, double> _audioProgressByArticle = {};
-  double? _lastAppliedTtsRate;
-  String? _lastAppliedVoice;
   String _currentWord = '';
   Timer? _autoScrollResumeTimer;
   bool _autoScrollSuspendedForUser = false;
-
   static const Duration _autoScrollResumeDelay = Duration(seconds: 2);
 
   @override
@@ -69,12 +64,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
-    _attachTtsHandlers();
-
-    // Preload TTS engine to remove first-play lag
-    _tts.setSpeechRate(AppState.speechRateBase);
-    _tts.setVolume(1.0);
-    _tts.setPitch(1.0);
+    readerAudioHandler.configureQueue(
+      widget.articles,
+      currentIndex: widget.initialIndex,
+    );
+    _readerStateSubscription = readerAudioHandler.readerState.listen(
+      _handleReaderPlaybackSnapshot,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final lowDataMode = context.read<AppState>().lowDataMode;
@@ -87,7 +83,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   @override
   void dispose() {
     _autoScrollResumeTimer?.cancel();
-    _tts.stop();
+    _readerStateSubscription?.cancel();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
     }
@@ -163,95 +159,28 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _checkAndAutoMarkRead(_currentIndex);
   }
 
-  void _attachTtsHandlers() {
-    _tts.setStartHandler(() {
-      setState(() {
-        _isPlaying = true;
-        _isPaused = false;
-      });
-    });
-    _tts.setProgressHandler((String text, int start, int end, String? word) {
-      if (_plainText.isEmpty) return;
-      final absolute = (_offsetBase + start).clamp(0, _plainText.length);
-      final pct = absolute / _plainText.length;
-      final paragraphIdx =
-          _paragraphOffsets.lastIndexWhere((element) => element <= absolute);
-      setState(() {
-        if (paragraphIdx >= 0) {
-          _currentParagraphIndex = paragraphIdx;
-        }
-        _progress = pct;
-        _currentWord = _resolveCurrentWord(text, start, end, word);
-      });
-      _recordAudioProgress(pct);
-      _scrollToProgress(pct);
-    });
-    _tts.setCompletionHandler(() async {
-      final next = _currentParagraphIndex + 1;
+  void _handleReaderPlaybackSnapshot(ReaderPlaybackSnapshot snapshot) {
+    if (!mounted) return;
 
-      if (next < _paragraphs.length) {
-        await _playParagraph(next);
-        return;
-      }
-
-      setState(() {
-        _isPlaying = false;
-        _progress = 1.0;
-        _currentWord = '';
+    final articleChanged = snapshot.currentArticleIndex != _currentIndex;
+    if (articleChanged) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _goToArticle(snapshot.currentArticleIndex);
       });
-      _recordAudioProgress(1.0);
-
-      final appState = context.read<AppState>();
-      final hasNext = _currentIndex < widget.articles.length - 1;
-
-      if (hasNext && appState.autoPlayNext) {
-        _goToArticle(_currentIndex + 1, autoplay: true);
-      }
-    });
-    _tts.setCancelHandler(() {
-      setState(() {
-        _isPlaying = false;
-        _isPaused = false;
-        _currentWord = '';
-      });
-    });
-    _tts.setPauseHandler(() {
-      setState(() {
-        _isPaused = true;
-      });
-    });
-    _tts.setContinueHandler(() {
-      setState(() {
-        _isPaused = false;
-        _isPlaying = true;
-      });
-    });
-  }
-
-  Future<void> _applyVoiceSettings(AppState appState) async {
-    final targetRate = appState.speechRateTts;
-    if (_lastAppliedTtsRate != targetRate) {
-      _lastAppliedTtsRate = targetRate;
-      await _tts.setSpeechRate(targetRate);
     }
-    if (_lastAppliedVoice != appState.voiceId) {
-      _lastAppliedVoice = appState.voiceId;
-      if (appState.voiceId != null) {
-        final parts = appState.voiceId!.split('|');
-        final name = parts.isNotEmpty ? parts[0] : null;
-        final locale = parts.length > 1 ? parts[1] : null;
-        await _tts.setVoice({
-          if (name != null) 'name': name,
-          if (locale != null) 'locale': locale,
-        });
-      } else {
-        // Best-effort reset to platform default by sending an empty voice map.
-        try {
-          await _tts.setVoice({'name': '', 'locale': ''});
-        } catch (_) {
-          // ignore on platforms that don't support resetting voice
-        }
-      }
+
+    setState(() {
+      _isPlaying = snapshot.isPlaying;
+      _isPaused = snapshot.isPaused;
+      _isBuffering = snapshot.isBuffering;
+      _currentParagraphIndex = snapshot.currentParagraphIndex;
+      _progress = snapshot.progress;
+      _currentWord = snapshot.currentWord;
+    });
+    _recordAudioProgress(snapshot.progress);
+    if (snapshot.isPlaying) {
+      _scrollToProgress(snapshot.progress);
     }
   }
 
@@ -261,11 +190,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final safeMarkdown = markdown.trim();
     final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown);
 
+    final displayParagraphs = <String>[];
     final ttsParagraphs = <String>[];
 
     for (final para in markdownParagraphs) {
       final sanitized = _sanitizeForTts(para);
       if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+      displayParagraphs.add(para.trim());
       ttsParagraphs.add(sanitized);
     }
 
@@ -275,12 +206,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
       for (final para in textParagraphs) {
         final sanitized = _sanitizeForTts(para);
         if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+        displayParagraphs.add(para.trim());
         ttsParagraphs.add(sanitized);
       }
     }
 
     // Still nothing usable.
     if (ttsParagraphs.isEmpty) {
+      readerAudioHandler.registerArticleContent(
+        articleIndex: articleIndex,
+        paragraphs: const [],
+        paragraphOffsets: const [],
+        plainText: '',
+      );
       setState(() {
         _markdownContent = safeMarkdown;
         _paragraphs = [];
@@ -288,26 +226,22 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _paragraphOffsets = [];
         _plainText = '';
         _headerCollapsedByArticle[articleIndex] = false;
-        _progress = 0;
-        _currentParagraphIndex = 0;
-        _currentWord = '';
-        _offsetBase = 0;
       });
       return;
     }
 
     var offset = 0;
     final offsets = <int>[];
-    final displayParagraphs = <String>[];
-    for (final para in markdownParagraphs) {
-      final sanitized = _sanitizeForTts(para);
-      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-      displayParagraphs.add(para.trim());
-    }
     for (final p in ttsParagraphs) {
       offsets.add(offset);
       offset += p.length + 2; // include the paragraph break
     }
+    readerAudioHandler.registerArticleContent(
+      articleIndex: articleIndex,
+      paragraphs: ttsParagraphs,
+      paragraphOffsets: offsets,
+      plainText: ttsParagraphs.join('\n\n'),
+    );
     setState(() {
       _markdownContent = safeMarkdown;
       _paragraphs = ttsParagraphs;
@@ -315,10 +249,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _paragraphOffsets = offsets;
       _plainText = ttsParagraphs.join('\n\n');
       _headerCollapsedByArticle[articleIndex] = false;
-      _progress = 0;
-      _currentParagraphIndex = 0;
-      _currentWord = '';
-      _offsetBase = 0;
     });
   }
 
@@ -468,71 +398,24 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (_paragraphs.isEmpty) return;
 
     final appState = context.read<AppState>();
-
-    await _applyVoiceSettings(appState);
-
-    // Set before TTS events fire so progress/highlight map to the tapped paragraph.
-    _offsetBase = paragraphIndex < _paragraphOffsets.length
-        ? _paragraphOffsets[paragraphIndex]
-        : 0;
-
-    setState(() {
-      _isPlaying = true;
-      _isPaused = false;
-      _currentParagraphIndex = paragraphIndex;
-      _progress = _plainText.isNotEmpty
-          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
-          : 0.0;
-    });
-    _recordAudioProgress(_progress);
-
-    await _playParagraph(paragraphIndex);
-  }
-
-  Future<void> _playParagraph(int index) async {
-    if (index >= _paragraphs.length) {
-      setState(() {
-        _isPlaying = false;
-        _progress = 1;
-      });
-      return;
-    }
-
-    final text = _paragraphs[index];
-
-    // Track absolute offset so progress callbacks stay aligned after jumps.
-    _offsetBase =
-        index < _paragraphOffsets.length ? _paragraphOffsets[index] : 0;
-
-    await _tts.stop();
-    await _tts.speak(text);
-
-    setState(() {
-      _currentParagraphIndex = index;
-      _progress = _plainText.isNotEmpty
-          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
-          : 0.0;
-      _currentWord = '';
-    });
-    _recordAudioProgress(_progress);
+    await readerAudioHandler.updateSpeechConfig(
+      speechRate: appState.speechRateTts,
+      voiceId: appState.voiceId,
+      autoPlayNext: appState.autoPlayNext,
+    );
+    await readerAudioHandler.playFromParagraph(paragraphIndex);
   }
 
   Future<void> _pausePlayback() async {
-    await _tts.pause();
+    await readerAudioHandler.pause();
   }
 
   Future<void> _resumePlayback() async {
-    // Resume by restarting from the current paragraph (platforms lack resume()).
-    await _startPlayback(paragraphIndex: _currentParagraphIndex);
+    await readerAudioHandler.play();
   }
 
   Future<void> _stopPlayback() async {
-    await _tts.stop();
-    setState(() {
-      _isPlaying = false;
-      _isPaused = false;
-      _progress = _currentArticleCombinedProgress();
-    });
+    await readerAudioHandler.stop();
   }
 
   void _seekToProgress(double value) {
@@ -541,7 +424,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final paragraphIdx = _paragraphOffsets.lastIndexWhere(
         (offset) => offset <= targetOffset && offset + 1 < _plainText.length);
     final idx = paragraphIdx < 0 ? 0 : paragraphIdx;
-    _startPlayback(paragraphIndex: idx);
+    readerAudioHandler.playFromParagraph(idx);
   }
 
   void _prefetchUpcomingArticles(int count) {
@@ -553,11 +436,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
   }
 
-  void _goToArticle(int index, {bool autoplay = false}) {
+  void _goToArticle(int index) {
     if (index < 0 || index >= widget.articles.length) return;
     _autoScrollResumeTimer?.cancel();
     _autoScrollSuspendedForUser = false;
-    _pendingAutoPlay = autoplay;
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 250),
@@ -610,13 +492,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
   ) {
     if (articleIndex != _currentIndex) return false;
 
-    final userDriven =
-        (notification is ScrollStartNotification &&
-                notification.dragDetails != null) ||
-            (notification is ScrollUpdateNotification &&
-                notification.dragDetails != null) ||
-            (notification is OverscrollNotification &&
-                notification.dragDetails != null);
+    final userDriven = (notification is ScrollStartNotification &&
+            notification.dragDetails != null) ||
+        (notification is ScrollUpdateNotification &&
+            notification.dragDetails != null) ||
+        (notification is OverscrollNotification &&
+            notification.dragDetails != null);
 
     if (userDriven) {
       _pauseAutoScrollForUser();
@@ -629,37 +510,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
 
     return false;
-  }
-
-  String _normalizeSpokenWord(String raw) {
-    return raw.replaceAll(RegExp(r'^[^\w]+|[^\w]+$'), '').trim();
-  }
-
-  String _resolveCurrentWord(
-      String ttsText, int start, int end, String? reportedWord) {
-    final fromReported = _normalizeSpokenWord(reportedWord ?? '');
-    if (fromReported.isNotEmpty) return fromReported;
-
-    if (start >= 0 && end > start && end <= ttsText.length) {
-      final fromRange = _normalizeSpokenWord(ttsText.substring(start, end));
-      if (fromRange.isNotEmpty) return fromRange;
-    }
-
-    if (_plainText.isEmpty) return '';
-    final idx = (_offsetBase + start).clamp(0, _plainText.length);
-    int left = idx;
-    while (left > 0 && RegExp(r'[\w]').hasMatch(_plainText[left - 1])) {
-      left -= 1;
-    }
-    int right = idx;
-    while (right < _plainText.length &&
-        RegExp(r'[\w]').hasMatch(_plainText[right])) {
-      right += 1;
-    }
-    if (right > left) {
-      return _normalizeSpokenWord(_plainText.substring(left, right));
-    }
-    return '';
   }
 
   String _highlightCurrentWordInParagraph(String markdown) {
@@ -726,23 +576,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
             itemCount: widget.articles.length,
             physics:
                 const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
-            onPageChanged: (index) {
-              _tts.stop();
+            onPageChanged: (index) async {
+              final lowDataMode = context.read<AppState>().lowDataMode;
               setState(() {
                 _currentIndex = index;
-                _isPlaying = false;
-                _isPaused = false;
                 _progress = _currentArticleCombinedProgress();
               });
+              if (readerAudioHandler.readerState.value.currentArticleIndex !=
+                  index) {
+                await readerAudioHandler.activateArticle(index);
+              }
               _prefetchReader(widget.articles[index], showLoader: true);
               _updateTextForArticle(widget.articles[index], index);
-              if (_pendingAutoPlay) {
-                _pendingAutoPlay = false;
-                _startPlayback(paragraphIndex: 0);
-              } else {
-                final lowDataMode = context.read<AppState>().lowDataMode;
-                _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
-              }
+              _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
             },
             itemBuilder: (context, index) {
               final item = widget.articles[index];
@@ -888,14 +734,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: _currentIndex > 0
-                        ? () => _goToArticle(_currentIndex - 1)
+                        ? readerAudioHandler.skipToPrevious
                         : null,
                     tooltip: 'Previous article',
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_next),
                     onPressed: _currentIndex < widget.articles.length - 1
-                        ? () => _goToArticle(_currentIndex + 1)
+                        ? readerAudioHandler.skipToNext
                         : null,
                     tooltip: 'Next article',
                   ),
@@ -929,8 +775,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
       ];
     }
 
+    final activeIndex = _displayParagraphs.isEmpty
+        ? 0
+        : _currentParagraphIndex.clamp(0, _displayParagraphs.length - 1);
+
     return List<Widget>.generate(_displayParagraphs.length, (index) {
-      final isActive = (_isPlaying || _isPaused) && index == _currentParagraphIndex;
+      final isActive = (_isPlaying || _isPaused) && index == activeIndex;
       final paragraph = isActive
           ? _highlightCurrentWordInParagraph(_displayParagraphs[index])
           : _displayParagraphs[index];
@@ -1052,7 +902,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
               icon: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (_startingAudio)
+                  if (_isBuffering)
                     const SizedBox(
                       width: 38,
                       height: 38,
@@ -1066,7 +916,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   ),
                 ],
               ),
-              onPressed: canPlay && !_startingAudio
+              onPressed: canPlay && !_isBuffering
                   ? () {
                       if (_isPlaying && !_isPaused) {
                         _pausePlayback();
@@ -1080,7 +930,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.stop_circle, size: 28),
-              onPressed: (_isPlaying || _isPaused) && !_startingAudio
+              onPressed: (_isPlaying || _isPaused) && !_isBuffering
                   ? _stopPlayback
                   : null,
             ),
