@@ -11,6 +11,7 @@ class DatabaseService {
 
   Database? _database;
   bool _ensuredLikedColumn = false;
+  bool _ensuredPrefetchCacheTable = false;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -22,7 +23,7 @@ class DatabaseService {
     final path = join(await getDatabasesPath(), 'aware.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onOpen: _onOpen,
@@ -90,6 +91,14 @@ class DatabaseService {
         PRIMARY KEY (feed_id, folder_id)
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE article_prefetch_cache (
+        article_guid TEXT PRIMARY KEY,
+        content TEXT NOT NULL,
+        cached_at INTEGER NOT NULL
+      )
+    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -100,12 +109,23 @@ class DatabaseService {
     }
     if (oldVersion < 3) {
       // Add liked_at only if it doesn't already exist (defensive for partial upgrades).
-      final columns = await db.rawQuery('PRAGMA table_info(user_article_state)');
-      final hasLiked =
-          columns.any((c) => (c['name'] as String?)?.toLowerCase() == 'liked_at');
+      final columns =
+          await db.rawQuery('PRAGMA table_info(user_article_state)');
+      final hasLiked = columns
+          .any((c) => (c['name'] as String?)?.toLowerCase() == 'liked_at');
       if (!hasLiked) {
-        await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+        await db.execute(
+            'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
       }
+    }
+    if (oldVersion < 4) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS article_prefetch_cache (
+          article_guid TEXT PRIMARY KEY,
+          content TEXT NOT NULL,
+          cached_at INTEGER NOT NULL
+        )
+      ''');
     }
   }
 
@@ -114,8 +134,10 @@ class DatabaseService {
     final columns = await db.rawQuery('PRAGMA table_info(user_article_state)');
     final hasLiked = columns.any((c) => c['name'] == 'liked_at');
     if (!hasLiked) {
-      await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
     }
+    await _ensurePrefetchCacheTable(db);
   }
 
   // Feed operations
@@ -245,8 +267,52 @@ class DatabaseService {
     final hasLiked =
         columns.any((c) => (c['name'] as String?)?.toLowerCase() == 'liked_at');
     if (!hasLiked) {
-      await db.execute('ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
     }
     _ensuredLikedColumn = true;
+  }
+
+  Future<void> upsertPrefetchedArticleContent(
+    String articleGuid,
+    String content,
+  ) async {
+    final db = await database;
+    await _ensurePrefetchCacheTable(db);
+    await db.insert(
+      'article_prefetch_cache',
+      {
+        'article_guid': articleGuid,
+        'content': content,
+        'cached_at': DateTime.now().millisecondsSinceEpoch,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getPrefetchedArticleContent(String articleGuid) async {
+    final db = await database;
+    await _ensurePrefetchCacheTable(db);
+    final rows = await db.query(
+      'article_prefetch_cache',
+      columns: ['content'],
+      where: 'article_guid = ?',
+      whereArgs: [articleGuid],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return rows.first['content'] as String?;
+  }
+
+  Future<void> _ensurePrefetchCacheTable(Database db) async {
+    if (_ensuredPrefetchCacheTable) return;
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS article_prefetch_cache (
+        article_guid TEXT PRIMARY KEY,
+        content TEXT NOT NULL,
+        cached_at INTEGER NOT NULL
+      )
+    ''');
+    _ensuredPrefetchCacheTable = true;
   }
 }

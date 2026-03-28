@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
+import 'package:markdown/markdown.dart' as md;
 import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -15,6 +17,7 @@ import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 import '../models/article.dart';
 import '../providers/app_state.dart';
+import '../services/database_service.dart';
 import '../theme/theme.dart';
 
 class ReaderScreen extends StatefulWidget {
@@ -34,24 +37,32 @@ class _ReaderScreenState extends State<ReaderScreen> {
   bool _showWebView = false;
   bool _loadingReader = false;
   final Map<String, String> _readerCache = {};
+  final Set<String> _prefetchInFlight = {};
+  final DatabaseService _db = DatabaseService();
   final FlutterTts _tts = FlutterTts();
   bool _isPlaying = false;
   bool _isPaused = false;
   double _progress = 0.0;
-  bool _startingAudio = false;
+  final bool _startingAudio = false;
   int _currentParagraphIndex = 0;
   int _offsetBase = 0;
   bool _pendingAutoPlay = false;
+  String _markdownContent = '';
   String _plainText = '';
-  List<String> _paragraphMarkdown = [];
   List<String> _paragraphs = [];
+  List<String> _displayParagraphs = [];
   List<int> _paragraphOffsets = [];
-  final Map<int, List<GlobalKey>> _paragraphKeysByArticle = {};
   final Map<int, ScrollController> _scrollControllers = {};
   final Map<int, bool> _headerCollapsedByArticle = {};
+  final Map<int, double> _scrollProgressByArticle = {};
+  final Map<int, double> _audioProgressByArticle = {};
   double? _lastAppliedTtsRate;
   String? _lastAppliedVoice;
-  DateTime? _lastScrollTime;
+  String _currentWord = '';
+  Timer? _autoScrollResumeTimer;
+  bool _autoScrollSuspendedForUser = false;
+
+  static const Duration _autoScrollResumeDelay = Duration(seconds: 2);
 
   @override
   void initState() {
@@ -65,17 +76,17 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _tts.setVolume(1.0);
     _tts.setPitch(1.0);
 
-    // Mark the initial article as read after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _markRead(widget.articles[_currentIndex]);
-      _prefetchReader(widget.articles[_currentIndex]);
+      final lowDataMode = context.read<AppState>().lowDataMode;
+      _prefetchReader(widget.articles[_currentIndex], showLoader: true);
       _updateTextForArticle(widget.articles[_currentIndex], _currentIndex);
-      _prefetchUpcomingArticles(2);
+      _prefetchUpcomingArticles(lowDataMode ? 4 : 2);
     });
   }
 
   @override
   void dispose() {
+    _autoScrollResumeTimer?.cancel();
     _tts.stop();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
@@ -95,9 +106,61 @@ class _ReaderScreenState extends State<ReaderScreen> {
     );
   }
 
-  void _markRead(Article article) async {
+  Future<void> _markRead(Article article) async {
     final appState = context.read<AppState>();
+    final existing = appState.getArticleState(article.guid);
+    if (existing?.readAt != null) return;
     await appState.markArticleRead(article.guid, read: true);
+  }
+
+  double _currentArticleCombinedProgress() {
+    final scroll = _scrollProgressByArticle[_currentIndex] ?? 0.0;
+    final audio = _audioProgressByArticle[_currentIndex] ?? 0.0;
+    return scroll > audio ? scroll : audio;
+  }
+
+  void _syncProgressUiForCurrentArticle() {
+    final combined = _currentArticleCombinedProgress().clamp(0.0, 1.0);
+    if ((_progress - combined).abs() < 0.001) return;
+    setState(() {
+      _progress = combined;
+    });
+  }
+
+  Future<void> _checkAndAutoMarkRead(int articleIndex) async {
+    if (articleIndex != _currentIndex) return;
+    final appState = context.read<AppState>();
+    if (!appState.autoMarkReadEnabled) return;
+
+    final progress = _currentArticleCombinedProgress();
+    final threshold = appState.autoMarkReadThreshold / 100.0;
+    if (progress < threshold) return;
+
+    await _markRead(widget.articles[articleIndex]);
+  }
+
+  void _recordScrollProgress(int articleIndex, ScrollController controller) {
+    if (!controller.hasClients) return;
+    final max = controller.position.maxScrollExtent;
+    if (max <= 0) return;
+    final pct = (controller.offset / max).clamp(0.0, 1.0);
+    final previous = _scrollProgressByArticle[articleIndex] ?? 0.0;
+    if (pct > previous) {
+      _scrollProgressByArticle[articleIndex] = pct;
+      if (articleIndex == _currentIndex && !_isPlaying) {
+        _syncProgressUiForCurrentArticle();
+      }
+      _checkAndAutoMarkRead(articleIndex);
+    }
+  }
+
+  void _recordAudioProgress(double pct) {
+    final clamped = pct.clamp(0.0, 1.0);
+    final previous = _audioProgressByArticle[_currentIndex] ?? 0.0;
+    if (clamped > previous) {
+      _audioProgressByArticle[_currentIndex] = clamped;
+    }
+    _checkAndAutoMarkRead(_currentIndex);
   }
 
   void _attachTtsHandlers() {
@@ -113,15 +176,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final pct = absolute / _plainText.length;
       final paragraphIdx =
           _paragraphOffsets.lastIndexWhere((element) => element <= absolute);
-      if (paragraphIdx >= 0 && paragraphIdx != _currentParagraphIndex) {
-        setState(() {
-          _currentParagraphIndex = paragraphIdx;
-        });
-        _scrollToParagraph(paragraphIdx);
-      }
       setState(() {
+        if (paragraphIdx >= 0) {
+          _currentParagraphIndex = paragraphIdx;
+        }
         _progress = pct;
+        _currentWord = _resolveCurrentWord(text, start, end, word);
       });
+      _recordAudioProgress(pct);
+      _scrollToProgress(pct);
     });
     _tts.setCompletionHandler(() async {
       final next = _currentParagraphIndex + 1;
@@ -134,7 +197,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
       setState(() {
         _isPlaying = false;
         _progress = 1.0;
+        _currentWord = '';
       });
+      _recordAudioProgress(1.0);
 
       final appState = context.read<AppState>();
       final hasNext = _currentIndex < widget.articles.length - 1;
@@ -147,6 +212,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       setState(() {
         _isPlaying = false;
         _isPaused = false;
+        _currentWord = '';
       });
     });
     _tts.setPauseHandler(() {
@@ -192,39 +258,39 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void _updateTextForArticle(Article article, int articleIndex) {
     final html = _bodyHtml(article);
     final markdown = _htmlToMarkdown(html);
+    final safeMarkdown = markdown.trim();
     final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown);
 
-    final cleanedParagraphs = <String>[];
     final ttsParagraphs = <String>[];
 
     for (final para in markdownParagraphs) {
       final sanitized = _sanitizeForTts(para);
       if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-      cleanedParagraphs.add(para);
       ttsParagraphs.add(sanitized);
     }
 
     // As a fallback for feeds with no clear paragraph breaks, use readability text content.
-    if (cleanedParagraphs.isEmpty || ttsParagraphs.isEmpty) {
+    if (ttsParagraphs.isEmpty) {
       final textParagraphs = _extractParagraphsFromHtml(html);
       for (final para in textParagraphs) {
         final sanitized = _sanitizeForTts(para);
         if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-        cleanedParagraphs.add(para);
         ttsParagraphs.add(sanitized);
       }
     }
 
     // Still nothing usable.
-    if (cleanedParagraphs.isEmpty || ttsParagraphs.isEmpty) {
+    if (ttsParagraphs.isEmpty) {
       setState(() {
-        _paragraphMarkdown = [];
+        _markdownContent = safeMarkdown;
         _paragraphs = [];
+        _displayParagraphs = [];
         _paragraphOffsets = [];
         _plainText = '';
-        _paragraphKeysByArticle[articleIndex] = const <GlobalKey>[];
+        _headerCollapsedByArticle[articleIndex] = false;
         _progress = 0;
         _currentParagraphIndex = 0;
+        _currentWord = '';
         _offsetBase = 0;
       });
       return;
@@ -232,20 +298,26 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
     var offset = 0;
     final offsets = <int>[];
+    final displayParagraphs = <String>[];
+    for (final para in markdownParagraphs) {
+      final sanitized = _sanitizeForTts(para);
+      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+      displayParagraphs.add(para.trim());
+    }
     for (final p in ttsParagraphs) {
       offsets.add(offset);
       offset += p.length + 2; // include the paragraph break
     }
     setState(() {
-      _paragraphMarkdown = cleanedParagraphs;
+      _markdownContent = safeMarkdown;
       _paragraphs = ttsParagraphs;
+      _displayParagraphs = displayParagraphs;
       _paragraphOffsets = offsets;
       _plainText = ttsParagraphs.join('\n\n');
-      _paragraphKeysByArticle[articleIndex] =
-          List.generate(ttsParagraphs.length, (_) => GlobalKey());
       _headerCollapsedByArticle[articleIndex] = false;
       _progress = 0;
       _currentParagraphIndex = 0;
+      _currentWord = '';
       _offsetBase = 0;
     });
   }
@@ -283,7 +355,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   List<String> _extractParagraphsFromHtml(String html) {
     final doc = html_parser.parse(html);
     // Drop common noise containers before collecting text.
-    const junkSelectors = 'script,style,noscript,template,svg,nav,footer,header';
+    const junkSelectors =
+        'script,style,noscript,template,svg,nav,footer,header';
     for (final node in doc.querySelectorAll(junkSelectors)) {
       node.remove();
     }
@@ -344,12 +417,16 @@ class _ReaderScreenState extends State<ReaderScreen> {
     } else if (collapsed && offset < expandAt) {
       setState(() => _headerCollapsedByArticle[articleIndex] = false);
     }
+    _recordScrollProgress(articleIndex, controller);
   }
 
   String _sanitizeForTts(String input) {
     var text = input;
     // Strip markdown links, keep link text.
-    text = text.replaceAll(RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'), r'$1');
+    text = text.replaceAllMapped(
+      RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'),
+      (match) => match[1] ?? '',
+    );
     // Remove bare URLs.
     text = text.replaceAll(RegExp(r'https?:\/\/\S+'), '');
     // Drop common markdown emphasis markers that can surface as spoken symbols.
@@ -407,6 +484,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
           : 0.0;
     });
+    _recordAudioProgress(_progress);
 
     await _playParagraph(paragraphIndex);
   }
@@ -423,9 +501,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final text = _paragraphs[index];
 
     // Track absolute offset so progress callbacks stay aligned after jumps.
-    _offsetBase = index < _paragraphOffsets.length
-        ? _paragraphOffsets[index]
-        : 0;
+    _offsetBase =
+        index < _paragraphOffsets.length ? _paragraphOffsets[index] : 0;
 
     await _tts.stop();
     await _tts.speak(text);
@@ -435,9 +512,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _progress = _plainText.isNotEmpty
           ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
           : 0.0;
+      _currentWord = '';
     });
-
-    _scrollToParagraph(index);
+    _recordAudioProgress(_progress);
   }
 
   Future<void> _pausePlayback() async {
@@ -454,7 +531,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     setState(() {
       _isPlaying = false;
       _isPaused = false;
-      _progress = 0;
+      _progress = _currentArticleCombinedProgress();
     });
   }
 
@@ -478,6 +555,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   void _goToArticle(int index, {bool autoplay = false}) {
     if (index < 0 || index >= widget.articles.length) return;
+    _autoScrollResumeTimer?.cancel();
+    _autoScrollSuspendedForUser = false;
     _pendingAutoPlay = autoplay;
     _pageController.animateToPage(
       index,
@@ -486,22 +565,116 @@ class _ReaderScreenState extends State<ReaderScreen> {
     );
   }
 
-  void _scrollToParagraph(int paragraphIdx) {
-    final keys = _paragraphKeysByArticle[_currentIndex];
+  void _scrollToProgress(double progress) {
+    if (_autoScrollSuspendedForUser) return;
     final controller = _scrollControllers[_currentIndex];
-
-    if (keys == null || controller == null) return;
-    if (paragraphIdx < 0 || paragraphIdx >= keys.length) return;
-
-    final ctx = keys[paragraphIdx].currentContext;
-    if (ctx == null) return;
-
-    Scrollable.ensureVisible(
-      ctx,
-      alignment: 0.2,
-      duration: const Duration(milliseconds: 200),
+    if (controller == null || !controller.hasClients) return;
+    final max = controller.position.maxScrollExtent;
+    if (max <= 0) return;
+    final target = (max * progress).clamp(0.0, max);
+    if ((controller.offset - target).abs() < 24) return;
+    controller.animateTo(
+      target,
+      duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
     );
+  }
+
+  void _pauseAutoScrollForUser() {
+    _autoScrollResumeTimer?.cancel();
+    if (!_autoScrollSuspendedForUser && mounted) {
+      setState(() {
+        _autoScrollSuspendedForUser = true;
+      });
+    } else {
+      _autoScrollSuspendedForUser = true;
+    }
+  }
+
+  void _scheduleAutoScrollResume() {
+    _autoScrollResumeTimer?.cancel();
+    _autoScrollResumeTimer = Timer(_autoScrollResumeDelay, () {
+      if (!mounted) return;
+      setState(() {
+        _autoScrollSuspendedForUser = false;
+      });
+      if (_isPlaying) {
+        _scrollToProgress(_progress);
+      }
+    });
+  }
+
+  bool _handleReaderScrollNotification(
+    ScrollNotification notification,
+    int articleIndex,
+  ) {
+    if (articleIndex != _currentIndex) return false;
+
+    final userDriven =
+        (notification is ScrollStartNotification &&
+                notification.dragDetails != null) ||
+            (notification is ScrollUpdateNotification &&
+                notification.dragDetails != null) ||
+            (notification is OverscrollNotification &&
+                notification.dragDetails != null);
+
+    if (userDriven) {
+      _pauseAutoScrollForUser();
+      _scheduleAutoScrollResume();
+      return false;
+    }
+
+    if (notification is ScrollEndNotification && _autoScrollSuspendedForUser) {
+      _scheduleAutoScrollResume();
+    }
+
+    return false;
+  }
+
+  String _normalizeSpokenWord(String raw) {
+    return raw.replaceAll(RegExp(r'^[^\w]+|[^\w]+$'), '').trim();
+  }
+
+  String _resolveCurrentWord(
+      String ttsText, int start, int end, String? reportedWord) {
+    final fromReported = _normalizeSpokenWord(reportedWord ?? '');
+    if (fromReported.isNotEmpty) return fromReported;
+
+    if (start >= 0 && end > start && end <= ttsText.length) {
+      final fromRange = _normalizeSpokenWord(ttsText.substring(start, end));
+      if (fromRange.isNotEmpty) return fromRange;
+    }
+
+    if (_plainText.isEmpty) return '';
+    final idx = (_offsetBase + start).clamp(0, _plainText.length);
+    int left = idx;
+    while (left > 0 && RegExp(r'[\w]').hasMatch(_plainText[left - 1])) {
+      left -= 1;
+    }
+    int right = idx;
+    while (right < _plainText.length &&
+        RegExp(r'[\w]').hasMatch(_plainText[right])) {
+      right += 1;
+    }
+    if (right > left) {
+      return _normalizeSpokenWord(_plainText.substring(left, right));
+    }
+    return '';
+  }
+
+  String _highlightCurrentWordInParagraph(String markdown) {
+    if (!_isPlaying || _currentWord.isEmpty || markdown.isEmpty) {
+      return markdown;
+    }
+    final pattern = RegExp(
+      '(?<!\\w)${RegExp.escape(_currentWord)}(?!\\w)',
+      caseSensitive: false,
+    );
+    final matches = pattern.allMatches(markdown).toList();
+    if (matches.isEmpty) return markdown;
+    final m = matches.first;
+    final token = markdown.substring(m.start, m.end);
+    return '${markdown.substring(0, m.start)}==$token==${markdown.substring(m.end)}';
   }
 
   @override
@@ -509,6 +682,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final bottomSafe = MediaQuery.of(context).padding.bottom;
     const baseBottomBarHeight = 132.0;
     final readerBottomPadding = baseBottomBarHeight + bottomSafe + 12;
+    final markdownStyleSheet =
+        MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+      p: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.4),
+    );
+    markdownStyleSheet.styles['tts'] = markdownStyleSheet.p?.copyWith(
+      backgroundColor: Colors.yellowAccent.withOpacity(0.65),
+      fontWeight: FontWeight.w600,
+    );
     final appState = context.watch<AppState>();
     final article = widget.articles[_currentIndex];
     final state = appState.getArticleState(article.guid);
@@ -545,22 +726,22 @@ class _ReaderScreenState extends State<ReaderScreen> {
             itemCount: widget.articles.length,
             physics:
                 const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
-            onPageChanged: (index) async {
-              await _tts.stop();
+            onPageChanged: (index) {
+              _tts.stop();
               setState(() {
                 _currentIndex = index;
                 _isPlaying = false;
                 _isPaused = false;
-                _progress = 0;
+                _progress = _currentArticleCombinedProgress();
               });
-              _markRead(widget.articles[index]);
-              _prefetchReader(widget.articles[index]);
+              _prefetchReader(widget.articles[index], showLoader: true);
               _updateTextForArticle(widget.articles[index], index);
               if (_pendingAutoPlay) {
                 _pendingAutoPlay = false;
                 _startPlayback(paragraphIndex: 0);
               } else {
-                _prefetchUpcomingArticles(1);
+                final lowDataMode = context.read<AppState>().lowDataMode;
+                _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
               }
             },
             itemBuilder: (context, index) {
@@ -611,116 +792,66 @@ class _ReaderScreenState extends State<ReaderScreen> {
                       final c = ScrollController();
                       c.addListener(() => _handleScroll(c, index));
                       return c;
-                },
-              );
-              final paraKeys =
-                  _paragraphKeysByArticle[index] ?? const <GlobalKey>[];
-              return SingleChildScrollView(
-                controller: scrollController,
-                padding: EdgeInsets.only(bottom: readerBottomPadding),
-                child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AnimatedSize(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          child: headerCollapsed
-                              ? const SizedBox.shrink()
-                              : Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    if (item.imageUrl != null &&
-                                        item.imageUrl!.isNotEmpty) ...[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: SizedBox(
-                                          height: 180,
-                                          width: double.infinity,
-                                          child: Image.network(
-                                            item.imageUrl!,
-                                            fit: BoxFit.cover,
+                    },
+                  );
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: (notification) =>
+                        _handleReaderScrollNotification(notification, index),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      padding: EdgeInsets.only(bottom: readerBottomPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                            child: headerCollapsed
+                                ? const SizedBox.shrink()
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      if (item.imageUrl != null &&
+                                          item.imageUrl!.isNotEmpty) ...[
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          child: SizedBox(
+                                            height: 180,
+                                            width: double.infinity,
+                                            child: Image.network(
+                                              item.imageUrl!,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
+                                        const SizedBox(height: AppSpacing.s12),
+                                      ],
+                                      Text(
+                                        item.title ?? 'Untitled',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall,
                                       ),
-                                      const SizedBox(height: AppSpacing.s12),
-                                    ],
-                                    Text(
-                                      item.title ?? 'Untitled',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
-                                    ),
-                                    const SizedBox(height: AppSpacing.s8),
-                                    if (item.author != null) ...[
-                                      Text('By ${item.author!}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium),
                                       const SizedBox(height: AppSpacing.s8),
+                                      if (item.author != null) ...[
+                                        Text('By ${item.author!}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
+                                        const SizedBox(height: AppSpacing.s8),
+                                      ],
+                                      const SizedBox(height: AppSpacing.s16),
                                     ],
-                                    const SizedBox(height: AppSpacing.s16),
-                                  ],
-                                ),
-                        ),
-                        for (final entry
-                            in _paragraphMarkdown.asMap().entries) ...[
-                          GestureDetector(
-                            onTap: () =>
-                                _startPlayback(paragraphIndex: entry.key),
-                            child: Container(
-                              key: paraKeys.isNotEmpty &&
-                                      entry.key < paraKeys.length
-                                  ? paraKeys[entry.key]
-                                  : null,
-                              margin:
-                                  const EdgeInsets.symmetric(vertical: 6.0),
-                              padding: const EdgeInsets.all(12.0),
-                              decoration: BoxDecoration(
-                                color: _currentParagraphIndex == entry.key &&
-                                        _isPlaying
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                        .withOpacity(0.45)
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .surfaceVariant
-                                        .withOpacity(0.25),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: MarkdownBody(
-                                data: entry.value,
-                                onTapLink: (_, href, __) =>
-                                    _handleMarkdownLink(href),
-                                styleSheet:
-                                    MarkdownStyleSheet.fromTheme(
-                                            Theme.of(context))
-                                        .copyWith(
-                                  p: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(height: 1.4),
-                                ),
-                              ),
-                            ),
+                                  ),
+                          ),
+                          ..._buildReaderParagraphs(
+                            item,
+                            markdownStyleSheet,
                           ),
                         ],
-                        if (_paragraphMarkdown.isEmpty)
-                          MarkdownBody(
-                            data: _htmlToMarkdown(_bodyHtml(item)),
-                            onTapLink: (_, href, __) =>
-                                _handleMarkdownLink(href),
-                            styleSheet:
-                                MarkdownStyleSheet.fromTheme(Theme.of(context))
-                                    .copyWith(
-                              p: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(height: 1.4),
-                            ),
-                          ),
-                      ],
+                      ),
                     ),
                   );
                 }),
@@ -779,6 +910,54 @@ class _ReaderScreenState extends State<ReaderScreen> {
     );
   }
 
+  List<Widget> _buildReaderParagraphs(
+    Article article,
+    MarkdownStyleSheet markdownStyleSheet,
+  ) {
+    final fallbackMarkdown = _markdownContent.isNotEmpty
+        ? _markdownContent
+        : _htmlToMarkdown(_bodyHtml(article));
+
+    if (_displayParagraphs.isEmpty) {
+      return [
+        MarkdownBody(
+          data: fallbackMarkdown,
+          onTapLink: (_, href, __) => _handleMarkdownLink(href),
+          inlineSyntaxes: [_TtsInlineSyntax()],
+          styleSheet: markdownStyleSheet,
+        ),
+      ];
+    }
+
+    return List<Widget>.generate(_displayParagraphs.length, (index) {
+      final isActive = (_isPlaying || _isPaused) && index == _currentParagraphIndex;
+      final paragraph = isActive
+          ? _highlightCurrentWordInParagraph(_displayParagraphs[index])
+          : _displayParagraphs[index];
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        margin: const EdgeInsets.only(bottom: AppSpacing.s12),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s8,
+          vertical: AppSpacing.s8,
+        ),
+        decoration: BoxDecoration(
+          color: isActive
+              ? Colors.yellowAccent.withOpacity(0.18)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: MarkdownBody(
+          data: paragraph,
+          onTapLink: (_, href, __) => _handleMarkdownLink(href),
+          inlineSyntaxes: [_TtsInlineSyntax()],
+          styleSheet: markdownStyleSheet,
+        ),
+      );
+    });
+  }
+
   String _htmlToMarkdown(String html) {
     final trimmed = html.trim();
     if (trimmed.isEmpty) {
@@ -786,7 +965,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
     final doc = html_parser.parse(trimmed);
     // Remove scripts/styles/trackers that end up as junk paragraphs.
-    const junkSelectors = 'script,style,noscript,template,svg,nav,footer,header';
+    const junkSelectors =
+        'script,style,noscript,template,svg,nav,footer,header';
     for (final node in doc.querySelectorAll(junkSelectors)) {
       node.remove();
     }
@@ -801,25 +981,44 @@ class _ReaderScreenState extends State<ReaderScreen> {
     return article.content ?? article.summary ?? article.rawData ?? '';
   }
 
-  Future<void> _prefetchReader(Article article) async {
-    if (article.url == null) return;
+  Future<void> _prefetchReader(
+    Article article, {
+    bool showLoader = false,
+  }) async {
+    final url = article.url;
+    if (url == null || url.isEmpty) return;
     if (_readerCache.containsKey(article.guid)) return;
+    if (_prefetchInFlight.contains(article.guid)) return;
+    _prefetchInFlight.add(article.guid);
 
-    setState(() {
-      _loadingReader = true;
-    });
+    if (showLoader && mounted) {
+      setState(() {
+        _loadingReader = true;
+      });
+    }
 
     try {
-      final parsed = await readability.parseAsync(article.url!);
-      final content = parsed.content ?? parsed.textContent ?? '';
-      if (content.trim().isNotEmpty) {
+      final cached = await _db.getPrefetchedArticleContent(article.guid);
+      if (cached != null && cached.trim().isNotEmpty) {
+        _readerCache[article.guid] = cached;
+        if (mounted && article.guid == widget.articles[_currentIndex].guid) {
+          _updateTextForArticle(article, widget.articles.indexOf(article));
+        }
+        return;
+      }
+
+      final parsed = await readability.parseAsync(url);
+      final content = (parsed.content ?? parsed.textContent ?? '').trim();
+      if (content.isNotEmpty) {
         _readerCache[article.guid] = content;
+        await _db.upsertPrefetchedArticleContent(article.guid, content);
         if (mounted && article.guid == widget.articles[_currentIndex].guid) {
           _updateTextForArticle(article, widget.articles.indexOf(article));
         }
       }
     } finally {
-      if (mounted) {
+      _prefetchInFlight.remove(article.guid);
+      if (showLoader && mounted) {
         setState(() {
           _loadingReader = false;
         });
@@ -900,7 +1099,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         ),
         if (canPlay)
           Text(
-            'Tap a paragraph to jump. Playing paragraph ${_currentParagraphIndex + 1}/${_paragraphs.length}',
+            'Playing section ${_currentParagraphIndex + 1}/${_paragraphs.length}',
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
@@ -910,6 +1109,17 @@ class _ReaderScreenState extends State<ReaderScreen> {
           const Text('Read-aloud not available for this article.'),
       ],
     );
+  }
+}
+
+class _TtsInlineSyntax extends md.InlineSyntax {
+  _TtsInlineSyntax() : super(r'==([^=\n]+)==');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final value = match[1] ?? '';
+    parser.addNode(md.Element.text('tts', value));
+    return true;
   }
 }
 

@@ -106,263 +106,258 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                               const SizedBox(height: AppSpacing.s12),
                           itemBuilder: (context, index) {
                             final article = filteredArticles[index];
-                      final state = appState.getArticleState(article.guid);
-                      final isRead = state?.readAt != null;
-                      final isLiked = state?.likedAt != null;
-                      final isStarred = state?.starredAt != null;
-                      final readIconColor = isRead
-                          ? colorScheme.primary.withOpacity(0.55)
-                          : colorScheme.primary;
-                      final likeIconColor = isLiked
-                          ? colorScheme.error
-                          : colorScheme.onSurface.withOpacity(0.6);
-                      final saveIconColor = isStarred
-                          ? colorScheme.secondary
-                          : colorScheme.onSurface.withOpacity(0.6);
+                            final state =
+                                appState.getArticleState(article.guid);
+                            final isRead = state?.readAt != null;
+                            final isLiked = state?.likedAt != null;
+                            final isStarred = state?.starredAt != null;
+                            final readIconColor = isRead
+                                ? colorScheme.primary.withOpacity(0.55)
+                                : colorScheme.primary;
+                            final likeIconColor = isLiked
+                                ? colorScheme.error
+                                : colorScheme.onSurface.withOpacity(0.6);
+                            final saveIconColor = isStarred
+                                ? colorScheme.secondary
+                                : colorScheme.onSurface.withOpacity(0.6);
 
-                      return Dismissible(
-                        key: ValueKey(article.guid),
-                        background: Container(
-                          decoration: BoxDecoration(
-                            color: colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: AppSpacing.s16),
-                          child: Icon(
-                            isRead
-                                ? Icons.mark_email_unread
-                                : Icons.mark_email_read,
-                            color: colorScheme.secondary,
-                          ),
-                        ),
-                        secondaryBackground: Container(
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: AppSpacing.s16),
-                          child: Icon(
-                            isStarred ? Icons.star_border : Icons.star,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                        confirmDismiss: (direction) async {
-                          final messenger = ScaffoldMessenger.of(context);
-
-                          if (direction == DismissDirection.startToEnd) {
-                            await appState.markArticleRead(article.guid,
-                                read: !isRead);
-                            messenger.showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    isRead ? 'Marked unread' : 'Marked read'),
+                            return Dismissible(
+                              key: ValueKey(article.guid),
+                              background: Container(
+                                decoration: BoxDecoration(
+                                  color: colorScheme.secondaryContainer,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                alignment: Alignment.centerLeft,
+                                padding:
+                                    const EdgeInsets.only(left: AppSpacing.s16),
+                                child: Icon(
+                                  isRead
+                                      ? Icons.mark_email_unread
+                                      : Icons.mark_email_read,
+                                  color: colorScheme.secondary,
+                                ),
                               ),
-                            );
-                          } else {
-                            await appState.markArticleStarred(article.guid,
-                                starred: !isStarred);
-                            messenger.showSnackBar(
-                              SnackBar(
-                                content: Text(isStarred
-                                    ? 'Removed from saved'
-                                    : 'Saved for later'),
+                              secondaryBackground: Container(
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(
+                                    right: AppSpacing.s16),
+                                child: Icon(
+                                  isStarred ? Icons.star_border : Icons.star,
+                                  color: colorScheme.primary,
+                                ),
                               ),
-                            );
-                          }
-                          return false;
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.s16,
-                              vertical: AppSpacing.s8),
-                          child: Material(
-                            color: Colors.transparent,
-                            elevation: isLight ? 10 : 14,
-                            shadowColor: cardShadowColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                color: isRead
-                                    ? theme.cardColor.withOpacity(0.9)
-                                    : theme.cardColor,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (_) => ReaderScreen(
-                                          articles: filteredArticles,
-                                          initialIndex: index),
-                                    ));
-                                  },
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.all(AppSpacing.s16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          article.title ?? 'Untitled',
-                                          style: textTheme.titleLarge?.copyWith(
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                        const SizedBox(height: AppSpacing.s4),
-                                        Text(
-                                          _articleSource(article, appState.feeds),
-                                          style: textTheme.bodySmall?.copyWith(
-                                            color: colorScheme.onSurfaceVariant,
-                                            fontWeight: FontWeight.w600,
+                              confirmDismiss: (direction) async {
+                                if (direction == DismissDirection.startToEnd) {
+                                  await _toggleReadStatus(
+                                    appState: appState,
+                                    article: article,
+                                    isRead: isRead,
+                                  );
+                                } else {
+                                  await appState.markArticleStarred(
+                                      article.guid,
+                                      starred: !isStarred);
+                                  _showActionSnackBar(
+                                    message: isStarred
+                                        ? 'Removed from saved'
+                                        : 'Saved for later',
+                                  );
+                                }
+                                return false;
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.s16,
+                                    vertical: AppSpacing.s8),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  elevation: isLight ? 10 : 14,
+                                  shadowColor: cardShadowColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                      color: isRead
+                                          ? theme.cardColor.withOpacity(0.9)
+                                          : theme.cardColor,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (_) => ReaderScreen(
+                                                articles: filteredArticles,
+                                                initialIndex: index),
+                                          ));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(
+                                              AppSpacing.s16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                article.title ?? 'Untitled',
+                                                style: textTheme.titleLarge
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                              ),
+                                              const SizedBox(
+                                                  height: AppSpacing.s4),
+                                              Text(
+                                                _articleSource(
+                                                    article, appState.feeds),
+                                                style: textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: colorScheme
+                                                      .onSurfaceVariant,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                  height: AppSpacing.s8),
+                                              // Removed inline summary preview to keep cards compact.
+                                              Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    Icons.schedule,
+                                                    size: 16,
+                                                    color: colorScheme
+                                                        .onSurfaceVariant,
+                                                  ),
+                                                  const SizedBox(
+                                                      width: AppSpacing.s4),
+                                                  Text(
+                                                    _relativeTimeLabel(article),
+                                                    style: textTheme.bodySmall
+                                                        ?.copyWith(
+                                                      color: colorScheme
+                                                          .onSurfaceVariant,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(
+                                                  height: AppSpacing.s8),
+                                              Row(
+                                                children: [
+                                                  IconButton(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    icon: Icon(
+                                                      isLiked
+                                                          ? Icons.favorite
+                                                          : Icons
+                                                              .favorite_border,
+                                                      color: likeIconColor,
+                                                    ),
+                                                    tooltip: isLiked
+                                                        ? 'Unlike'
+                                                        : 'Like',
+                                                    onPressed: () async {
+                                                      await appState
+                                                          .markArticleLiked(
+                                                        article.guid,
+                                                        liked: !isLiked,
+                                                      );
+                                                      if (!mounted) return;
+                                                      _showActionSnackBar(
+                                                        message: isLiked
+                                                            ? 'Removed like'
+                                                            : 'Liked article',
+                                                      );
+                                                    },
+                                                  ),
+                                                  const Spacer(),
+                                                  IconButton(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    icon: Icon(
+                                                      isRead
+                                                          ? Icons
+                                                              .mark_email_read
+                                                          : Icons
+                                                              .mark_email_unread,
+                                                      color: readIconColor,
+                                                    ),
+                                                    tooltip: isRead
+                                                        ? 'Mark unread'
+                                                        : 'Mark read',
+                                                    onPressed: () async {
+                                                      await _toggleReadStatus(
+                                                        appState: appState,
+                                                        article: article,
+                                                        isRead: isRead,
+                                                      );
+                                                      if (!mounted) return;
+                                                    },
+                                                  ),
+                                                  IconButton(
+                                                    visualDensity:
+                                                        VisualDensity.compact,
+                                                    icon: Icon(
+                                                      isStarred
+                                                          ? Icons.bookmark
+                                                          : Icons
+                                                              .bookmark_border,
+                                                      color: saveIconColor,
+                                                    ),
+                                                    tooltip: isStarred
+                                                        ? 'Unsave'
+                                                        : 'Save for later',
+                                                    onPressed: () async {
+                                                      await appState
+                                                          .markArticleStarred(
+                                                        article.guid,
+                                                        starred: !isStarred,
+                                                      );
+                                                      if (!mounted) return;
+                                                      _showActionSnackBar(
+                                                        message: isStarred
+                                                            ? 'Removed from saved'
+                                                            : 'Saved for later',
+                                                      );
+                                                    },
+                                                  ),
+                                                  if (article.url != null)
+                                                    IconButton(
+                                                      visualDensity:
+                                                          VisualDensity.compact,
+                                                      icon: const Icon(
+                                                          Icons.share),
+                                                      tooltip: 'Share',
+                                                      onPressed: () =>
+                                                          _shareArticle(
+                                                              context, article),
+                                                    ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        const SizedBox(height: AppSpacing.s8),
-                                        // Removed inline summary preview to keep cards compact.
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.schedule,
-                                              size: 16,
-                                              color:
-                                                  colorScheme.onSurfaceVariant,
-                                            ),
-                                            const SizedBox(width: AppSpacing.s4),
-                                            Text(
-                                              _relativeTimeLabel(article),
-                                              style: textTheme.bodySmall
-                                                  ?.copyWith(
-                                                color: colorScheme
-                                                    .onSurfaceVariant,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: AppSpacing.s8),
-                                        Row(
-                                          children: [
-                                            IconButton(
-                                              visualDensity:
-                                                  VisualDensity.compact,
-                                              icon: Icon(
-                                                isLiked
-                                                    ? Icons.favorite
-                                                    : Icons.favorite_border,
-                                                color: likeIconColor,
-                                              ),
-                                                tooltip:
-                                                  isLiked ? 'Unlike' : 'Like',
-                                              onPressed: () async {
-                                                final messenger =
-                                                    ScaffoldMessenger.of(
-                                                        context);
-                                                await appState
-                                                    .markArticleLiked(
-                                                  article.guid,
-                                                  liked: !isLiked,
-                                                );
-                                                if (!mounted) return;
-                                                messenger.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(isLiked
-                                                        ? 'Removed like'
-                                                        : 'Liked article'),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            const Spacer(),
-                                            IconButton(
-                                              visualDensity:
-                                                  VisualDensity.compact,
-                                              icon: Icon(
-                                                isRead
-                                                    ? Icons.mark_email_read
-                                                    : Icons.mark_email_unread,
-                                                color: readIconColor,
-                                              ),
-                                              tooltip: isRead
-                                                  ? 'Mark unread'
-                                                  : 'Mark read',
-                                              onPressed: () async {
-                                                final messenger =
-                                                    ScaffoldMessenger.of(
-                                                        context);
-                                                await appState.markArticleRead(
-                                                  article.guid,
-                                                  read: !isRead,
-                                                );
-                                                if (!mounted) return;
-                                                messenger.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(isRead
-                                                        ? 'Marked unread'
-                                                        : 'Marked read'),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            IconButton(
-                                              visualDensity:
-                                                  VisualDensity.compact,
-                                              icon: Icon(
-                                                isStarred
-                                                    ? Icons.bookmark
-                                                    : Icons.bookmark_border,
-                                                color: saveIconColor,
-                                              ),
-                                              tooltip: isStarred
-                                                  ? 'Unsave'
-                                                  : 'Save for later',
-                                              onPressed: () async {
-                                                final messenger =
-                                                    ScaffoldMessenger.of(
-                                                        context);
-                                                await appState
-                                                    .markArticleStarred(
-                                                  article.guid,
-                                                  starred: !isStarred,
-                                                );
-                                                if (!mounted) return;
-                                                messenger.showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(isStarred
-                                                        ? 'Removed from saved'
-                                                        : 'Saved for later'),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            if (article.url != null)
-                                              IconButton(
-                                                visualDensity:
-                                                    VisualDensity.compact,
-                                                icon: const Icon(Icons.share),
-                                                tooltip: 'Share',
-                                                onPressed: () => _shareArticle(
-                                                    context, article),
-                                              ),
-                                          ],
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ],
             );
@@ -377,6 +372,44 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     await Share.share(article.url!,
         subject: article.title ?? 'aware article',
         sharePositionOrigin: const Rect.fromLTWH(0, 0, 0, 0));
+  }
+
+  void _showActionSnackBar({
+    required String message,
+    SnackBarAction? action,
+  }) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: action,
+      ),
+    );
+  }
+
+  Future<void> _toggleReadStatus({
+    required AppState appState,
+    required Article article,
+    required bool isRead,
+  }) async {
+    await appState.markArticleRead(article.guid, read: !isRead);
+    if (!mounted) return;
+
+    if (isRead) {
+      _showActionSnackBar(message: 'Marked unread');
+      return;
+    }
+
+    _showActionSnackBar(
+      message: 'Marked read',
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () async {
+          await appState.markArticleRead(article.guid, read: false);
+        },
+      ),
+    );
   }
 
   String _articleSource(Article article, List<Feed> feeds) {
@@ -525,15 +558,13 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                   ChoiceChip(
                     label: const Text('Liked'),
                     selected: _likedOnly,
-                    onSelected: (_) =>
-                        setState(() => _likedOnly = !_likedOnly),
+                    onSelected: (_) => setState(() => _likedOnly = !_likedOnly),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
                     label: const Text('Saved'),
                     selected: _savedOnly,
-                    onSelected: (_) =>
-                        setState(() => _savedOnly = !_savedOnly),
+                    onSelected: (_) => setState(() => _savedOnly = !_savedOnly),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
@@ -632,8 +663,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                           ChoiceChip(
                             label: const Text('Short <100w'),
                             selected: _lengthFilter == _LengthFilter.short,
-                            onSelected: (_) =>
-                                update(() => _lengthFilter = _LengthFilter.short),
+                            onSelected: (_) => update(
+                                () => _lengthFilter = _LengthFilter.short),
                           ),
                           ChoiceChip(
                             label: const Text('Medium 100-300'),
@@ -644,12 +675,13 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                           ChoiceChip(
                             label: const Text('Long >300'),
                             selected: _lengthFilter == _LengthFilter.long,
-                            onSelected: (_) =>
-                                update(() => _lengthFilter = _LengthFilter.long),
+                            onSelected: (_) => update(
+                                () => _lengthFilter = _LengthFilter.long),
                           ),
                           ChoiceChip(
                             label: const Text('2+ paragraphs'),
-                            selected: _lengthFilter == _LengthFilter.multiParagraph,
+                            selected:
+                                _lengthFilter == _LengthFilter.multiParagraph,
                             onSelected: (_) => update(() =>
                                 _lengthFilter = _LengthFilter.multiParagraph),
                           ),

@@ -266,6 +266,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
+                  'Advanced',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.auto_awesome_motion),
+                title: const Text('Read tracking'),
+                subtitle: const Text(
+                    'Auto-mark articles as read based on reading progress'),
+              ),
+              SwitchListTile(
+                title: const Text('Auto-mark read by progress'),
+                subtitle: const Text(
+                    'Marks as read when scroll or audio reaches your threshold'),
+                value: context
+                    .select<AppState, bool>((s) => s.autoMarkReadEnabled),
+                onChanged: (value) =>
+                    context.read<AppState>().setAutoMarkReadEnabled(value),
+              ),
+              ListTile(
+                leading: const Icon(Icons.tune),
+                title: const Text('Auto-mark threshold'),
+                subtitle: Consumer<AppState>(
+                  builder: (context, appState, _) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Slider(
+                        min: 10,
+                        max: 100,
+                        divisions: 18,
+                        value: appState.autoMarkReadThreshold.toDouble(),
+                        label: '${appState.autoMarkReadThreshold}%',
+                        onChanged: appState.autoMarkReadEnabled
+                            ? (value) => context
+                                .read<AppState>()
+                                .setAutoMarkReadThreshold(value.round())
+                            : null,
+                      ),
+                      Text(
+                        '${appState.autoMarkReadThreshold}% progress needed',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
                   'Voice & Read aloud',
                   style: Theme.of(context)
                       .textTheme
@@ -346,6 +400,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 value: context.select<AppState, bool>((s) => s.autoPlayNext),
                 onChanged: (value) =>
                     context.read<AppState>().setAutoPlayNext(value),
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Data',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SwitchListTile(
+                title: const Text('Low-data mode prefetch'),
+                subtitle: const Text(
+                    'Prefetch article text in background and prefer cached content when available'),
+                value: context.select<AppState, bool>((s) => s.lowDataMode),
+                onChanged: (value) =>
+                    context.read<AppState>().setLowDataMode(value),
               ),
               const Divider(),
               Padding(

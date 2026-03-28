@@ -6,11 +6,16 @@ import '../models/article.dart';
 import '../models/feed.dart';
 import '../models/user_article_state.dart';
 import '../services/api_service.dart';
+import '../services/background_feed_worker.dart';
 import '../services/database_service.dart';
 import '../services/feed_service.dart';
 import '../services/storage_service.dart';
 
 class AppState extends ChangeNotifier {
+  static const String lowDataModePrefKey = 'app_low_data_mode';
+  static const String autoMarkReadEnabledPrefKey = 'app_auto_mark_read_enabled';
+  static const String autoMarkReadThresholdPrefKey =
+      'app_auto_mark_read_threshold';
   final DatabaseService _db = DatabaseService();
   final FeedService _feedService = FeedService();
   final ApiService _apiService = ApiService();
@@ -96,6 +101,15 @@ class AppState extends ChangeNotifier {
   bool _autoPlayNext = false;
   bool get autoPlayNext => _autoPlayNext;
 
+  bool _lowDataMode = false;
+  bool get lowDataMode => _lowDataMode;
+
+  bool _autoMarkReadEnabled = true;
+  bool get autoMarkReadEnabled => _autoMarkReadEnabled;
+
+  int _autoMarkReadThreshold = 70;
+  int get autoMarkReadThreshold => _autoMarkReadThreshold;
+
   double _textScaleFactor = 1.0;
   double get textScaleFactor => _textScaleFactor;
 
@@ -145,6 +159,10 @@ class AppState extends ChangeNotifier {
     }
     _voiceId = prefs.getString('app_tts_voice_id');
     _autoPlayNext = prefs.getBool('app_tts_autoplay_next') ?? false;
+    _lowDataMode = prefs.getBool(lowDataModePrefKey) ?? false;
+    _autoMarkReadEnabled = prefs.getBool(autoMarkReadEnabledPrefKey) ?? true;
+    _autoMarkReadThreshold =
+        (prefs.getInt(autoMarkReadThresholdPrefKey) ?? 70).clamp(1, 100);
     if (savedTheme != null) {
       switch (savedTheme) {
         case 'light':
@@ -339,6 +357,28 @@ class AppState extends ChangeNotifier {
     _textScaleFactor = scale.clamp(textScaleMin, textScaleMax);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble('app_text_scale', _textScaleFactor);
+    notifyListeners();
+  }
+
+  Future<void> setLowDataMode(bool enabled) async {
+    _lowDataMode = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(lowDataModePrefKey, enabled);
+    notifyListeners();
+    await BackgroundFeedWorker.schedulePeriodicRefresh();
+  }
+
+  Future<void> setAutoMarkReadEnabled(bool enabled) async {
+    _autoMarkReadEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(autoMarkReadEnabledPrefKey, enabled);
+    notifyListeners();
+  }
+
+  Future<void> setAutoMarkReadThreshold(int thresholdPercent) async {
+    _autoMarkReadThreshold = thresholdPercent.clamp(1, 100);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(autoMarkReadThresholdPrefKey, _autoMarkReadThreshold);
     notifyListeners();
   }
 
