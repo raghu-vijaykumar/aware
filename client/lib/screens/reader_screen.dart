@@ -700,7 +700,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         title: Text(article.title ?? 'Article'),
         actions: [
           IconButton(
-            icon: Icon(isStarred ? Icons.star : Icons.star_border),
+            icon: Icon(isStarred ? Icons.bookmark : Icons.bookmark_border),
             onPressed: () => _toggleStarred(article, starred: !isStarred),
           ),
           IconButton(

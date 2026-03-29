@@ -57,8 +57,8 @@ class BackgroundFeedWorker {
 
     if (newArticles > 0) {
       await NotificationService.showNewArticles(newArticles);
-    } else if (kDebugMode) {
-      await NotificationService.showDebugNoNewArticles();
+    } else {
+      await NotificationService.showNoNewArticles();
     }
   }
 

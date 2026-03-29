@@ -91,8 +91,8 @@ class NotificationService {
     }
   }
 
-  static Future<void> showDebugNoNewArticles() async {
-    if (!kDebugMode || kIsWeb) return;
+  static Future<void> showNoNewArticles() async {
+    if (kIsWeb) return;
     if (!_initialized) {
       await ensureInitialized();
     }
