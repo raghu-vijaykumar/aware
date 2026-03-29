@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -9,10 +11,16 @@ import 'providers/app_state.dart';
 import 'screens/splash_screen.dart';
 import 'services/background_feed_worker.dart';
 import 'services/notification_service.dart';
+import 'services/reader_audio_service.dart';
 import 'theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Initialize FFI-based sqflite for desktop platforms (Windows/macOS/Linux).
   // This enables the same database API used on mobile to work on desktop.
@@ -27,7 +35,24 @@ Future<void> main() async {
     await BackgroundFeedWorker.schedulePeriodicRefresh();
   }
 
+  await _initializePostLaunchServices();
+
   runApp(const MyApp());
+}
+
+Future<void> _initializePostLaunchServices() async {
+  try {
+    await ReaderAudioService.ensureInitialized();
+  } catch (error, stackTrace) {
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stackTrace,
+        library: 'reader_audio_service',
+        context: ErrorDescription('while initializing background audio'),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

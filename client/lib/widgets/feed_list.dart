@@ -68,6 +68,7 @@ class _FeedListState extends State<FeedList> {
         return ArticleListScreen(
           allFeeds: true,
           feedTitle: 'Feeds',
+          onAddFeed: () => _showAddFeedDialog(context),
         );
       },
     );

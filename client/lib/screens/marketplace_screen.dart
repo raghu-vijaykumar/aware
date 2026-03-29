@@ -16,6 +16,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   Map<String, List<Feed>> _feedsByCategory = {};
   bool _isLoading = true;
   String? _selectedCategory;
+  final _urlController = TextEditingController();
+  bool _isAdding = false;
 
   static final List<_CategoryMeta> _categories = [
     _CategoryMeta(id: 'tech', label: 'Tech & Engineering', color: Colors.indigo),
@@ -285,6 +287,59 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     _loadCuratedFeeds();
   }
 
+  @override
+  void dispose() {
+    _urlController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showAddFeedDialog(BuildContext context) async {
+    final appState = context.read<AppState>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Feed'),
+          content: TextField(
+            controller: _urlController,
+            decoration: const InputDecoration(hintText: 'Enter feed URL'),
+            keyboardType: TextInputType.url,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      setState(() => _isAdding = true);
+      try {
+        await appState.addFeedFromUrl(_urlController.text.trim());
+        if (!mounted) return;
+        _urlController.clear();
+        messenger.showSnackBar(const SnackBar(content: Text('Feed added')));
+      } catch (err) {
+        if (!mounted) return;
+        messenger
+            .showSnackBar(SnackBar(content: Text('Failed to add feed: $err')));
+      } finally {
+        if (mounted) {
+          setState(() => _isAdding = false);
+        }
+      }
+    }
+  }
+
   Future<void> _loadCuratedFeeds() async {
     final feeds = _defaultMarketplaceFeeds;
 
@@ -324,6 +379,13 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_link),
+            tooltip: 'Add Feed',
+            onPressed: () => _showAddFeedDialog(context),
+          ),
+        ],
       ),
       body: _isLoading
           ? Center(

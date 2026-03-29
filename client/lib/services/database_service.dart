@@ -23,7 +23,7 @@ class DatabaseService {
     final path = join(await getDatabasesPath(), 'aware.db');
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onOpen: _onOpen,
@@ -72,7 +72,10 @@ class DatabaseService {
         read_at INTEGER,
         liked_at INTEGER,
         starred_at INTEGER,
-        tags TEXT
+        tags TEXT,
+        last_accessed_at INTEGER,
+        read_progress REAL,
+        last_paragraph_index INTEGER
       )
     ''');
 
@@ -127,6 +130,20 @@ class DatabaseService {
         )
       ''');
     }
+    if (oldVersion < 5) {
+      final columns =
+          await db.rawQuery('PRAGMA table_info(user_article_state)');
+      final hasLastAccessed = columns
+          .any((c) => (c['name'] as String?)?.toLowerCase() == 'last_accessed_at');
+      if (!hasLastAccessed) {
+        await db.execute(
+            'ALTER TABLE user_article_state ADD COLUMN last_accessed_at INTEGER');
+        await db.execute(
+            'ALTER TABLE user_article_state ADD COLUMN read_progress REAL');
+        await db.execute(
+            'ALTER TABLE user_article_state ADD COLUMN last_paragraph_index INTEGER');
+      }
+    }
   }
 
   Future<void> _onOpen(Database db) async {
@@ -136,6 +153,15 @@ class DatabaseService {
     if (!hasLiked) {
       await db.execute(
           'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
+    }
+    final hasLastAccessed = columns.any((c) => c['name'] == 'last_accessed_at');
+    if (!hasLastAccessed) {
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN last_accessed_at INTEGER');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN read_progress REAL');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN last_paragraph_index INTEGER');
     }
     await _ensurePrefetchCacheTable(db);
   }
@@ -270,6 +296,17 @@ class DatabaseService {
       await db.execute(
           'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
     }
+    
+    final hasLastAccessed = columns.any((c) => (c['name'] as String?)?.toLowerCase() == 'last_accessed_at');
+    if (!hasLastAccessed) {
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN last_accessed_at INTEGER');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN read_progress REAL');
+      await db.execute(
+          'ALTER TABLE user_article_state ADD COLUMN last_paragraph_index INTEGER');
+    }
+    
     _ensuredLikedColumn = true;
   }
 

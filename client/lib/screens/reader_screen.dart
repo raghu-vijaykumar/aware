@@ -11,21 +11,22 @@ import 'package:html/dom.dart' as dom;
 import 'package:markdown/markdown.dart' as md;
 import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 import '../models/article.dart';
 import '../providers/app_state.dart';
+import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
 import '../theme/theme.dart';
 
 class ReaderScreen extends StatefulWidget {
   final List<Article> articles;
   final int initialIndex;
+  final bool autoPlayMode;
 
   const ReaderScreen(
-      {super.key, required this.articles, required this.initialIndex});
+      {super.key, required this.articles, required this.initialIndex, this.autoPlayMode = false});
 
   @override
   State<ReaderScreen> createState() => _ReaderScreenState();
@@ -39,14 +40,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final Map<String, String> _readerCache = {};
   final Set<String> _prefetchInFlight = {};
   final DatabaseService _db = DatabaseService();
-  final FlutterTts _tts = FlutterTts();
+  StreamSubscription<ReaderPlaybackSnapshot>? _readerStateSubscription;
   bool _isPlaying = false;
   bool _isPaused = false;
+  bool _isBuffering = false;
   double _progress = 0.0;
-  final bool _startingAudio = false;
   int _currentParagraphIndex = 0;
-  int _offsetBase = 0;
-  bool _pendingAutoPlay = false;
   String _markdownContent = '';
   String _plainText = '';
   List<String> _paragraphs = [];
@@ -56,25 +55,25 @@ class _ReaderScreenState extends State<ReaderScreen> {
   final Map<int, bool> _headerCollapsedByArticle = {};
   final Map<int, double> _scrollProgressByArticle = {};
   final Map<int, double> _audioProgressByArticle = {};
-  double? _lastAppliedTtsRate;
-  String? _lastAppliedVoice;
   String _currentWord = '';
   Timer? _autoScrollResumeTimer;
   bool _autoScrollSuspendedForUser = false;
-
   static const Duration _autoScrollResumeDelay = Duration(seconds: 2);
+  Timer? _progressDebounce;
+  bool _hasAutoPlayed = false;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
-    _attachTtsHandlers();
-
-    // Preload TTS engine to remove first-play lag
-    _tts.setSpeechRate(AppState.speechRateBase);
-    _tts.setVolume(1.0);
-    _tts.setPitch(1.0);
+    readerAudioHandler.configureQueue(
+      widget.articles,
+      currentIndex: widget.initialIndex,
+    );
+    _readerStateSubscription = readerAudioHandler.readerState.listen(
+      _handleReaderPlaybackSnapshot,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final lowDataMode = context.read<AppState>().lowDataMode;
@@ -87,7 +86,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   @override
   void dispose() {
     _autoScrollResumeTimer?.cancel();
-    _tts.stop();
+    _readerStateSubscription?.cancel();
+    _progressDebounce?.cancel();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
     }
@@ -139,6 +139,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
     await _markRead(widget.articles[articleIndex]);
   }
 
+  void _scheduleProgressSave() {
+    if (_progress <= 0 || _progress >= 1.0) return;
+    final articleIndex = _currentIndex;
+    final progress = _progress;
+    final paragraphIndex = _currentParagraphIndex;
+    
+    _progressDebounce?.cancel();
+    _progressDebounce = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      final appState = context.read<AppState>();
+      final article = widget.articles[articleIndex];
+      appState.recordArticleProgress(article.guid, progress, paragraphIndex);
+    });
+  }
+
   void _recordScrollProgress(int articleIndex, ScrollController controller) {
     if (!controller.hasClients) return;
     final max = controller.position.maxScrollExtent;
@@ -151,6 +166,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _syncProgressUiForCurrentArticle();
       }
       _checkAndAutoMarkRead(articleIndex);
+      if (articleIndex == _currentIndex) {
+        _scheduleProgressSave();
+      }
     }
   }
 
@@ -161,97 +179,31 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _audioProgressByArticle[_currentIndex] = clamped;
     }
     _checkAndAutoMarkRead(_currentIndex);
+    _scheduleProgressSave();
   }
 
-  void _attachTtsHandlers() {
-    _tts.setStartHandler(() {
-      setState(() {
-        _isPlaying = true;
-        _isPaused = false;
-      });
-    });
-    _tts.setProgressHandler((String text, int start, int end, String? word) {
-      if (_plainText.isEmpty) return;
-      final absolute = (_offsetBase + start).clamp(0, _plainText.length);
-      final pct = absolute / _plainText.length;
-      final paragraphIdx =
-          _paragraphOffsets.lastIndexWhere((element) => element <= absolute);
-      setState(() {
-        if (paragraphIdx >= 0) {
-          _currentParagraphIndex = paragraphIdx;
-        }
-        _progress = pct;
-        _currentWord = _resolveCurrentWord(text, start, end, word);
-      });
-      _recordAudioProgress(pct);
-      _scrollToProgress(pct);
-    });
-    _tts.setCompletionHandler(() async {
-      final next = _currentParagraphIndex + 1;
+  void _handleReaderPlaybackSnapshot(ReaderPlaybackSnapshot snapshot) {
+    if (!mounted) return;
 
-      if (next < _paragraphs.length) {
-        await _playParagraph(next);
-        return;
-      }
-
-      setState(() {
-        _isPlaying = false;
-        _progress = 1.0;
-        _currentWord = '';
+    final articleChanged = snapshot.currentArticleIndex != _currentIndex;
+    if (articleChanged) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _goToArticle(snapshot.currentArticleIndex);
       });
-      _recordAudioProgress(1.0);
-
-      final appState = context.read<AppState>();
-      final hasNext = _currentIndex < widget.articles.length - 1;
-
-      if (hasNext && appState.autoPlayNext) {
-        _goToArticle(_currentIndex + 1, autoplay: true);
-      }
-    });
-    _tts.setCancelHandler(() {
-      setState(() {
-        _isPlaying = false;
-        _isPaused = false;
-        _currentWord = '';
-      });
-    });
-    _tts.setPauseHandler(() {
-      setState(() {
-        _isPaused = true;
-      });
-    });
-    _tts.setContinueHandler(() {
-      setState(() {
-        _isPaused = false;
-        _isPlaying = true;
-      });
-    });
-  }
-
-  Future<void> _applyVoiceSettings(AppState appState) async {
-    final targetRate = appState.speechRateTts;
-    if (_lastAppliedTtsRate != targetRate) {
-      _lastAppliedTtsRate = targetRate;
-      await _tts.setSpeechRate(targetRate);
     }
-    if (_lastAppliedVoice != appState.voiceId) {
-      _lastAppliedVoice = appState.voiceId;
-      if (appState.voiceId != null) {
-        final parts = appState.voiceId!.split('|');
-        final name = parts.isNotEmpty ? parts[0] : null;
-        final locale = parts.length > 1 ? parts[1] : null;
-        await _tts.setVoice({
-          if (name != null) 'name': name,
-          if (locale != null) 'locale': locale,
-        });
-      } else {
-        // Best-effort reset to platform default by sending an empty voice map.
-        try {
-          await _tts.setVoice({'name': '', 'locale': ''});
-        } catch (_) {
-          // ignore on platforms that don't support resetting voice
-        }
-      }
+
+    setState(() {
+      _isPlaying = snapshot.isPlaying;
+      _isPaused = snapshot.isPaused;
+      _isBuffering = snapshot.isBuffering;
+      _currentParagraphIndex = snapshot.currentParagraphIndex;
+      _progress = snapshot.progress;
+      _currentWord = snapshot.currentWord;
+    });
+    _recordAudioProgress(snapshot.progress);
+    if (snapshot.isPlaying) {
+      _scrollToProgress(snapshot.progress);
     }
   }
 
@@ -261,12 +213,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final safeMarkdown = markdown.trim();
     final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown);
 
+    final displayParagraphs = <String>[];
     final ttsParagraphs = <String>[];
 
     for (final para in markdownParagraphs) {
       final sanitized = _sanitizeForTts(para);
-      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-      ttsParagraphs.add(sanitized);
+      final isVideo = para.contains('VIDEO_EMBED_START:');
+      if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
+      displayParagraphs.add(para.trim());
+      ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
     }
 
     // As a fallback for feeds with no clear paragraph breaks, use readability text content.
@@ -274,13 +229,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final textParagraphs = _extractParagraphsFromHtml(html);
       for (final para in textParagraphs) {
         final sanitized = _sanitizeForTts(para);
-        if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-        ttsParagraphs.add(sanitized);
+        final isVideo = para.contains('VIDEO_EMBED_START:');
+        if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
+        displayParagraphs.add(para.trim());
+        ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
       }
     }
 
     // Still nothing usable.
     if (ttsParagraphs.isEmpty) {
+      readerAudioHandler.registerArticleContent(
+        articleIndex: articleIndex,
+        paragraphs: const [],
+        paragraphOffsets: const [],
+        plainText: '',
+      );
       setState(() {
         _markdownContent = safeMarkdown;
         _paragraphs = [];
@@ -288,26 +251,22 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _paragraphOffsets = [];
         _plainText = '';
         _headerCollapsedByArticle[articleIndex] = false;
-        _progress = 0;
-        _currentParagraphIndex = 0;
-        _currentWord = '';
-        _offsetBase = 0;
       });
       return;
     }
 
     var offset = 0;
     final offsets = <int>[];
-    final displayParagraphs = <String>[];
-    for (final para in markdownParagraphs) {
-      final sanitized = _sanitizeForTts(para);
-      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
-      displayParagraphs.add(para.trim());
-    }
     for (final p in ttsParagraphs) {
       offsets.add(offset);
       offset += p.length + 2; // include the paragraph break
     }
+    readerAudioHandler.registerArticleContent(
+      articleIndex: articleIndex,
+      paragraphs: ttsParagraphs,
+      paragraphOffsets: offsets,
+      plainText: ttsParagraphs.join('\n\n'),
+    );
     setState(() {
       _markdownContent = safeMarkdown;
       _paragraphs = ttsParagraphs;
@@ -315,11 +274,34 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _paragraphOffsets = offsets;
       _plainText = ttsParagraphs.join('\n\n');
       _headerCollapsedByArticle[articleIndex] = false;
-      _progress = 0;
-      _currentParagraphIndex = 0;
-      _currentWord = '';
-      _offsetBase = 0;
     });
+
+    if (articleIndex == _currentIndex) {
+      final appState = context.read<AppState>();
+      final state = appState.getArticleState(article.guid);
+      if (state != null) {
+        if (!_hasAutoPlayed && widget.autoPlayMode && state.lastParagraphIndex != null) {
+          _hasAutoPlayed = true;
+          _currentParagraphIndex = state.lastParagraphIndex!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Resuming last read article')),
+          );
+          _startPlayback(paragraphIndex: _currentParagraphIndex);
+        } else if (state.readProgress != null && state.readProgress! > 0) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _scrollToProgress(state.readProgress!);
+            }
+          });
+        }
+      } else if (!_hasAutoPlayed && widget.autoPlayMode) {
+        _hasAutoPlayed = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Starting playback for unread article')),
+        );
+        _startPlayback();
+      }
+    }
   }
 
   List<String> _splitMarkdownIntoParagraphs(String markdown) {
@@ -422,9 +404,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   String _sanitizeForTts(String input) {
     var text = input;
-    // Strip markdown links, keep link text.
+    // Remove video embeds from TTS
+    text = text.replaceAll(RegExp(r'VIDEO_EMBED_START:.*?VIDEO_EMBED_END'), '');
+    // Strip common video unsupported text
+    text = text.replaceAll(RegExp(r'this video playback is not supported\.?', caseSensitive: false), ' ');
+    text = text.replaceAll(RegExp(r'this video cannot be played\.?', caseSensitive: false), ' ');
+    // Strip markdown links and images, keep link/alt text. The optional ! is for images.
     text = text.replaceAllMapped(
-      RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'),
+      RegExp(r'!?\[(.*?)\]\((https?:\/\/[^\)]+)\)'),
       (match) => match[1] ?? '',
     );
     // Remove bare URLs.
@@ -436,6 +423,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         RegExp(r'(\w)[*_]{1,3}(?=\s|$)'), (m) => m[1] ?? ''); // trailing * or _
     // Remove decorative markdown lines (----, ****, ===).
     text = text.replaceAll(RegExp(r'^[*_`~\-=]{3,}\s*', multiLine: true), ' ');
+    // Remove markdown header symbols.
+    text = text.replaceAll(RegExp(r'^#+\s*', multiLine: true), '');
+    // Remove all remaining markdown/special symbols that are often read aloud annoyingly by TTS.
+    text = text.replaceAll(RegExp(r'[*_~`<>{}\[\]\|\\]'), ' ');
     // Replace standalone bullet symbols.
     text = text.replaceAll(RegExp(r'(^|\s)[•·◦▷▶►∘▫▪❖➤➔]+(\s|$)'), ' ');
     // Collapse long runs of punctuation so the TTS doesn't read each mark individually.
@@ -468,71 +459,24 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (_paragraphs.isEmpty) return;
 
     final appState = context.read<AppState>();
-
-    await _applyVoiceSettings(appState);
-
-    // Set before TTS events fire so progress/highlight map to the tapped paragraph.
-    _offsetBase = paragraphIndex < _paragraphOffsets.length
-        ? _paragraphOffsets[paragraphIndex]
-        : 0;
-
-    setState(() {
-      _isPlaying = true;
-      _isPaused = false;
-      _currentParagraphIndex = paragraphIndex;
-      _progress = _plainText.isNotEmpty
-          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
-          : 0.0;
-    });
-    _recordAudioProgress(_progress);
-
-    await _playParagraph(paragraphIndex);
-  }
-
-  Future<void> _playParagraph(int index) async {
-    if (index >= _paragraphs.length) {
-      setState(() {
-        _isPlaying = false;
-        _progress = 1;
-      });
-      return;
-    }
-
-    final text = _paragraphs[index];
-
-    // Track absolute offset so progress callbacks stay aligned after jumps.
-    _offsetBase =
-        index < _paragraphOffsets.length ? _paragraphOffsets[index] : 0;
-
-    await _tts.stop();
-    await _tts.speak(text);
-
-    setState(() {
-      _currentParagraphIndex = index;
-      _progress = _plainText.isNotEmpty
-          ? (_offsetBase / _plainText.length).clamp(0.0, 1.0)
-          : 0.0;
-      _currentWord = '';
-    });
-    _recordAudioProgress(_progress);
+    await readerAudioHandler.updateSpeechConfig(
+      speechRate: appState.speechRateTts,
+      voiceId: appState.voiceId,
+      autoPlayNext: appState.autoPlayNext,
+    );
+    await readerAudioHandler.playFromParagraph(paragraphIndex);
   }
 
   Future<void> _pausePlayback() async {
-    await _tts.pause();
+    await readerAudioHandler.pause();
   }
 
   Future<void> _resumePlayback() async {
-    // Resume by restarting from the current paragraph (platforms lack resume()).
-    await _startPlayback(paragraphIndex: _currentParagraphIndex);
+    await readerAudioHandler.play();
   }
 
   Future<void> _stopPlayback() async {
-    await _tts.stop();
-    setState(() {
-      _isPlaying = false;
-      _isPaused = false;
-      _progress = _currentArticleCombinedProgress();
-    });
+    await readerAudioHandler.stop();
   }
 
   void _seekToProgress(double value) {
@@ -541,7 +485,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final paragraphIdx = _paragraphOffsets.lastIndexWhere(
         (offset) => offset <= targetOffset && offset + 1 < _plainText.length);
     final idx = paragraphIdx < 0 ? 0 : paragraphIdx;
-    _startPlayback(paragraphIndex: idx);
+    readerAudioHandler.playFromParagraph(idx);
   }
 
   void _prefetchUpcomingArticles(int count) {
@@ -553,11 +497,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
   }
 
-  void _goToArticle(int index, {bool autoplay = false}) {
+  void _goToArticle(int index) {
     if (index < 0 || index >= widget.articles.length) return;
     _autoScrollResumeTimer?.cancel();
     _autoScrollSuspendedForUser = false;
-    _pendingAutoPlay = autoplay;
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 250),
@@ -610,13 +553,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
   ) {
     if (articleIndex != _currentIndex) return false;
 
-    final userDriven =
-        (notification is ScrollStartNotification &&
-                notification.dragDetails != null) ||
-            (notification is ScrollUpdateNotification &&
-                notification.dragDetails != null) ||
-            (notification is OverscrollNotification &&
-                notification.dragDetails != null);
+    final userDriven = (notification is ScrollStartNotification &&
+            notification.dragDetails != null) ||
+        (notification is ScrollUpdateNotification &&
+            notification.dragDetails != null) ||
+        (notification is OverscrollNotification &&
+            notification.dragDetails != null);
 
     if (userDriven) {
       _pauseAutoScrollForUser();
@@ -629,37 +571,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
 
     return false;
-  }
-
-  String _normalizeSpokenWord(String raw) {
-    return raw.replaceAll(RegExp(r'^[^\w]+|[^\w]+$'), '').trim();
-  }
-
-  String _resolveCurrentWord(
-      String ttsText, int start, int end, String? reportedWord) {
-    final fromReported = _normalizeSpokenWord(reportedWord ?? '');
-    if (fromReported.isNotEmpty) return fromReported;
-
-    if (start >= 0 && end > start && end <= ttsText.length) {
-      final fromRange = _normalizeSpokenWord(ttsText.substring(start, end));
-      if (fromRange.isNotEmpty) return fromRange;
-    }
-
-    if (_plainText.isEmpty) return '';
-    final idx = (_offsetBase + start).clamp(0, _plainText.length);
-    int left = idx;
-    while (left > 0 && RegExp(r'[\w]').hasMatch(_plainText[left - 1])) {
-      left -= 1;
-    }
-    int right = idx;
-    while (right < _plainText.length &&
-        RegExp(r'[\w]').hasMatch(_plainText[right])) {
-      right += 1;
-    }
-    if (right > left) {
-      return _normalizeSpokenWord(_plainText.substring(left, right));
-    }
-    return '';
   }
 
   String _highlightCurrentWordInParagraph(String markdown) {
@@ -726,23 +637,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
             itemCount: widget.articles.length,
             physics:
                 const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
-            onPageChanged: (index) {
-              _tts.stop();
+            onPageChanged: (index) async {
+              final lowDataMode = context.read<AppState>().lowDataMode;
               setState(() {
                 _currentIndex = index;
-                _isPlaying = false;
-                _isPaused = false;
                 _progress = _currentArticleCombinedProgress();
               });
+              if (readerAudioHandler.readerState.value.currentArticleIndex !=
+                  index) {
+                await readerAudioHandler.activateArticle(index);
+              }
               _prefetchReader(widget.articles[index], showLoader: true);
               _updateTextForArticle(widget.articles[index], index);
-              if (_pendingAutoPlay) {
-                _pendingAutoPlay = false;
-                _startPlayback(paragraphIndex: 0);
-              } else {
-                final lowDataMode = context.read<AppState>().lowDataMode;
-                _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
-              }
+              _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
             },
             itemBuilder: (context, index) {
               final item = widget.articles[index];
@@ -886,16 +793,42 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   _UnreadBadge(articles: widget.articles),
                   const Spacer(),
                   IconButton(
+                    icon: Icon(
+                      state?.readAt != null
+                          ? Icons.mark_email_read
+                          : Icons.mark_email_unread,
+                      color: state?.readAt != null
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                    onPressed: () async {
+                      if (state?.readAt == null) {
+                        await _markRead(article);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Marked read & skipped to next')),
+                        );
+                        if (_currentIndex < widget.articles.length - 1) {
+                          readerAudioHandler.skipToNext();
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      } else {
+                        await context.read<AppState>().markArticleRead(article.guid, read: false);
+                      }
+                    },
+                    tooltip: state?.readAt != null ? 'Mark unread' : 'Mark read & play next',
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: _currentIndex > 0
-                        ? () => _goToArticle(_currentIndex - 1)
+                        ? readerAudioHandler.skipToPrevious
                         : null,
                     tooltip: 'Previous article',
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_next),
                     onPressed: _currentIndex < widget.articles.length - 1
-                        ? () => _goToArticle(_currentIndex + 1)
+                        ? readerAudioHandler.skipToNext
                         : null,
                     tooltip: 'Next article',
                   ),
@@ -923,14 +856,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
         MarkdownBody(
           data: fallbackMarkdown,
           onTapLink: (_, href, __) => _handleMarkdownLink(href),
-          inlineSyntaxes: [_TtsInlineSyntax()],
+          inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
+          builders: {
+            'video': _VideoBuilder(),
+          },
           styleSheet: markdownStyleSheet,
         ),
       ];
     }
 
+    final activeIndex = _displayParagraphs.isEmpty
+        ? 0
+        : _currentParagraphIndex.clamp(0, _displayParagraphs.length - 1);
+
     return List<Widget>.generate(_displayParagraphs.length, (index) {
-      final isActive = (_isPlaying || _isPaused) && index == _currentParagraphIndex;
+      final isActive = (_isPlaying || _isPaused) && index == activeIndex;
       final paragraph = isActive
           ? _highlightCurrentWordInParagraph(_displayParagraphs[index])
           : _displayParagraphs[index];
@@ -951,7 +891,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         child: MarkdownBody(
           data: paragraph,
           onTapLink: (_, href, __) => _handleMarkdownLink(href),
-          inlineSyntaxes: [_TtsInlineSyntax()],
+          inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
+          builders: {
+            'video': _VideoBuilder(),
+          },
           styleSheet: markdownStyleSheet,
         ),
       );
@@ -970,6 +913,20 @@ class _ReaderScreenState extends State<ReaderScreen> {
     for (final node in doc.querySelectorAll(junkSelectors)) {
       node.remove();
     }
+    
+    // Replace iframe and video tags with our custom markdown
+    for (final node in doc.querySelectorAll('iframe, video')) {
+      var src = node.attributes['src'];
+      if (src != null && src.isNotEmpty) {
+        if (src.startsWith('//')) {
+          src = 'https:$src';
+        }
+        final p = dom.Element.tag('p');
+        p.text = 'VIDEO_EMBED_START:${src}VIDEO_EMBED_END';
+        node.replaceWith(p);
+      }
+    }
+
     final cleaned = doc.body?.innerHtml ?? trimmed;
     return html2md.convert(cleaned);
   }
@@ -1052,7 +1009,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
               icon: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (_startingAudio)
+                  if (_isBuffering)
                     const SizedBox(
                       width: 38,
                       height: 38,
@@ -1066,7 +1023,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   ),
                 ],
               ),
-              onPressed: canPlay && !_startingAudio
+              onPressed: canPlay && !_isBuffering
                   ? () {
                       if (_isPlaying && !_isPaused) {
                         _pausePlayback();
@@ -1078,12 +1035,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     }
                   : null,
             ),
-            IconButton(
-              icon: const Icon(Icons.stop_circle, size: 28),
-              onPressed: (_isPlaying || _isPaused) && !_startingAudio
-                  ? _stopPlayback
-                  : null,
-            ),
+
             const SizedBox(width: 12),
             Expanded(
               child: Slider(
@@ -1120,6 +1072,105 @@ class _TtsInlineSyntax extends md.InlineSyntax {
     final value = match[1] ?? '';
     parser.addNode(md.Element.text('tts', value));
     return true;
+  }
+}
+
+class _VideoInlineSyntax extends md.InlineSyntax {
+  _VideoInlineSyntax() : super(r'VIDEO_EMBED_START:(.*?)VIDEO_EMBED_END');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final src = match[1] ?? '';
+    final el = md.Element.withTag('video');
+    el.attributes['src'] = src;
+    parser.addNode(el);
+    return true;
+  }
+}
+
+class _VideoBuilder extends MarkdownElementBuilder {
+  @override
+  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    final src = element.attributes['src'] ?? '';
+    return _EmbeddedVideoPlayer(url: src);
+  }
+}
+
+class _EmbeddedVideoPlayer extends StatefulWidget {
+  final String url;
+  const _EmbeddedVideoPlayer({required this.url});
+
+  @override
+  State<_EmbeddedVideoPlayer> createState() => _EmbeddedVideoPlayerState();
+}
+
+class _EmbeddedVideoPlayerState extends State<_EmbeddedVideoPlayer> {
+  bool _showVideo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Text('Embedded video is only supported on Android/iOS.'),
+        ),
+      );
+    }
+
+    if (!_showVideo) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Icon(Icons.video_library, size: 48, color: Colors.white54),
+            Positioned(
+              bottom: 12,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Load Video'),
+                onPressed: () => setState(() => _showVideo = true),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final controller = webview.WebViewController()
+      ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.url));
+
+    return Container(
+      height: 240,
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: webview.WebViewWidget(
+          controller: controller,
+          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer()),
+            Factory<HorizontalDragGestureRecognizer>(
+                () => HorizontalDragGestureRecognizer()),
+          },
+        ),
+      ),
+    );
   }
 }
 

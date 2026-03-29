@@ -12,9 +12,10 @@ class ArticleListScreen extends StatefulWidget {
   final int? feedId;
   final String feedTitle;
   final bool allFeeds;
+  final VoidCallback? onAddFeed;
 
   const ArticleListScreen(
-      {super.key, required this.feedTitle, this.feedId, this.allFeeds = false});
+      {super.key, required this.feedTitle, this.feedId, this.allFeeds = false, this.onAddFeed});
 
   @override
   State<ArticleListScreen> createState() => _ArticleListScreenState();
@@ -45,6 +46,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       appBar: AppBar(
         title: Text(widget.feedTitle),
         actions: [
+          if (widget.onAddFeed != null)
+            IconButton(
+              icon: const Icon(Icons.add_link),
+              tooltip: 'Add Feed',
+              onPressed: widget.onAddFeed,
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -111,6 +118,9 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                             final isRead = state?.readAt != null;
                             final isLiked = state?.likedAt != null;
                             final isStarred = state?.starredAt != null;
+                            final readProgress = state?.readProgress ?? 0.0;
+                            final isPartiallyRead = !isRead && readProgress > 0.0;
+
                             final readIconColor = isRead
                                 ? colorScheme.primary.withOpacity(0.55)
                                 : colorScheme.primary;
@@ -227,6 +237,16 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                               ),
                                               const SizedBox(
                                                   height: AppSpacing.s8),
+                                              if (isPartiallyRead)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+                                                  child: LinearProgressIndicator(
+                                                    value: readProgress,
+                                                    backgroundColor: colorScheme.surfaceVariant,
+                                                    color: colorScheme.primary,
+                                                    minHeight: 4,
+                                                  ),
+                                                ),
                                               // Removed inline summary preview to keep cards compact.
                                               Row(
                                                 mainAxisSize: MainAxisSize.min,
@@ -362,6 +382,42 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
               ],
             );
           });
+        },
+      ),
+      floatingActionButton: FutureBuilder<List<Article>>(
+        future: _articlesFuture,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          return Consumer<AppState>(
+            builder: (context, appState, child) {
+              final articles = snapshot.data!;
+              final filtered = _applyFilters(articles, appState.feeds);
+              final unread = filtered.where((a) =>
+                  appState.getArticleState(a.guid)?.readAt == null).toList();
+              
+              if (unread.isEmpty) return const SizedBox.shrink();
+
+              // Check if any unread article has actual reading progress to resume.
+              bool hasProgress = false;
+              for (final a in unread) {
+                final state = appState.getArticleState(a.guid);
+                if (state != null && (state.readProgress ?? 0.0) > 0.0) {
+                  hasProgress = true;
+                  break;
+                }
+              }
+
+              if (!hasProgress) return const SizedBox.shrink();
+              
+              return FloatingActionButton.extended(
+                onPressed: () => _launchCatchUpQueue(context, unread, appState),
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Continue Reading'),
+              );
+            },
+          );
         },
       ),
     );
@@ -806,15 +862,47 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     return widget.feedTitle;
   }
 
-  String? _feedTitleFor(Article article, List<Feed> feeds) {
-    for (final feed in feeds) {
-      if (feed.id == article.feedId) {
-        final title = feed.title?.trim();
-        if (title != null && title.isNotEmpty) return title;
-        break;
+  String _feedTitleFor(Article article, List<Feed> feeds) {
+    if (article.feedId <= 0) return 'Unknown';
+    try {
+      final feed = feeds.firstWhere((f) => f.id == article.feedId);
+      if (feed.title != null && feed.title!.isNotEmpty) {
+        return feed.title!;
       }
+      return feed.url;
+    } catch (_) {
+      return 'Unknown';
     }
-    return null;
+  }
+
+  void _launchCatchUpQueue(BuildContext context, List<Article> unreadArticles, AppState appState) {
+    final queue = List<Article>.from(unreadArticles);
+    queue.sort((a, b) {
+      final aTime = a.publishedAt ?? a.fetchedAt ?? 0;
+      final bTime = b.publishedAt ?? b.fetchedAt ?? 0;
+      return aTime.compareTo(bTime);
+    });
+
+    int startIndex = 0;
+    int mostRecentAccess = -1;
+
+    for (int i = 0; i < queue.length; i++) {
+        final state = appState.getArticleState(queue[i].guid);
+        if (state != null && state.lastAccessedAt != null) {
+            if (state.lastAccessedAt! > mostRecentAccess) {
+                mostRecentAccess = state.lastAccessedAt!;
+                startIndex = i;
+            }
+        }
+    }
+
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => ReaderScreen(
+        articles: queue,
+        initialIndex: startIndex,
+        autoPlayMode: true,
+      ),
+    ));
   }
 
   String _relativeTimeLabel(Article article) {
