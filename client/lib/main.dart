@@ -29,7 +29,7 @@ Future<void> main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+  if (!kIsWeb) {
     await NotificationService.ensureInitialized();
     await BackgroundFeedWorker.initialize();
     await BackgroundFeedWorker.schedulePeriodicRefresh();

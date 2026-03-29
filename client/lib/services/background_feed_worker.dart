@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -30,6 +31,7 @@ void backgroundFeedDispatcher() {
 }
 
 class BackgroundFeedWorker {
+  static Timer? _foregroundTimer;
   final DatabaseService _db = DatabaseService();
   final FeedService _feedService = FeedService();
 
@@ -110,17 +112,29 @@ class BackgroundFeedWorker {
   }
 
   static Future<void> initialize() async {
-    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
+    if (kIsWeb) return;
     await NotificationService.ensureInitialized();
-    await Workmanager().initialize(
-      backgroundFeedDispatcher,
-      // Suppress Workmanager's debug foreground notification.
-      isInDebugMode: false,
-    );
+    if (Platform.isAndroid || Platform.isIOS) {
+      await Workmanager().initialize(
+        backgroundFeedDispatcher,
+        // Suppress Workmanager's debug foreground notification.
+        isInDebugMode: false,
+      );
+    }
   }
 
   static Future<void> schedulePeriodicRefresh() async {
+    _foregroundTimer?.cancel();
+    _foregroundTimer = Timer.periodic(
+      kDebugMode ? const Duration(minutes: 1) : const Duration(minutes: 15),
+      (timer) async {
+        final worker = BackgroundFeedWorker();
+        await worker.run();
+      },
+    );
+
     if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
+
     final prefs = await SharedPreferences.getInstance();
     final lowDataMode = prefs.getBool(_lowDataModePrefKey) ?? false;
     await Workmanager().registerPeriodicTask(
