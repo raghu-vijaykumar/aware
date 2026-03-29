@@ -113,18 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
-      floatingActionButton:
-          (_selectedIndex == 0 || _selectedIndex == 1) // Feeds or Marketplace
-              ? FloatingActionButton.extended(
-                  icon: const Icon(Icons.rss_feed),
-                  label: const Text('Add feed'),
-                  onPressed: _isAdding
-                      ? null
-                      : () {
-                          _promptAddFeed(context);
-                        },
-                )
-              : null,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -5,6 +5,9 @@ class UserArticleState {
   final int? likedAt;
   final int? starredAt;
   final String? tags;
+  final int? lastAccessedAt;
+  final double? readProgress;
+  final int? lastParagraphIndex;
 
   UserArticleState({
     this.id,
@@ -13,6 +16,9 @@ class UserArticleState {
     this.likedAt,
     this.starredAt,
     this.tags,
+    this.lastAccessedAt,
+    this.readProgress,
+    this.lastParagraphIndex,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +29,9 @@ class UserArticleState {
       'liked_at': likedAt,
       'starred_at': starredAt,
       'tags': tags,
+      'last_accessed_at': lastAccessedAt,
+      'read_progress': readProgress,
+      'last_paragraph_index': lastParagraphIndex,
     };
   }
 
@@ -34,6 +43,11 @@ class UserArticleState {
       likedAt: map['liked_at'],
       starredAt: map['starred_at'],
       tags: map['tags'],
+      lastAccessedAt: map['last_accessed_at'],
+      readProgress: map['read_progress'] != null
+          ? (map['read_progress'] as num).toDouble()
+          : null,
+      lastParagraphIndex: map['last_paragraph_index'],
     );
   }
 }

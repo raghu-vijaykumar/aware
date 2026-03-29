@@ -254,11 +254,17 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> markArticleRead(String guid, {bool read = true}) async {
+    final existing = _articleStateCache[guid];
     final state = UserArticleState(
+      id: existing?.id,
       articleGuid: guid,
       readAt: read ? DateTime.now().millisecondsSinceEpoch : null,
-      likedAt: _articleStateCache[guid]?.likedAt,
-      starredAt: _articleStateCache[guid]?.starredAt,
+      likedAt: existing?.likedAt,
+      starredAt: existing?.starredAt,
+      tags: existing?.tags,
+      lastAccessedAt: existing?.lastAccessedAt,
+      readProgress: existing?.readProgress,
+      lastParagraphIndex: existing?.lastParagraphIndex,
     );
     await _db.insertUserState(state);
     _articleStateCache[guid] = state;
@@ -266,11 +272,17 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> markArticleLiked(String guid, {bool liked = true}) async {
+    final existing = _articleStateCache[guid];
     final state = UserArticleState(
+      id: existing?.id,
       articleGuid: guid,
-      readAt: _articleStateCache[guid]?.readAt,
+      readAt: existing?.readAt,
       likedAt: liked ? DateTime.now().millisecondsSinceEpoch : null,
-      starredAt: _articleStateCache[guid]?.starredAt,
+      starredAt: existing?.starredAt,
+      tags: existing?.tags,
+      lastAccessedAt: existing?.lastAccessedAt,
+      readProgress: existing?.readProgress,
+      lastParagraphIndex: existing?.lastParagraphIndex,
     );
     await _db.insertUserState(state);
     _articleStateCache[guid] = state;
@@ -278,11 +290,35 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> markArticleStarred(String guid, {bool starred = true}) async {
+    final existing = _articleStateCache[guid];
     final state = UserArticleState(
+      id: existing?.id,
       articleGuid: guid,
-      readAt: _articleStateCache[guid]?.readAt,
-      likedAt: _articleStateCache[guid]?.likedAt,
+      readAt: existing?.readAt,
+      likedAt: existing?.likedAt,
       starredAt: starred ? DateTime.now().millisecondsSinceEpoch : null,
+      tags: existing?.tags,
+      lastAccessedAt: existing?.lastAccessedAt,
+      readProgress: existing?.readProgress,
+      lastParagraphIndex: existing?.lastParagraphIndex,
+    );
+    await _db.insertUserState(state);
+    _articleStateCache[guid] = state;
+    notifyListeners();
+  }
+
+  Future<void> recordArticleProgress(String guid, double progress, int paragraphIndex) async {
+    final existing = _articleStateCache[guid];
+    final state = UserArticleState(
+      id: existing?.id,
+      articleGuid: guid,
+      readAt: existing?.readAt,
+      likedAt: existing?.likedAt,
+      starredAt: existing?.starredAt,
+      tags: existing?.tags,
+      lastAccessedAt: DateTime.now().millisecondsSinceEpoch,
+      readProgress: progress,
+      lastParagraphIndex: paragraphIndex,
     );
     await _db.insertUserState(state);
     _articleStateCache[guid] = state;

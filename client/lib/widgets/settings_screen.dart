@@ -356,7 +356,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.record_voice_over),
-                title: const Text('Default voice'),
+                title: const Text('Default voice', style: TextStyle(fontSize: 14)),
                 subtitle: _loadingVoices
                     ? const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -367,6 +367,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           final current = appState.voiceId;
                           return DropdownButton<String?>(
                             isExpanded: true,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 13),
                             value: current != null &&
                                     _voices.any((v) => _voiceKey(v) == current)
                                 ? current

@@ -96,8 +96,9 @@ class ReaderAudioService {
       config: AudioServiceConfig(
         androidNotificationChannelId: 'com.example.aware.aware.reader_audio',
         androidNotificationChannelName: 'Reader playback',
+        androidNotificationIcon: 'mipmap/ic_launcher',
         androidNotificationOngoing: true,
-        androidStopForegroundOnPause: false,
+        androidStopForegroundOnPause: true,
       ),
     );
   }
@@ -607,11 +608,17 @@ class ReaderAudioHandler extends BaseAudioHandler
         controls: [
           MediaControl.skipToPrevious,
           if (_isPlaying) MediaControl.pause else MediaControl.play,
-          MediaControl.stop,
           MediaControl.skipToNext,
         ],
-        systemActions: const {MediaAction.seek},
-        androidCompactActionIndices: const [0, 1, 3],
+        systemActions: const {
+          MediaAction.seek,
+          MediaAction.play,
+          MediaAction.pause,
+          MediaAction.playPause,
+          MediaAction.skipToNext,
+          MediaAction.skipToPrevious,
+        },
+        androidCompactActionIndices: const [0, 1, 2],
         processingState: processingState ??
             (_isBuffering
                 ? AudioProcessingState.loading

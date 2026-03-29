@@ -23,9 +23,10 @@ import '../theme/theme.dart';
 class ReaderScreen extends StatefulWidget {
   final List<Article> articles;
   final int initialIndex;
+  final bool autoPlayMode;
 
   const ReaderScreen(
-      {super.key, required this.articles, required this.initialIndex});
+      {super.key, required this.articles, required this.initialIndex, this.autoPlayMode = false});
 
   @override
   State<ReaderScreen> createState() => _ReaderScreenState();
@@ -58,6 +59,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   Timer? _autoScrollResumeTimer;
   bool _autoScrollSuspendedForUser = false;
   static const Duration _autoScrollResumeDelay = Duration(seconds: 2);
+  Timer? _progressDebounce;
+  bool _hasAutoPlayed = false;
 
   @override
   void initState() {
@@ -84,6 +87,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void dispose() {
     _autoScrollResumeTimer?.cancel();
     _readerStateSubscription?.cancel();
+    _progressDebounce?.cancel();
     for (final controller in _scrollControllers.values) {
       controller.dispose();
     }
@@ -135,6 +139,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
     await _markRead(widget.articles[articleIndex]);
   }
 
+  void _scheduleProgressSave() {
+    if (_progress <= 0 || _progress >= 1.0) return;
+    final articleIndex = _currentIndex;
+    final progress = _progress;
+    final paragraphIndex = _currentParagraphIndex;
+    
+    _progressDebounce?.cancel();
+    _progressDebounce = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      final appState = context.read<AppState>();
+      final article = widget.articles[articleIndex];
+      appState.recordArticleProgress(article.guid, progress, paragraphIndex);
+    });
+  }
+
   void _recordScrollProgress(int articleIndex, ScrollController controller) {
     if (!controller.hasClients) return;
     final max = controller.position.maxScrollExtent;
@@ -147,6 +166,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _syncProgressUiForCurrentArticle();
       }
       _checkAndAutoMarkRead(articleIndex);
+      if (articleIndex == _currentIndex) {
+        _scheduleProgressSave();
+      }
     }
   }
 
@@ -157,6 +179,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _audioProgressByArticle[_currentIndex] = clamped;
     }
     _checkAndAutoMarkRead(_currentIndex);
+    _scheduleProgressSave();
   }
 
   void _handleReaderPlaybackSnapshot(ReaderPlaybackSnapshot snapshot) {
@@ -195,9 +218,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
     for (final para in markdownParagraphs) {
       final sanitized = _sanitizeForTts(para);
-      if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+      final isVideo = para.contains('VIDEO_EMBED_START:');
+      if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
       displayParagraphs.add(para.trim());
-      ttsParagraphs.add(sanitized);
+      ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
     }
 
     // As a fallback for feeds with no clear paragraph breaks, use readability text content.
@@ -205,9 +229,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final textParagraphs = _extractParagraphsFromHtml(html);
       for (final para in textParagraphs) {
         final sanitized = _sanitizeForTts(para);
-        if (sanitized.isEmpty || _isMostlySymbols(sanitized)) continue;
+        final isVideo = para.contains('VIDEO_EMBED_START:');
+        if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
         displayParagraphs.add(para.trim());
-        ttsParagraphs.add(sanitized);
+        ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
       }
     }
 
@@ -250,6 +275,33 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _plainText = ttsParagraphs.join('\n\n');
       _headerCollapsedByArticle[articleIndex] = false;
     });
+
+    if (articleIndex == _currentIndex) {
+      final appState = context.read<AppState>();
+      final state = appState.getArticleState(article.guid);
+      if (state != null) {
+        if (!_hasAutoPlayed && widget.autoPlayMode && state.lastParagraphIndex != null) {
+          _hasAutoPlayed = true;
+          _currentParagraphIndex = state.lastParagraphIndex!;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Resuming last read article')),
+          );
+          _startPlayback(paragraphIndex: _currentParagraphIndex);
+        } else if (state.readProgress != null && state.readProgress! > 0) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              _scrollToProgress(state.readProgress!);
+            }
+          });
+        }
+      } else if (!_hasAutoPlayed && widget.autoPlayMode) {
+        _hasAutoPlayed = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Starting playback for unread article')),
+        );
+        _startPlayback();
+      }
+    }
   }
 
   List<String> _splitMarkdownIntoParagraphs(String markdown) {
@@ -352,9 +404,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   String _sanitizeForTts(String input) {
     var text = input;
-    // Strip markdown links, keep link text.
+    // Remove video embeds from TTS
+    text = text.replaceAll(RegExp(r'VIDEO_EMBED_START:.*?VIDEO_EMBED_END'), '');
+    // Strip common video unsupported text
+    text = text.replaceAll(RegExp(r'this video playback is not supported\.?', caseSensitive: false), ' ');
+    text = text.replaceAll(RegExp(r'this video cannot be played\.?', caseSensitive: false), ' ');
+    // Strip markdown links and images, keep link/alt text. The optional ! is for images.
     text = text.replaceAllMapped(
-      RegExp(r'\[(.*?)\]\((https?:\/\/[^\)]+)\)'),
+      RegExp(r'!?\[(.*?)\]\((https?:\/\/[^\)]+)\)'),
       (match) => match[1] ?? '',
     );
     // Remove bare URLs.
@@ -366,6 +423,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         RegExp(r'(\w)[*_]{1,3}(?=\s|$)'), (m) => m[1] ?? ''); // trailing * or _
     // Remove decorative markdown lines (----, ****, ===).
     text = text.replaceAll(RegExp(r'^[*_`~\-=]{3,}\s*', multiLine: true), ' ');
+    // Remove markdown header symbols.
+    text = text.replaceAll(RegExp(r'^#+\s*', multiLine: true), '');
+    // Remove all remaining markdown/special symbols that are often read aloud annoyingly by TTS.
+    text = text.replaceAll(RegExp(r'[*_~`<>{}\[\]\|\\]'), ' ');
     // Replace standalone bullet symbols.
     text = text.replaceAll(RegExp(r'(^|\s)[•·◦▷▶►∘▫▪❖➤➔]+(\s|$)'), ' ');
     // Collapse long runs of punctuation so the TTS doesn't read each mark individually.
@@ -732,6 +793,32 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   _UnreadBadge(articles: widget.articles),
                   const Spacer(),
                   IconButton(
+                    icon: Icon(
+                      state?.readAt != null
+                          ? Icons.mark_email_read
+                          : Icons.mark_email_unread,
+                      color: state?.readAt != null
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                    onPressed: () async {
+                      if (state?.readAt == null) {
+                        await _markRead(article);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Marked read & skipped to next')),
+                        );
+                        if (_currentIndex < widget.articles.length - 1) {
+                          readerAudioHandler.skipToNext();
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      } else {
+                        await context.read<AppState>().markArticleRead(article.guid, read: false);
+                      }
+                    },
+                    tooltip: state?.readAt != null ? 'Mark unread' : 'Mark read & play next',
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: _currentIndex > 0
                         ? readerAudioHandler.skipToPrevious
@@ -769,7 +856,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         MarkdownBody(
           data: fallbackMarkdown,
           onTapLink: (_, href, __) => _handleMarkdownLink(href),
-          inlineSyntaxes: [_TtsInlineSyntax()],
+          inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
+          builders: {
+            'video': _VideoBuilder(),
+          },
           styleSheet: markdownStyleSheet,
         ),
       ];
@@ -801,7 +891,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         child: MarkdownBody(
           data: paragraph,
           onTapLink: (_, href, __) => _handleMarkdownLink(href),
-          inlineSyntaxes: [_TtsInlineSyntax()],
+          inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
+          builders: {
+            'video': _VideoBuilder(),
+          },
           styleSheet: markdownStyleSheet,
         ),
       );
@@ -820,6 +913,20 @@ class _ReaderScreenState extends State<ReaderScreen> {
     for (final node in doc.querySelectorAll(junkSelectors)) {
       node.remove();
     }
+    
+    // Replace iframe and video tags with our custom markdown
+    for (final node in doc.querySelectorAll('iframe, video')) {
+      var src = node.attributes['src'];
+      if (src != null && src.isNotEmpty) {
+        if (src.startsWith('//')) {
+          src = 'https:$src';
+        }
+        final p = dom.Element.tag('p');
+        p.text = 'VIDEO_EMBED_START:${src}VIDEO_EMBED_END';
+        node.replaceWith(p);
+      }
+    }
+
     final cleaned = doc.body?.innerHtml ?? trimmed;
     return html2md.convert(cleaned);
   }
@@ -928,12 +1035,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     }
                   : null,
             ),
-            IconButton(
-              icon: const Icon(Icons.stop_circle, size: 28),
-              onPressed: (_isPlaying || _isPaused) && !_isBuffering
-                  ? _stopPlayback
-                  : null,
-            ),
+
             const SizedBox(width: 12),
             Expanded(
               child: Slider(
@@ -970,6 +1072,105 @@ class _TtsInlineSyntax extends md.InlineSyntax {
     final value = match[1] ?? '';
     parser.addNode(md.Element.text('tts', value));
     return true;
+  }
+}
+
+class _VideoInlineSyntax extends md.InlineSyntax {
+  _VideoInlineSyntax() : super(r'VIDEO_EMBED_START:(.*?)VIDEO_EMBED_END');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final src = match[1] ?? '';
+    final el = md.Element.withTag('video');
+    el.attributes['src'] = src;
+    parser.addNode(el);
+    return true;
+  }
+}
+
+class _VideoBuilder extends MarkdownElementBuilder {
+  @override
+  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    final src = element.attributes['src'] ?? '';
+    return _EmbeddedVideoPlayer(url: src);
+  }
+}
+
+class _EmbeddedVideoPlayer extends StatefulWidget {
+  final String url;
+  const _EmbeddedVideoPlayer({required this.url});
+
+  @override
+  State<_EmbeddedVideoPlayer> createState() => _EmbeddedVideoPlayerState();
+}
+
+class _EmbeddedVideoPlayerState extends State<_EmbeddedVideoPlayer> {
+  bool _showVideo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Text('Embedded video is only supported on Android/iOS.'),
+        ),
+      );
+    }
+
+    if (!_showVideo) {
+      return Container(
+        height: 200,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Icon(Icons.video_library, size: 48, color: Colors.white54),
+            Positioned(
+              bottom: 12,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Load Video'),
+                onPressed: () => setState(() => _showVideo = true),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final controller = webview.WebViewController()
+      ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(widget.url));
+
+    return Container(
+      height: 240,
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: webview.WebViewWidget(
+          controller: controller,
+          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer()),
+            Factory<HorizontalDragGestureRecognizer>(
+                () => HorizontalDragGestureRecognizer()),
+          },
+        ),
+      ),
+    );
   }
 }
 
