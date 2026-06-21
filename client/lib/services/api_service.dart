@@ -1,13 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../config.dart';
+
 class ApiService {
-  static const String baseUrl =
-      'http://localhost:4000'; // Update for production
+  bool get _hasServer => AppConfig.hasServer;
+
+  String get _baseUrl {
+    if (!_hasServer) {
+      throw StateError('No server configured. Set AWARE_SERVER_URL compile flag or create config.json.');
+    }
+    return AppConfig.serverUrl!;
+  }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
+    if (!_hasServer) return {'token': null, 'user': null};
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/login'),
+      Uri.parse('$_baseUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
@@ -18,8 +27,9 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> register(String email, String password) async {
+    if (!_hasServer) return {'token': null, 'user': null};
     final response = await http.post(
-      Uri.parse('$baseUrl/auth/register'),
+      Uri.parse('$_baseUrl/auth/register'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'password': password}),
     );
@@ -30,22 +40,25 @@ class ApiService {
   }
 
   Future<List<dynamic>> getMarketplaceCategories() async {
+    if (!_hasServer) return [];
     final response =
-        await http.get(Uri.parse('$baseUrl/marketplace/categories'));
+        await http.get(Uri.parse('$_baseUrl/marketplace/categories'));
     return jsonDecode(response.body);
   }
 
   Future<Map<String, dynamic>> getMarketplaceFeeds(
       String category, int page, int limit) async {
+    if (!_hasServer) return {'feeds': [], 'total': 0};
     final response = await http.get(
       Uri.parse(
-          '$baseUrl/marketplace/feeds?category=$category&page=$page&limit=$limit'),
+          '$_baseUrl/marketplace/feeds?category=$category&page=$page&limit=$limit'),
     );
     return jsonDecode(response.body);
   }
 
   Future<String> proxyFeed(String url) async {
-    final response = await http.get(Uri.parse('$baseUrl/proxy/feed?url=$url'));
+    if (!_hasServer) throw StateError('Proxy requires a configured server.');
+    final response = await http.get(Uri.parse('$_baseUrl/proxy/feed?url=$url'));
     return response.body;
   }
 
@@ -54,8 +67,9 @@ class ApiService {
     required List<String> read,
     required List<String> starred,
   }) async {
+    if (!_hasServer) return {};
     final response = await http.post(
-      Uri.parse('$baseUrl/sync/state'),
+      Uri.parse('$_baseUrl/sync/state'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -67,7 +81,8 @@ class ApiService {
 
   Future<Map<String, dynamic>> getSyncChanges(String token,
       {String? lastSync}) async {
-    final uri = Uri.parse('$baseUrl/sync/changes').replace(queryParameters: {
+    if (!_hasServer) return {'changes': []};
+    final uri = Uri.parse('$_baseUrl/sync/changes').replace(queryParameters: {
       if (lastSync != null) 'lastSync': lastSync,
     });
     final response =

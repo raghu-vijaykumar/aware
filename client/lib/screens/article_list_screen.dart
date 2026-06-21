@@ -6,6 +6,7 @@ import '../models/article.dart';
 import '../models/feed.dart';
 import '../providers/app_state.dart';
 import '../theme/theme.dart';
+import '../widgets/native_ad_tile.dart';
 import 'reader_screen.dart';
 
 class ArticleListScreen extends StatefulWidget {
@@ -22,7 +23,14 @@ class ArticleListScreen extends StatefulWidget {
 }
 
 class _ArticleListScreenState extends State<ArticleListScreen> {
-  late Future<List<Article>> _articlesFuture;
+  static const int _pageSize = 50;
+
+  bool _isLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
+  int _totalCount = 0;
+  final List<Article> _allLoadedArticles = [];
+  String? _loadError;
 
   _LengthFilter _lengthFilter = _LengthFilter.all;
   _TimeWindow _timeWindow = _TimeWindow.all;
@@ -31,395 +39,503 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   bool _unreadOnly = false;
   bool _likedOnly = false;
   bool _savedOnly = false;
+  bool _showSearch = false;
+  final _searchController = TextEditingController();
+  final _searchFocusNode = FocusNode();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _articlesFuture = widget.allFeeds
-        ? context.read<AppState>().getAllArticles()
-        : context.read<AppState>().getArticlesForFeed(widget.feedId!);
+    _loadInitialBatch();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 500) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadInitialBatch() async {
+    setState(() {
+      _isLoading = true;
+      _loadError = null;
+    });
+    try {
+      final appState = context.read<AppState>();
+      _totalCount = await appState.getArticlesCount(feedId: widget.feedId);
+      final articles = await appState.getArticlesPaginated(
+        feedId: widget.feedId,
+        limit: _pageSize,
+        offset: 0,
+      );
+      if (!mounted) return;
+      setState(() {
+        _allLoadedArticles
+          ..clear()
+          ..addAll(articles);
+        _hasMore = _allLoadedArticles.length < _totalCount;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loadError = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoadingMore || !_hasMore) return;
+    setState(() => _isLoadingMore = true);
+    try {
+      final appState = context.read<AppState>();
+      final articles = await appState.getArticlesPaginated(
+        feedId: widget.feedId,
+        limit: _pageSize,
+        offset: _allLoadedArticles.length,
+      );
+      if (!mounted) return;
+      setState(() {
+        _allLoadedArticles.addAll(articles);
+        _hasMore = _allLoadedArticles.length < _totalCount;
+        _isLoadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isLoadingMore = false);
+    }
+  }
+
+  Future<void> _refresh() async {
+    await _loadInitialBatch();
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_loadError != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: $_loadError'),
+            const SizedBox(height: 16),
+            FilledButton.tonalIcon(
+              onPressed: _refresh,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_allLoadedArticles.isEmpty) {
+      return const Center(
+        child: Text('No articles yet. Pull to refresh.'),
+      );
+    }
+
+    return Consumer<AppState>(builder: (context, appState, child) {
+      final theme = Theme.of(context);
+      final colorScheme = theme.colorScheme;
+      final textTheme = theme.textTheme;
+      final isLight = theme.brightness == Brightness.light;
+      final cardShadowColor =
+          colorScheme.shadow.withOpacity(isLight ? 0.25 : 0.55);
+
+      final filteredArticles = _applyFilters(_allLoadedArticles, appState.feeds);
+      final articleCount = filteredArticles.length;
+      final adCount = articleCount ~/ 5;
+
+      return Column(
+        children: [
+          _buildQuickFilters(
+            context,
+            textTheme: textTheme,
+            colorScheme: colorScheme,
+            articles: _allLoadedArticles,
+            feeds: appState.feeds,
+          ),
+          Expanded(
+            child: filteredArticles.isEmpty
+                ? const Center(
+                    child: Text('No articles match the current filters.'),
+                  )
+                : ListView.separated(
+                    controller: _scrollController,
+                    itemCount: articleCount + adCount + (_hasMore ? 1 : 0),
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: AppSpacing.s12),
+                    itemBuilder: (context, index) {
+                      if (index == articleCount + adCount) {
+                        return Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                          key: ValueKey('loading_$index'),
+                        );
+                      }
+
+                      if ((index + 1) % 5 == 0) {
+                        return NativeAdTile(key: ValueKey('ad_$index'));
+                      }
+
+                      final articleIndex = index - ((index + 1) ~/ 5);
+                      final article = filteredArticles[articleIndex];
+                      final state =
+                          appState.getArticleState(article.guid);
+                      final isRead = state?.readAt != null;
+                      final isLiked = state?.likedAt != null;
+                      final isStarred = state?.starredAt != null;
+                      final readProgress = state?.readProgress ?? 0.0;
+                      final isPartiallyRead = !isRead && readProgress > 0.0;
+
+                      final likeIconColor = isLiked
+                          ? colorScheme.error
+                          : colorScheme.onSurface.withOpacity(0.6);
+                      final saveIconColor = isStarred
+                          ? colorScheme.secondary
+                          : colorScheme.onSurface.withOpacity(0.6);
+
+                      return Dismissible(
+                        key: ValueKey(article.guid),
+                        background: Container(
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondaryContainer,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          alignment: Alignment.centerLeft,
+                          padding:
+                              const EdgeInsets.only(left: AppSpacing.s16),
+                          child: Icon(
+                            isRead
+                                ? Icons.mark_email_unread
+                                : Icons.mark_email_read,
+                            color: colorScheme.secondary,
+                          ),
+                        ),
+                        secondaryBackground: Container(
+                          decoration: BoxDecoration(
+                            color: colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(
+                              right: AppSpacing.s16),
+                          child: Icon(
+                            isStarred ? Icons.star_border : Icons.star,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                        confirmDismiss: (direction) async {
+                          if (direction == DismissDirection.startToEnd) {
+                            await _toggleReadStatus(
+                              appState: appState,
+                              article: article,
+                              isRead: isRead,
+                            );
+                          } else {
+                            await appState.markArticleStarred(
+                                article.guid,
+                                starred: !isStarred);
+                            _showActionSnackBar(
+                              message: isStarred
+                                  ? 'Removed from saved'
+                                  : 'Saved for later',
+                            );
+                          }
+                          return false;
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.s16,
+                              vertical: AppSpacing.s8),
+                          child: Material(
+                            color: Colors.transparent,
+                            elevation: isLight ? 10 : 14,
+                            shadowColor: cardShadowColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                color: isRead
+                                    ? theme.cardColor.withOpacity(0.9)
+                                    : theme.cardColor,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (_) => ReaderScreen(
+                                          articles: filteredArticles,
+                                          initialIndex: index),
+                                    ));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(
+                                        AppSpacing.s16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          article.title ?? 'Untitled',
+                                          style: textTheme.titleLarge
+                                              ?.copyWith(
+                                                  fontWeight:
+                                                      FontWeight.w700),
+                                        ),
+                                        const SizedBox(
+                                            height: AppSpacing.s8),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.schedule,
+                                              size: 14,
+                                              color: colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                            const SizedBox(
+                                                width: AppSpacing.s4),
+                                            Flexible(
+                                              child: Text(
+                                                '${_relativeTimeLabel(article)}  ${_articleSource(article, appState.feeds)}',
+                                                style: textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: colorScheme
+                                                      .onSurfaceVariant,
+                                                  fontWeight:
+                                                      FontWeight.w600,
+                                                  fontSize: 12,
+                                                ),
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            InkWell(
+                                              borderRadius: BorderRadius.circular(20),
+                                              onTap: () async {
+                                                await appState
+                                                    .markArticleLiked(
+                                                  article.guid,
+                                                  liked: !isLiked,
+                                                );
+                                                if (!mounted) return;
+                                                _showActionSnackBar(
+                                                  message: isLiked
+                                                      ? 'Removed like'
+                                                      : 'Liked article',
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 2),
+                                                child: Icon(
+                                                  isLiked
+                                                      ? Icons.favorite
+                                                      : Icons
+                                                          .favorite_border,
+                                                  size: 18,
+                                                  color: likeIconColor,
+                                                ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              borderRadius: BorderRadius.circular(20),
+                                              onTap: () async {
+                                                await appState
+                                                    .markArticleStarred(
+                                                  article.guid,
+                                                  starred: !isStarred,
+                                                );
+                                                if (!mounted) return;
+                                                _showActionSnackBar(
+                                                  message: isStarred
+                                                      ? 'Removed from saved'
+                                                      : 'Saved for later',
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 2),
+                                                child: Icon(
+                                                  isStarred
+                                                      ? Icons.bookmark
+                                                      : Icons
+                                                          .bookmark_border,
+                                                  size: 18,
+                                                  color: saveIconColor,
+                                                ),
+                                              ),
+                                            ),
+                                            if (article.url != null)
+                                              InkWell(
+                                                borderRadius: BorderRadius.circular(20),
+                                                onTap: () =>
+                                                    _shareArticle(
+                                                        context, article),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(left: 2),
+                                                  child: Icon(
+                                                      Icons.share,
+                                                      size: 18,
+                                                      color: colorScheme
+                                                          .onSurfaceVariant
+                                                          .withOpacity(0.6)),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        if (isPartiallyRead)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: AppSpacing.s8),
+                                            child: LinearProgressIndicator(
+                                              value: readProgress,
+                                              backgroundColor: colorScheme.surfaceVariant,
+                                              color: colorScheme.primary,
+                                              minHeight: 3,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildContinueReadingFAB() {
+    if (_allLoadedArticles.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        final filtered = _applyFilters(_allLoadedArticles, appState.feeds);
+        final unread = filtered.where((a) =>
+            appState.getArticleState(a.guid)?.readAt == null).toList();
+        
+        if (unread.isEmpty) return const SizedBox.shrink();
+
+        bool hasProgress = false;
+        for (final a in unread) {
+          final state = appState.getArticleState(a.guid);
+          if (state != null && (state.readProgress ?? 0.0) > 0.0) {
+            hasProgress = true;
+            break;
+          }
+        }
+
+        if (!hasProgress) return const SizedBox.shrink();
+        
+        return FloatingActionButton.extended(
+          onPressed: () => _launchCatchUpQueue(context, unread, appState),
+          icon: const Icon(Icons.play_arrow),
+          label: const Text('Continue Reading'),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.feedTitle),
-        actions: [
-          if (widget.onAddFeed != null)
-            IconButton(
-              icon: const Icon(Icons.add_link),
-              tooltip: 'Add Feed',
-              onPressed: widget.onAddFeed,
-            ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                _articlesFuture = widget.allFeeds
-                    ? context.read<AppState>().getAllArticles()
-                    : context
-                        .read<AppState>()
-                        .getArticlesForFeed(widget.feedId!);
-              });
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<Article>>(
-        future: _articlesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          final articles = snapshot.data ?? [];
-          if (articles.isEmpty) {
-            return const Center(
-                child: Text('No articles yet. Pull to refresh.'));
-          }
-
-          return Consumer<AppState>(builder: (context, appState, child) {
-            final theme = Theme.of(context);
-            final colorScheme = theme.colorScheme;
-            final textTheme = theme.textTheme;
-            final isLight = theme.brightness == Brightness.light;
-            final cardShadowColor =
-                colorScheme.shadow.withOpacity(isLight ? 0.25 : 0.55);
-
-            final filteredArticles = _applyFilters(articles, appState.feeds);
-
-            return Column(
-              children: [
-                _buildQuickFilters(
-                  context,
-                  textTheme: textTheme,
-                  colorScheme: colorScheme,
-                  articles: articles,
-                  feeds: appState.feeds,
+      appBar: _showSearch
+          ? AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    _showSearch = false;
+                    _searchController.clear();
+                    _keyword = null;
+                  });
+                },
+              ),
+              title: TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search articles...',
+                  border: InputBorder.none,
                 ),
-                Expanded(
-                  child: filteredArticles.isEmpty
-                      ? const Center(
-                          child: Text('No articles match the current filters.'),
-                        )
-                      : ListView.separated(
-                          itemCount: filteredArticles.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: AppSpacing.s12),
-                          itemBuilder: (context, index) {
-                            final article = filteredArticles[index];
-                            final state =
-                                appState.getArticleState(article.guid);
-                            final isRead = state?.readAt != null;
-                            final isLiked = state?.likedAt != null;
-                            final isStarred = state?.starredAt != null;
-                            final readProgress = state?.readProgress ?? 0.0;
-                            final isPartiallyRead = !isRead && readProgress > 0.0;
-
-                            final readIconColor = isRead
-                                ? colorScheme.primary.withOpacity(0.55)
-                                : colorScheme.primary;
-                            final likeIconColor = isLiked
-                                ? colorScheme.error
-                                : colorScheme.onSurface.withOpacity(0.6);
-                            final saveIconColor = isStarred
-                                ? colorScheme.secondary
-                                : colorScheme.onSurface.withOpacity(0.6);
-
-                            return Dismissible(
-                              key: ValueKey(article.guid),
-                              background: Container(
-                                decoration: BoxDecoration(
-                                  color: colorScheme.secondaryContainer,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                alignment: Alignment.centerLeft,
-                                padding:
-                                    const EdgeInsets.only(left: AppSpacing.s16),
-                                child: Icon(
-                                  isRead
-                                      ? Icons.mark_email_unread
-                                      : Icons.mark_email_read,
-                                  color: colorScheme.secondary,
-                                ),
-                              ),
-                              secondaryBackground: Container(
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primaryContainer,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(
-                                    right: AppSpacing.s16),
-                                child: Icon(
-                                  isStarred ? Icons.star_border : Icons.star,
-                                  color: colorScheme.primary,
-                                ),
-                              ),
-                              confirmDismiss: (direction) async {
-                                if (direction == DismissDirection.startToEnd) {
-                                  await _toggleReadStatus(
-                                    appState: appState,
-                                    article: article,
-                                    isRead: isRead,
-                                  );
-                                } else {
-                                  await appState.markArticleStarred(
-                                      article.guid,
-                                      starred: !isStarred);
-                                  _showActionSnackBar(
-                                    message: isStarred
-                                        ? 'Removed from saved'
-                                        : 'Saved for later',
-                                  );
-                                }
-                                return false;
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.s16,
-                                    vertical: AppSpacing.s8),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  elevation: isLight ? 10 : 14,
-                                  shadowColor: cardShadowColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                      color: isRead
-                                          ? theme.cardColor.withOpacity(0.9)
-                                          : theme.cardColor,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (_) => ReaderScreen(
-                                                articles: filteredArticles,
-                                                initialIndex: index),
-                                          ));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(
-                                              AppSpacing.s16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                article.title ?? 'Untitled',
-                                                style: textTheme.titleLarge
-                                                    ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                              ),
-                                              const SizedBox(
-                                                  height: AppSpacing.s4),
-                                              Text(
-                                                _articleSource(
-                                                    article, appState.feeds),
-                                                style: textTheme.bodySmall
-                                                    ?.copyWith(
-                                                  color: colorScheme
-                                                      .onSurfaceVariant,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                  height: AppSpacing.s8),
-                                              if (isPartiallyRead)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-                                                  child: LinearProgressIndicator(
-                                                    value: readProgress,
-                                                    backgroundColor: colorScheme.surfaceVariant,
-                                                    color: colorScheme.primary,
-                                                    minHeight: 4,
-                                                  ),
-                                                ),
-                                              // Removed inline summary preview to keep cards compact.
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(
-                                                    Icons.schedule,
-                                                    size: 16,
-                                                    color: colorScheme
-                                                        .onSurfaceVariant,
-                                                  ),
-                                                  const SizedBox(
-                                                      width: AppSpacing.s4),
-                                                  Text(
-                                                    _relativeTimeLabel(article),
-                                                    style: textTheme.bodySmall
-                                                        ?.copyWith(
-                                                      color: colorScheme
-                                                          .onSurfaceVariant,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                  height: AppSpacing.s8),
-                                              Row(
-                                                children: [
-                                                  IconButton(
-                                                    visualDensity:
-                                                        VisualDensity.compact,
-                                                    icon: Icon(
-                                                      isLiked
-                                                          ? Icons.favorite
-                                                          : Icons
-                                                              .favorite_border,
-                                                      color: likeIconColor,
-                                                    ),
-                                                    tooltip: isLiked
-                                                        ? 'Unlike'
-                                                        : 'Like',
-                                                    onPressed: () async {
-                                                      await appState
-                                                          .markArticleLiked(
-                                                        article.guid,
-                                                        liked: !isLiked,
-                                                      );
-                                                      if (!mounted) return;
-                                                      _showActionSnackBar(
-                                                        message: isLiked
-                                                            ? 'Removed like'
-                                                            : 'Liked article',
-                                                      );
-                                                    },
-                                                  ),
-                                                  const Spacer(),
-                                                  IconButton(
-                                                    visualDensity:
-                                                        VisualDensity.compact,
-                                                    icon: Icon(
-                                                      isRead
-                                                          ? Icons
-                                                              .mark_email_read
-                                                          : Icons
-                                                              .mark_email_unread,
-                                                      color: readIconColor,
-                                                    ),
-                                                    tooltip: isRead
-                                                        ? 'Mark unread'
-                                                        : 'Mark read',
-                                                    onPressed: () async {
-                                                      await _toggleReadStatus(
-                                                        appState: appState,
-                                                        article: article,
-                                                        isRead: isRead,
-                                                      );
-                                                      if (!mounted) return;
-                                                    },
-                                                  ),
-                                                  IconButton(
-                                                    visualDensity:
-                                                        VisualDensity.compact,
-                                                    icon: Icon(
-                                                      isStarred
-                                                          ? Icons.bookmark
-                                                          : Icons
-                                                              .bookmark_border,
-                                                      color: saveIconColor,
-                                                    ),
-                                                    tooltip: isStarred
-                                                        ? 'Unsave'
-                                                        : 'Save for later',
-                                                    onPressed: () async {
-                                                      await appState
-                                                          .markArticleStarred(
-                                                        article.guid,
-                                                        starred: !isStarred,
-                                                      );
-                                                      if (!mounted) return;
-                                                      _showActionSnackBar(
-                                                        message: isStarred
-                                                            ? 'Removed from saved'
-                                                            : 'Saved for later',
-                                                      );
-                                                    },
-                                                  ),
-                                                  if (article.url != null)
-                                                    IconButton(
-                                                      visualDensity:
-                                                          VisualDensity.compact,
-                                                      icon: const Icon(
-                                                          Icons.share),
-                                                      tooltip: 'Share',
-                                                      onPressed: () =>
-                                                          _shareArticle(
-                                                              context, article),
-                                                    ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                onChanged: (value) {
+                  setState(() {
+                    _keyword = value.trim().isEmpty ? null : value.trim();
+                  });
+                },
+              ),
+              actions: [
+                if (_searchController.text.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() => _keyword = null);
+                    },
+                  ),
+              ],
+            )
+          : AppBar(
+              title: Text(widget.feedTitle),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  tooltip: 'Search',
+                  onPressed: () {
+                    setState(() {
+                      _showSearch = true;
+                      _keyword = null;
+                    });
+                    _searchFocusNode.requestFocus();
+                  },
+                ),
+                if (widget.onAddFeed != null)
+                  IconButton(
+                    icon: const Icon(Icons.add_link),
+                    tooltip: 'Add Feed',
+                    onPressed: widget.onAddFeed,
+                  ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: _refresh,
                 ),
               ],
-            );
-          });
-        },
-      ),
-      floatingActionButton: FutureBuilder<List<Article>>(
-        future: _articlesFuture,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const SizedBox.shrink();
-          }
-          return Consumer<AppState>(
-            builder: (context, appState, child) {
-              final articles = snapshot.data!;
-              final filtered = _applyFilters(articles, appState.feeds);
-              final unread = filtered.where((a) =>
-                  appState.getArticleState(a.guid)?.readAt == null).toList();
-              
-              if (unread.isEmpty) return const SizedBox.shrink();
-
-              // Check if any unread article has actual reading progress to resume.
-              bool hasProgress = false;
-              for (final a in unread) {
-                final state = appState.getArticleState(a.guid);
-                if (state != null && (state.readProgress ?? 0.0) > 0.0) {
-                  hasProgress = true;
-                  break;
-                }
-              }
-
-              if (!hasProgress) return const SizedBox.shrink();
-              
-              return FloatingActionButton.extended(
-                onPressed: () => _launchCatchUpQueue(context, unread, appState),
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Continue Reading'),
-              );
-            },
-          );
-        },
-      ),
+            ),
+      body: _buildBody(),
+      floatingActionButton: _buildContinueReadingFAB(),
     );
   }
 

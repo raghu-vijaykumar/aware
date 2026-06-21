@@ -1,55 +1,57 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/article.dart';
 import '../models/feed.dart';
 import '../models/user_article_state.dart';
-import '../services/api_service.dart';
-import '../services/background_feed_worker.dart';
 import '../services/database_service.dart';
 import '../services/feed_service.dart';
-import '../services/storage_service.dart';
+import 'article_provider.dart';
+import 'auth_provider.dart';
+import 'feed_provider.dart';
+import 'settings_provider.dart';
+import 'sync_provider.dart';
 
 class AppState extends ChangeNotifier {
-  static const String lowDataModePrefKey = 'app_low_data_mode';
-  static const String autoMarkReadEnabledPrefKey = 'app_auto_mark_read_enabled';
-  static const String autoMarkReadThresholdPrefKey =
-      'app_auto_mark_read_threshold';
   final DatabaseService _db = DatabaseService();
   final FeedService _feedService = FeedService();
-  final ApiService _apiService = ApiService();
 
-  // Seeds a curated list of engineering RSS feeds when running in debug mode
-  // and the local database is empty. This avoids manual entry during dev/test.
+  final FeedProvider feed;
+  final ArticleProvider article;
+  final AuthProvider auth;
+  final SettingsProvider settings;
+  final SyncProvider sync;
+
+  AppState({
+    required this.feed,
+    required this.article,
+    required this.auth,
+    required this.settings,
+    required this.sync,
+  }) {
+    feed.addListener(notifyListeners);
+    article.addListener(notifyListeners);
+    auth.addListener(notifyListeners);
+    settings.addListener(notifyListeners);
+    sync.addListener(notifyListeners);
+  }
+
   static const List<Map<String, String>> _debugFeedSources = [
-    {
-      'name': 'google',
-      'url': 'https://developers.googleblog.com/feeds/posts/default'
-    },
+    {'name': 'google', 'url': 'https://developers.googleblog.com/feeds/posts/default'},
     {'name': 'google_research', 'url': 'https://research.google/blog/rss/'},
     {'name': 'meta', 'url': 'https://engineering.fb.com/feed/'},
     {'name': 'airbnb', 'url': 'https://medium.com/feed/airbnb-engineering'},
-    {
-      'name': 'linkedin',
-      'url': 'https://engineering.linkedin.com/blog.rss.html'
-    },
+    {'name': 'linkedin', 'url': 'https://engineering.linkedin.com/blog.rss.html'},
     {'name': 'spotify', 'url': 'https://engineering.atspotify.com/feed/'},
     {'name': 'dropbox', 'url': 'https://dropbox.tech/feed'},
     {'name': 'slack', 'url': 'https://slack.engineering/feed'},
-    {
-      'name': 'pinterest_rss',
-      'url': 'https://medium.com/feed/pinterest-engineering'
-    },
+    {'name': 'pinterest_rss', 'url': 'https://medium.com/feed/pinterest-engineering'},
     {'name': 'microsoft', 'url': 'https://devblogs.microsoft.com/feed/'},
     {'name': 'aws', 'url': 'https://aws.amazon.com/blogs/aws/feed/'},
     {'name': 'github', 'url': 'https://github.blog/category/engineering/feed/'},
     {'name': 'cloudflare', 'url': 'https://blog.cloudflare.com/rss/'},
     {'name': 'databricks', 'url': 'https://www.databricks.com/feed'},
-    {
-      'name': 'atlassian',
-      'url': 'https://www.atlassian.com/blog/artificial-intelligence/feed'
-    },
+    {'name': 'atlassian', 'url': 'https://www.atlassian.com/blog/artificial-intelligence/feed'},
     {'name': 'discord', 'url': 'https://discord.com/blog/rss.xml'},
     {'name': 'canva', 'url': 'https://www.canva.dev/blog/engineering/feed'},
     {'name': 'doordash', 'url': 'https://doordash.engineering/feed/'},
@@ -62,158 +64,55 @@ class AppState extends ChangeNotifier {
     {'name': 'square', 'url': 'https://developer.squareup.com/blog/rss.xml'},
   ];
 
-  static const double speechRateBase = 0.5;
-  static const double speechRateMinRatio = 0.5;
-  static const double speechRateMaxRatio = 4.0;
-  static const double textScaleMin = 0.9;
-  static const double textScaleMax = 1.4;
-
-  // A lightweight cross-platform storage implementation.
-  StorageService? _storage;
-
-  List<Feed> _feeds = [];
-  List<Feed> get feeds => _feeds;
-
-  bool _isSyncing = false;
-  bool get isSyncing => _isSyncing;
-
-  String? _authToken;
-  String? get authToken => _authToken;
-
-  String? _userEmail;
-  String? get userEmail => _userEmail;
-
-  bool get isLoggedIn => _authToken != null;
-
-  ThemeMode _themeMode = ThemeMode.system;
-  ThemeMode get themeMode => _themeMode;
-
-  double _speechRateRatio = 1.0; // 1.0 ratio equals the 0.5x TTS base speed.
-  double get speechRate => _speechRateRatio;
-  double get speechRateTts => (_speechRateRatio * speechRateBase).clamp(
-        speechRateBase * speechRateMinRatio,
-        speechRateBase * speechRateMaxRatio,
-      );
-
-  String? _voiceId;
-  String? get voiceId => _voiceId;
-
-  bool _autoPlayNext = false;
-  bool get autoPlayNext => _autoPlayNext;
-
-  bool _lowDataMode = false;
-  bool get lowDataMode => _lowDataMode;
-
-  bool _autoMarkReadEnabled = true;
-  bool get autoMarkReadEnabled => _autoMarkReadEnabled;
-
-  int _autoMarkReadThreshold = 70;
-  int get autoMarkReadThreshold => _autoMarkReadThreshold;
-
-  double _textScaleFactor = 1.0;
-  double get textScaleFactor => _textScaleFactor;
-
-  final Map<String, UserArticleState> _articleStateCache = {};
+  static double get speechRateBase => SettingsProvider.speechRateBase;
+  static double get speechRateMinRatio => SettingsProvider.speechRateMinRatio;
+  static double get speechRateMaxRatio => SettingsProvider.speechRateMaxRatio;
+  static double get textScaleMin => SettingsProvider.textScaleMin;
+  static double get textScaleMax => SettingsProvider.textScaleMax;
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  UserArticleState? getArticleState(String guid) => _articleStateCache[guid];
+  // Backward-compatible getters — delegate to sub-providers
+  List<Feed> get feeds => feed.feeds;
+  bool get isSyncing => sync.isSyncing;
+  String? get authToken => auth.authToken;
+  String? get userEmail => auth.userEmail;
+  bool get isLoggedIn => auth.isLoggedIn;
+  ThemeMode get themeMode => settings.themeMode;
+  double get speechRate => settings.speechRateRatio;
+  double get speechRateTts => settings.speechRateTts;
+  String? get voiceId => settings.voiceId;
+  bool get autoPlayNext => settings.autoPlayNext;
+  bool get lowDataMode => settings.lowDataMode;
+  bool get autoMarkReadEnabled => settings.autoMarkReadEnabled;
+  int get autoMarkReadThreshold => settings.autoMarkReadThreshold;
+  double get textScaleFactor => settings.textScaleFactor;
 
-  Future<void> _loadArticleStateCache() async {
-    final states = await _db.getAllUserState();
-    _articleStateCache
-      ..clear()
-      ..addEntries(states.map((s) => MapEntry(s.articleGuid, s)));
-  }
-
-  Future<void> _loadAuthToken() async {
-    _storage ??= await StorageService.getInstance();
-
-    final token = await _storage!.read('auth_token');
-    final email = await _storage!.read('auth_email');
-    _authToken = token;
-    _userEmail = email;
-
-    final prefs = await SharedPreferences.getInstance();
-    final savedTheme = prefs.getString('app_theme_mode');
-    final storedRatio =
-        prefs.getDouble('app_tts_rate_ratio'); // New key (ratioed speeds).
-    final legacyRate =
-        prefs.getDouble('app_tts_rate'); // Legacy key (raw TTS rate).
-    final savedTextScale = prefs.getDouble('app_text_scale');
-
-    if (storedRatio != null) {
-      _speechRateRatio = storedRatio.clamp(
-        speechRateMinRatio,
-        speechRateMaxRatio,
-      );
-    } else if (legacyRate != null) {
-      // Convert legacy raw rate (e.g., 0.5–1.5) to the new ratio baseline.
-      _speechRateRatio = (legacyRate / speechRateBase).clamp(
-        speechRateMinRatio,
-        speechRateMaxRatio,
-      );
-    } else {
-      _speechRateRatio = 1.0; // Defaults to the calm 0.5x engine speed.
-    }
-    _voiceId = prefs.getString('app_tts_voice_id');
-    _autoPlayNext = prefs.getBool('app_tts_autoplay_next') ?? false;
-    _lowDataMode = prefs.getBool(lowDataModePrefKey) ?? false;
-    _autoMarkReadEnabled = prefs.getBool(autoMarkReadEnabledPrefKey) ?? true;
-    _autoMarkReadThreshold =
-        (prefs.getInt(autoMarkReadThresholdPrefKey) ?? 70).clamp(1, 100);
-    if (savedTheme != null) {
-      switch (savedTheme) {
-        case 'light':
-          _themeMode = ThemeMode.light;
-          break;
-        case 'dark':
-          _themeMode = ThemeMode.dark;
-          break;
-        default:
-          _themeMode = ThemeMode.system;
-      }
-    }
-    _textScaleFactor = (savedTextScale ?? 1.0).clamp(
-      textScaleMin,
-      textScaleMax,
-    );
-    notifyListeners();
-  }
-
-  Future<void> loadFeeds() async {
-    _feeds = await _db.getFeeds();
-    await _loadArticleStateCache();
-    notifyListeners();
-  }
+  UserArticleState? getArticleState(String guid) => article.getArticleState(guid);
 
   Future<void> _seedMockDataIfEmpty() async {
     if (!kDebugMode) return;
-
     final existingFeeds = await _db.getFeeds();
     if (existingFeeds.isNotEmpty) return;
-
     for (final source in _debugFeedSources) {
       final url = source['url'];
       if (url == null) continue;
-
       try {
-        final feed = await _feedService.fetchFeedMetadata(url);
+        final feedMeta = await _feedService.fetchFeedMetadata(url);
         final feedWithFallback = Feed(
-          url: feed.url,
-          title: feed.title ?? source['name'],
-          description: feed.description,
-          siteUrl: feed.siteUrl,
-          iconUrl: feed.iconUrl,
-          category: feed.category,
-          curator: feed.curator,
-          paused: feed.paused,
-          lastFetched: feed.lastFetched,
-          etag: feed.etag,
-          lastModified: feed.lastModified,
+          url: feedMeta.url,
+          title: feedMeta.title ?? source['name'],
+          description: feedMeta.description,
+          siteUrl: feedMeta.siteUrl,
+          iconUrl: feedMeta.iconUrl,
+          category: feedMeta.category,
+          curator: feedMeta.curator,
+          paused: feedMeta.paused,
+          lastFetched: feedMeta.lastFetched,
+          etag: feedMeta.etag,
+          lastModified: feedMeta.lastModified,
         );
-
         final id = await _db.insertFeed(feedWithFallback);
         final articles = await _feedService.fetchArticles(url);
         for (final article in articles) {
@@ -226,219 +125,61 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    await _loadAuthToken();
+    await auth.load();
+    await settings.load();
     await _seedMockDataIfEmpty();
-    await loadFeeds();
+    await article.loadArticleStateCache();
+    await feed.loadFeeds();
     _isInitialized = true;
     notifyListeners();
   }
 
-  Future<void> addFeedFromUrl(String url) async {
-    final feed = await _feedService.fetchFeedMetadata(url);
-    final id = await _db.insertFeed(feed);
-    final articles = await _feedService.fetchArticles(url);
+  // Feeds
+  Future<void> loadFeeds() => feed.loadFeeds();
+  Future<void> addFeedFromUrl(String url) => feed.addFeedFromUrl(url);
 
-    for (final article in articles) {
-      await _db.insertArticle(article.copyWith(feedId: id));
-    }
+  // Articles
+  Future<List<Article>> getArticlesForFeed(int feedId) => article.getArticlesForFeed(feedId);
+  Future<List<Article>> getAllArticles() => article.getAllArticles();
+  Future<List<Article>> getArticlesPaginated({int? feedId, int? limit, int offset = 0}) =>
+      article.getArticlesPaginated(feedId: feedId, limit: limit, offset: offset);
+  Future<int> getArticlesCount({int? feedId}) =>
+      article.getArticlesCount(feedId: feedId);
+  Future<void> markArticleRead(String guid, {bool read = true}) =>
+      article.markArticleRead(guid, read: read);
+  Future<void> markArticleLiked(String guid, {bool liked = true}) =>
+      article.markArticleLiked(guid, liked: liked);
+  Future<void> markArticleStarred(String guid, {bool starred = true}) =>
+      article.markArticleStarred(guid, starred: starred);
+  Future<void> recordArticleProgress(String guid, double progress, int paragraphIndex) =>
+      article.recordArticleProgress(guid, progress, paragraphIndex);
+  Future<List<Article>> getStarredArticles() => article.getStarredArticles();
 
-    await loadFeeds();
-  }
+  // Auth
+  Future<void> login(String email, String password) => auth.login(email, password);
+  Future<void> logout() => auth.logout();
 
-  Future<List<Article>> getArticlesForFeed(int feedId) async {
-    return await _db.getArticlesForFeed(feedId);
-  }
+  // Settings
+  Future<void> setThemeMode(ThemeMode mode) => settings.setThemeMode(mode);
+  Future<void> setSpeechRate(double rate) => settings.setSpeechRate(rate);
+  Future<void> setVoiceId(String? voiceId) => settings.setVoiceId(voiceId);
+  Future<void> setAutoPlayNext(bool enabled) => settings.setAutoPlayNext(enabled);
+  Future<void> setTextScaleFactor(double scale) => settings.setTextScaleFactor(scale);
+  Future<void> setLowDataMode(bool enabled) => settings.setLowDataMode(enabled);
+  Future<void> setAutoMarkReadEnabled(bool enabled) => settings.setAutoMarkReadEnabled(enabled);
+  Future<void> setAutoMarkReadThreshold(int thresholdPercent) =>
+      settings.setAutoMarkReadThreshold(thresholdPercent);
 
-  Future<List<Article>> getAllArticles() async {
-    return await _db.getAllArticles();
-  }
+  // Sync
+  Future<void> syncState() => sync.syncState(auth);
 
-  Future<void> markArticleRead(String guid, {bool read = true}) async {
-    final existing = _articleStateCache[guid];
-    final state = UserArticleState(
-      id: existing?.id,
-      articleGuid: guid,
-      readAt: read ? DateTime.now().millisecondsSinceEpoch : null,
-      likedAt: existing?.likedAt,
-      starredAt: existing?.starredAt,
-      tags: existing?.tags,
-      lastAccessedAt: existing?.lastAccessedAt,
-      readProgress: existing?.readProgress,
-      lastParagraphIndex: existing?.lastParagraphIndex,
-    );
-    await _db.insertUserState(state);
-    _articleStateCache[guid] = state;
-    notifyListeners();
-  }
-
-  Future<void> markArticleLiked(String guid, {bool liked = true}) async {
-    final existing = _articleStateCache[guid];
-    final state = UserArticleState(
-      id: existing?.id,
-      articleGuid: guid,
-      readAt: existing?.readAt,
-      likedAt: liked ? DateTime.now().millisecondsSinceEpoch : null,
-      starredAt: existing?.starredAt,
-      tags: existing?.tags,
-      lastAccessedAt: existing?.lastAccessedAt,
-      readProgress: existing?.readProgress,
-      lastParagraphIndex: existing?.lastParagraphIndex,
-    );
-    await _db.insertUserState(state);
-    _articleStateCache[guid] = state;
-    notifyListeners();
-  }
-
-  Future<void> markArticleStarred(String guid, {bool starred = true}) async {
-    final existing = _articleStateCache[guid];
-    final state = UserArticleState(
-      id: existing?.id,
-      articleGuid: guid,
-      readAt: existing?.readAt,
-      likedAt: existing?.likedAt,
-      starredAt: starred ? DateTime.now().millisecondsSinceEpoch : null,
-      tags: existing?.tags,
-      lastAccessedAt: existing?.lastAccessedAt,
-      readProgress: existing?.readProgress,
-      lastParagraphIndex: existing?.lastParagraphIndex,
-    );
-    await _db.insertUserState(state);
-    _articleStateCache[guid] = state;
-    notifyListeners();
-  }
-
-  Future<void> recordArticleProgress(String guid, double progress, int paragraphIndex) async {
-    final existing = _articleStateCache[guid];
-    final state = UserArticleState(
-      id: existing?.id,
-      articleGuid: guid,
-      readAt: existing?.readAt,
-      likedAt: existing?.likedAt,
-      starredAt: existing?.starredAt,
-      tags: existing?.tags,
-      lastAccessedAt: DateTime.now().millisecondsSinceEpoch,
-      readProgress: progress,
-      lastParagraphIndex: paragraphIndex,
-    );
-    await _db.insertUserState(state);
-    _articleStateCache[guid] = state;
-    notifyListeners();
-  }
-
-  Future<void> login(String email, String password) async {
-    final resp = await _apiService.login(email, password);
-    _authToken = resp['token'] as String?;
-    _userEmail = resp['user']?['email'] as String?;
-
-    if (_authToken != null) {
-      _storage ??= await StorageService.getInstance();
-      await _storage!.write('auth_token', _authToken!);
-      if (_userEmail != null) {
-        await _storage!.write('auth_email', _userEmail!);
-      }
-    }
-
-    notifyListeners();
-  }
-
-  Future<void> logout() async {
-    _authToken = null;
-    _userEmail = null;
-    _storage ??= await StorageService.getInstance();
-    await _storage!.delete('auth_token');
-    await _storage!.delete('auth_email');
-    notifyListeners();
-  }
-
-  Future<void> setThemeMode(ThemeMode mode) async {
-    _themeMode = mode;
-    final prefs = await SharedPreferences.getInstance();
-    final value = mode == ThemeMode.light
-        ? 'light'
-        : mode == ThemeMode.dark
-            ? 'dark'
-            : 'system';
-    await prefs.setString('app_theme_mode', value);
-    notifyListeners();
-  }
-
-  Future<void> setSpeechRate(double rate) async {
-    _speechRateRatio = rate.clamp(speechRateMinRatio, speechRateMaxRatio);
-    final prefs = await SharedPreferences.getInstance();
-    // Persist both the new ratioed value and the legacy raw rate for backward compatibility.
-    await prefs.setDouble('app_tts_rate_ratio', _speechRateRatio);
-    await prefs.setDouble('app_tts_rate', speechRateTts);
-    notifyListeners();
-  }
-
-  Future<void> setVoiceId(String? voiceId) async {
-    _voiceId = voiceId;
-    final prefs = await SharedPreferences.getInstance();
-    if (voiceId == null) {
-      await prefs.remove('app_tts_voice_id');
-    } else {
-      await prefs.setString('app_tts_voice_id', voiceId);
-    }
-    notifyListeners();
-  }
-
-  Future<void> setAutoPlayNext(bool enabled) async {
-    _autoPlayNext = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('app_tts_autoplay_next', enabled);
-    notifyListeners();
-  }
-
-  Future<void> setTextScaleFactor(double scale) async {
-    _textScaleFactor = scale.clamp(textScaleMin, textScaleMax);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('app_text_scale', _textScaleFactor);
-    notifyListeners();
-  }
-
-  Future<void> setLowDataMode(bool enabled) async {
-    _lowDataMode = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(lowDataModePrefKey, enabled);
-    notifyListeners();
-    await BackgroundFeedWorker.schedulePeriodicRefresh();
-  }
-
-  Future<void> setAutoMarkReadEnabled(bool enabled) async {
-    _autoMarkReadEnabled = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(autoMarkReadEnabledPrefKey, enabled);
-    notifyListeners();
-  }
-
-  Future<void> setAutoMarkReadThreshold(int thresholdPercent) async {
-    _autoMarkReadThreshold = thresholdPercent.clamp(1, 100);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(autoMarkReadThresholdPrefKey, _autoMarkReadThreshold);
-    notifyListeners();
-  }
-
-  Future<List<Article>> getStarredArticles() async {
-    return await _db.getStarredArticles();
-  }
-
-  Future<void> syncState() async {
-    if (_authToken == null) return;
-    _isSyncing = true;
-    notifyListeners();
-
-    final changes = await _db.getAllUserState();
-    final read = changes
-        .where((c) => c.readAt != null)
-        .map((c) => c.articleGuid)
-        .toList();
-    final starred = changes
-        .where((c) => c.starredAt != null)
-        .map((c) => c.articleGuid)
-        .toList();
-
-    await _apiService.syncState(_authToken!, read: read, starred: starred);
-    _isSyncing = false;
-    notifyListeners();
+  @override
+  void dispose() {
+    feed.removeListener(notifyListeners);
+    article.removeListener(notifyListeners);
+    auth.removeListener(notifyListeners);
+    settings.removeListener(notifyListeners);
+    sync.removeListener(notifyListeners);
+    super.dispose();
   }
 }

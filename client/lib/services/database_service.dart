@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/feed.dart';
 import '../models/article.dart';
+import '../models/folder.dart';
 import '../models/user_article_state.dart';
 
 class DatabaseService {
@@ -210,12 +211,35 @@ class DatabaseService {
   }
 
   Future<List<Article>> getAllArticles() async {
+    return getArticlesPaginated(limit: null, offset: 0);
+  }
+
+  Future<List<Article>> getArticlesPaginated({
+    int? feedId,
+    int? limit = 50,
+    int offset = 0,
+  }) async {
     final db = await database;
+    final where = feedId != null ? 'WHERE feed_id = ?' : '';
+    final whereArgs = feedId != null ? [feedId] : [];
     final maps = await db.rawQuery('''
       SELECT * FROM articles
+      $where
       ORDER BY COALESCE(published_at, fetched_at) DESC
-    ''');
+      LIMIT ${limit ?? -1} OFFSET $offset
+    ''', whereArgs);
     return List.generate(maps.length, (i) => Article.fromMap(maps[i]));
+  }
+
+  Future<int> getArticlesCount({int? feedId}) async {
+    final db = await database;
+    final where = feedId != null ? 'WHERE feed_id = ?' : '';
+    final whereArgs = feedId != null ? [feedId] : [];
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM articles $where',
+      whereArgs,
+    );
+    return Sqflite.firstIntValue(result) ?? 0;
   }
 
   Future<Set<String>> getAllArticleGuids() async {
@@ -351,5 +375,65 @@ class DatabaseService {
       )
     ''');
     _ensuredPrefetchCacheTable = true;
+  }
+
+  Future<int> insertFolder(Folder folder) async {
+    final db = await database;
+    return await db.insert('folders', folder.toMap());
+  }
+
+  Future<void> renameFolder(int id, String newName) async {
+    final db = await database;
+    await db.update('folders', {'name': newName}, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<void> deleteFolder(int id) async {
+    final db = await database;
+    await db.delete('feed_folders', where: 'folder_id = ?', whereArgs: [id]);
+    await db.delete('folders', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<Folder>> getFolders() async {
+    final db = await database;
+    final maps = await db.query('folders', orderBy: 'name ASC');
+    return maps.map((m) => Folder.fromMap(m)).toList();
+  }
+
+  Future<void> assignFeedToFolder(int feedId, int folderId) async {
+    final db = await database;
+    await db.insert('feed_folders', {
+      'feed_id': feedId,
+      'folder_id': folderId,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> removeFeedFromFolder(int feedId, int folderId) async {
+    final db = await database;
+    await db.delete('feed_folders',
+        where: 'feed_id = ? AND folder_id = ?', whereArgs: [feedId, folderId]);
+  }
+
+  Future<void> removeFeedFromAllFolders(int feedId) async {
+    final db = await database;
+    await db.delete('feed_folders', where: 'feed_id = ?', whereArgs: [feedId]);
+  }
+
+  Future<List<int>> getFeedIdsInFolder(int folderId) async {
+    final db = await database;
+    final maps = await db.query('feed_folders',
+        columns: ['feed_id'], where: 'folder_id = ?', whereArgs: [folderId]);
+    return maps.map((m) => m['feed_id'] as int).toList();
+  }
+
+  Future<Map<int, List<int>>> getFeedFolderAssignments() async {
+    final db = await database;
+    final maps = await db.query('feed_folders');
+    final result = <int, List<int>>{};
+    for (final m in maps) {
+      final feedId = m['feed_id'] as int;
+      final folderId = m['folder_id'] as int;
+      result.putIfAbsent(folderId, () => []).add(feedId);
+    }
+    return result;
   }
 }

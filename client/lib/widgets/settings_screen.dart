@@ -9,9 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../providers/app_state.dart';
+import '../screens/folders_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/privacy_policy_screen.dart';
 import '../screens/subscriptions_screen.dart';
 import '../services/opml_service.dart';
+import '../theme/theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -215,6 +218,162 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Widget _buildPremiumCard(BuildContext context, AppState appState) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: colorScheme.primary.withOpacity(0.3)),
+      ),
+      elevation: 2,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => _showPremiumDialog(context, appState),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.auto_awesome,
+                  color: colorScheme.primary,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Go Ad-Free',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Just \$1/month. Support indie dev.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '\$1/mo',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showPremiumDialog(
+      BuildContext context, AppState appState) async {
+    if (!appState.isLoggedIn) {
+      final signedIn = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+      if (signedIn != true || !context.mounted) return;
+    }
+
+    if (!context.mounted) return;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.auto_awesome, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              const Text('Aware Premium'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Subscribe for \$1/month and get:',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+              _featureRow(Icons.videocam_off, 'Ad-free reading experience'),
+              const SizedBox(height: 12),
+              _featureRow(Icons.download_done, 'Save your reading progress'),
+              const SizedBox(height: 12),
+              _featureRow(
+                  Icons.bookmark, 'Save subscriptions across devices'),
+              const SizedBox(height: 12),
+              _featureRow(Icons.sync, 'Sync state across devices'),
+              const SizedBox(height: 12),
+              _featureRow(
+                  Icons.folder_special, 'Unlimited folder organization'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Not now'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                        'Subscription coming soon! You\'ll be charged \$1/month.'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.lock, size: 18),
+              label: const Text('Subscribe \$1/mo'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _featureRow(IconData icon, String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: colorScheme.primary),
+        const SizedBox(width: 10),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 14))),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,43 +384,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context, appState, child) {
           return ListView(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 12.0),
-                child: Text(
-                  'Account',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              ListTile(
-                title: const Text('Account'),
-                subtitle: Text(appState.isLoggedIn
-                    ? 'Signed in as ${appState.userEmail ?? 'unknown'}'
-                    : 'Not signed in'),
-                trailing: appState.isLoggedIn
-                    ? TextButton(
-                        child: const Text('Logout'),
-                        onPressed: () async {
-                          await appState.logout();
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Signed out')),
-                          );
-                        },
-                      )
-                    : TextButton(
-                        child: const Text('Sign in'),
-                        onPressed: () async {
-                          await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const LoginScreen(),
-                          ));
-                        },
-                      ),
-              ),
-              const Divider(),
+              _buildPremiumCard(context, appState),
+              const SizedBox(height: AppSpacing.s8),
+
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
@@ -489,6 +614,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               ListTile(
+                leading: const Icon(Icons.folder),
+                title: const Text('Manage Folders'),
+                subtitle: const Text('Organise feeds into folders'),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const FoldersScreen(),
+                  ));
+                },
+              ),
+              ListTile(
                 leading: const Icon(Icons.file_upload),
                 title: const Text('Import Subscriptions'),
                 subtitle: const Text('Import via OPML file'),
@@ -568,6 +703,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     await context.read<AppState>().setThemeMode(selected);
                   }
                 },
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Legal',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.privacy_tip),
+                title: const Text('Privacy Policy'),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const PrivacyPolicyScreen(),
+                  ));
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.description),
+                title: const Text('Open Source Licenses'),
+                onTap: () => showLicensePage(
+                  context: context,
+                  applicationName: 'Aware',
+                  applicationVersion: '1.0.0',
+                ),
               ),
             ],
           );

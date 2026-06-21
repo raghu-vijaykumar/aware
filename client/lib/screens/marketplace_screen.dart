@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../models/feed.dart';
@@ -14,272 +17,11 @@ class MarketplaceScreen extends StatefulWidget {
 
 class _MarketplaceScreenState extends State<MarketplaceScreen> {
   Map<String, List<Feed>> _feedsByCategory = {};
+  final Map<String, _CategoryMeta> _categories = {};
   bool _isLoading = true;
   String? _selectedCategory;
   final _urlController = TextEditingController();
   bool _isAdding = false;
-
-  static final List<_CategoryMeta> _categories = [
-    _CategoryMeta(id: 'tech', label: 'Tech & Engineering', color: Colors.indigo),
-    _CategoryMeta(id: 'ai', label: 'AI & Data', color: Colors.deepPurple),
-    _CategoryMeta(id: 'design', label: 'Design & UX', color: Colors.pink),
-    _CategoryMeta(id: 'business', label: 'Business & Startups', color: Colors.teal),
-    _CategoryMeta(id: 'news', label: 'News & World', color: Colors.orange),
-    _CategoryMeta(id: 'science', label: 'Science & Space', color: Colors.blueGrey),
-    _CategoryMeta(id: 'security', label: 'Security', color: Colors.redAccent),
-    _CategoryMeta(id: 'sports', label: 'Sports', color: Colors.green),
-  ];
-
-  static final List<Feed> _defaultMarketplaceFeeds = [
-    // Tech & Engineering
-    Feed(
-      url: 'https://techcrunch.com/feed/',
-      title: 'TechCrunch',
-      description: 'Startups, products, and Silicon Valley news.',
-      category: 'tech',
-    ),
-    Feed(
-      url: 'https://www.theverge.com/rss/index.xml',
-      title: 'The Verge',
-      description: 'Technology, gadgets, culture, and science reporting.',
-      category: 'tech',
-    ),
-    Feed(
-      url: 'https://github.blog/category/engineering/feed/',
-      title: 'GitHub Engineering',
-      description: 'Deep dives into the systems behind GitHub.',
-      category: 'tech',
-    ),
-    Feed(
-      url: 'https://devblogs.microsoft.com/feed/',
-      title: 'Microsoft DevBlogs',
-      description: 'Updates from Microsoft product and platform teams.',
-      category: 'tech',
-    ),
-    Feed(
-      url: 'https://aws.amazon.com/blogs/aws/feed/',
-      title: 'AWS News Blog',
-      description: 'New AWS launches, services, and architecture tips.',
-      category: 'tech',
-    ),
-    // AI & Data
-    Feed(
-      url: 'https://openai.com/blog/rss',
-      title: 'OpenAI Blog',
-      description: 'Research, product updates, and policy notes on AI.',
-      category: 'ai',
-    ),
-    Feed(
-      url: 'https://blog.research.google/feed?format=xml',
-      title: 'Google AI Blog',
-      description: 'Research and applied AI from Google teams.',
-      category: 'ai',
-    ),
-    Feed(
-      url: 'https://ai.facebook.com/blog/rss/',
-      title: 'Meta AI',
-      description: 'Research breakthroughs and open-source releases.',
-      category: 'ai',
-    ),
-    Feed(
-      url: 'https://huggingface.co/blog/feed.xml',
-      title: 'Hugging Face Blog',
-      description: 'Open models, tooling, and community highlights.',
-      category: 'ai',
-    ),
-    Feed(
-      url: 'https://thegradient.pub/rss/',
-      title: 'The Gradient',
-      description: 'Long-form essays and interviews on machine learning.',
-      category: 'ai',
-    ),
-    // Design & UX
-    Feed(
-      url: 'https://www.smashingmagazine.com/feed/',
-      title: 'Smashing Magazine',
-      description: 'UX, UI, frontend, and accessibility best practices.',
-      category: 'design',
-    ),
-    Feed(
-      url: 'https://uxdesign.cc/feed',
-      title: 'UX Collective',
-      description: 'Practical design stories and case studies.',
-      category: 'design',
-    ),
-    Feed(
-      url: 'https://www.nngroup.com/articles/rss/',
-      title: 'Nielsen Norman Group',
-      description: 'Evidence-based UX research and guidance.',
-      category: 'design',
-    ),
-    Feed(
-      url: 'https://sidebar.io/feed.xml',
-      title: 'Sidebar Design',
-      description: 'Daily design inspiration and curated links.',
-      category: 'design',
-    ),
-    Feed(
-      url: 'https://alistapart.com/main/feed/',
-      title: 'A List Apart',
-      description: 'Design and development for the web.',
-      category: 'design',
-    ),
-    // Business & Startups
-    Feed(
-      url: 'https://www.ycombinator.com/blog/rss',
-      title: 'Y Combinator Blog',
-      description: 'Founder stories, advice, and YC updates.',
-      category: 'business',
-    ),
-    Feed(
-      url: 'https://a16z.com/feed/',
-      title: 'a16z',
-      description: 'Technology investing, market analysis, and essays.',
-      category: 'business',
-    ),
-    Feed(
-      url: 'https://review.firstround.com/feed',
-      title: 'First Round Review',
-      description: 'Tactical guides for building companies.',
-      category: 'business',
-    ),
-    Feed(
-      url: 'https://www.saastr.com/feed/',
-      title: 'SaaStr',
-      description: 'Scaling SaaS companies, revenue, and GTM playbooks.',
-      category: 'business',
-    ),
-    Feed(
-      url: 'https://stratechery.com/feed/',
-      title: 'Stratechery',
-      description: 'Strategic analysis of tech and media (mix of free posts).',
-      category: 'business',
-    ),
-    // News & World
-    Feed(
-      url: 'http://feeds.bbci.co.uk/news/rss.xml',
-      title: 'BBC News',
-      description: 'Global headlines and breaking news.',
-      category: 'news',
-    ),
-    Feed(
-      url: 'https://www.theguardian.com/world/rss',
-      title: 'The Guardian World',
-      description: 'International reporting and analysis.',
-      category: 'news',
-    ),
-    Feed(
-      url: 'https://rss.cnn.com/rss/cnn_topstories.rss',
-      title: 'CNN Top Stories',
-      description: 'Top U.S. and world news stories.',
-      category: 'news',
-    ),
-    Feed(
-      url: 'https://feeds.npr.org/1001/rss.xml',
-      title: 'NPR News',
-      description: 'In-depth U.S. news and features.',
-      category: 'news',
-    ),
-    Feed(
-      url: 'https://feeds.apnews.com/apf-topnews',
-      title: 'Associated Press',
-      description: 'AP wire for fast breaking coverage.',
-      category: 'news',
-    ),
-    // Science & Space
-    Feed(
-      url: 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-      title: 'NASA Breaking News',
-      description: 'Agency updates, missions, and space science.',
-      category: 'science',
-    ),
-    Feed(
-      url: 'https://www.sciencedaily.com/rss/top/science.xml',
-      title: 'ScienceDaily',
-      description: 'Daily science research highlights.',
-      category: 'science',
-    ),
-    Feed(
-      url: 'https://www.quantamagazine.org/feed/',
-      title: 'Quanta Magazine',
-      description: 'Deep stories on math, physics, and computing.',
-      category: 'science',
-    ),
-    Feed(
-      url: 'https://feeds.arstechnica.com/arstechnica/science',
-      title: 'Ars Technica Science',
-      description: 'Science and space reporting from Ars.',
-      category: 'science',
-    ),
-    Feed(
-      url: 'https://www.newscientist.com/feed/home/',
-      title: 'New Scientist',
-      description: 'Discoveries, research, and human biology.',
-      category: 'science',
-    ),
-    // Security
-    Feed(
-      url: 'https://krebsonsecurity.com/feed/',
-      title: 'Krebs on Security',
-      description: 'Cybercrime investigations and threat intel.',
-      category: 'security',
-    ),
-    Feed(
-      url: 'https://feeds.feedburner.com/TheHackersNews',
-      title: 'The Hacker News',
-      description: 'Latest security incidents and advisories.',
-      category: 'security',
-    ),
-    Feed(
-      url: 'https://www.schneier.com/feed/atom/',
-      title: 'Schneier on Security',
-      description: 'Security policy, cryptography, and commentary.',
-      category: 'security',
-    ),
-    Feed(
-      url: 'https://www.cisa.gov/uscert/ncas/alerts.xml',
-      title: 'CISA Alerts',
-      description: 'U.S. cyber defense alerts and advisories.',
-      category: 'security',
-    ),
-    Feed(
-      url: 'https://www.microsoft.com/en-us/security/blog/feed/',
-      title: 'Microsoft Security Blog',
-      description: 'Enterprise security guidance and incident reports.',
-      category: 'security',
-    ),
-    // Sports
-    Feed(
-      url: 'http://www.espn.com/espn/rss/news',
-      title: 'ESPN Headlines',
-      description: 'Top sports headlines across leagues.',
-      category: 'sports',
-    ),
-    Feed(
-      url: 'https://feeds.bbci.co.uk/sport/rss.xml?edition=us',
-      title: 'BBC Sport',
-      description: 'U.K. and world sports coverage.',
-      category: 'sports',
-    ),
-    Feed(
-      url: 'https://www.cbssports.com/rss/headlines/',
-      title: 'CBS Sports',
-      description: 'Scores, highlights, and breaking news.',
-      category: 'sports',
-    ),
-    Feed(
-      url: 'https://www.si.com/.rss/full/',
-      title: 'Sports Illustrated',
-      description: 'Features and analysis across major sports.',
-      category: 'sports',
-    ),
-    Feed(
-      url: 'https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml',
-      title: 'NYTimes Sports',
-      description: 'Reporting and commentary on sports and athletes.',
-      category: 'sports',
-    ),
-  ];
 
   @override
   void initState() {
@@ -330,8 +72,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         messenger.showSnackBar(const SnackBar(content: Text('Feed added')));
       } catch (err) {
         if (!mounted) return;
-        messenger
-            .showSnackBar(SnackBar(content: Text('Failed to add feed: $err')));
+        messenger.showSnackBar(SnackBar(content: Text('Failed to add feed: $err')));
       } finally {
         if (mounted) {
           setState(() => _isAdding = false);
@@ -340,14 +81,50 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     }
   }
 
-  Future<void> _loadCuratedFeeds() async {
-    final feeds = _defaultMarketplaceFeeds;
+  Color _parseHexColor(String hex) {
+    hex = hex.replaceFirst('#', '');
+    if (hex.length == 6) hex = 'FF$hex';
+    return Color(int.parse(hex, radix: 16));
+  }
 
-    setState(() {
-      _feedsByCategory =
-          _groupBy(feeds, (feed) => feed.category ?? 'Uncategorized');
-      _isLoading = false;
-    });
+  Future<void> _loadCuratedFeeds() async {
+    try {
+      final jsonString = await rootBundle.loadString('assets/curated_feeds.json');
+      final data = jsonDecode(jsonString) as Map<String, dynamic>;
+
+      final categoriesJson = data['categories'] as List<dynamic>?;
+      if (categoriesJson != null) {
+        for (final c in categoriesJson) {
+          final m = c as Map<String, dynamic>;
+          final id = m['id'] as String;
+          _categories[id] = _CategoryMeta(
+            id: id,
+            label: m['label'] as String? ?? id,
+            color: _parseHexColor(m['color'] as String? ?? '#42A5F5'),
+          );
+        }
+      }
+
+      final feedsJson = data['feeds'] as List<dynamic>;
+      final feeds = feedsJson.map((f) {
+        final m = f as Map<String, dynamic>;
+        return Feed(
+          url: m['url'] as String,
+          title: m['title'] as String?,
+          description: m['description'] as String?,
+          category: m['category'] as String?,
+        );
+      }).toList();
+
+      setState(() {
+        _feedsByCategory =
+            _groupBy(feeds, (feed) => feed.category ?? 'Uncategorized');
+        _isLoading = false;
+      });
+    } catch (e) {
+      debugPrint('Failed to load curated feeds: $e');
+      setState(() => _isLoading = false);
+    }
   }
 
   Map<String, List<Feed>> _groupBy(
@@ -515,6 +292,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
 
   Widget _buildCategoryFilters(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final categories = _categories.values.toList()
+      ..sort((a, b) => a.label.compareTo(b.label));
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
       scrollDirection: Axis.horizontal,
@@ -526,7 +305,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
             onSelected: (_) => setState(() => _selectedCategory = null),
           ),
           const SizedBox(width: AppSpacing.s8),
-          ..._categories.map((meta) {
+          ...categories.map((meta) {
             final selected = _selectedCategory == meta.id;
             return Padding(
               padding: const EdgeInsets.only(right: AppSpacing.s8),
@@ -561,63 +340,47 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       ..sort((a, b) => a.key.compareTo(b.key));
 
     return visibleCategories.map((entry) {
-      final meta = _categories.firstWhere(
-        (c) => c.id == entry.key,
-        orElse: () =>
-            _CategoryMeta(id: entry.key, label: entry.key, color: Colors.blue),
-      );
+      final meta = _categories.putIfAbsent(entry.key, () =>
+          _CategoryMeta(id: entry.key, label: entry.key, color: Colors.blue));
       final feeds = entry.value;
+      final colorScheme = Theme.of(context).colorScheme;
+      final textTheme = Theme.of(context).textTheme;
       return Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
-              child: Row(
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: meta.color.withOpacity(0.14),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      _iconFor(meta.id),
-                      color: meta.color,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          meta.label,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          '${feeds.length} curated sources',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16, vertical: AppSpacing.s4),
+        child: Material(
+          color: colorScheme.surface,
+          elevation: 2,
+          shadowColor: colorScheme.shadow.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(16),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: ExpansionTile(
+              initiallyExpanded: _selectedCategory == entry.key,
+              tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+              childrenPadding: const EdgeInsets.only(bottom: AppSpacing.s8),
+              collapsedBackgroundColor: colorScheme.surface,
+              backgroundColor: colorScheme.surface,
+              leading: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: meta.color.withOpacity(0.14),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(_iconFor(meta.id), color: meta.color),
               ),
+              title: Text(
+                meta.label,
+                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              subtitle: Text(
+                '${feeds.length} curated sources',
+                style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+              ),
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+              children: feeds.map((feed) => _buildFeedTile(feed, meta.color)).toList(),
             ),
-            const SizedBox(height: AppSpacing.s8),
-            ...feeds.map((feed) => _buildFeedTile(feed, meta.color)).toList(),
-            const SizedBox(height: AppSpacing.s16),
-          ],
+          ),
         ),
       );
     }).toList();
@@ -772,37 +535,37 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   }
 
   IconData _iconFor(String id) {
-    switch (id) {
-      case 'tech':
-        return Icons.memory_rounded;
-      case 'ai':
-        return Icons.smart_toy_outlined;
-      case 'design':
-        return Icons.palette_outlined;
-      case 'business':
-        return Icons.trending_up;
-      case 'news':
-        return Icons.public;
-      case 'science':
-        return Icons.science_outlined;
-      case 'security':
-        return Icons.shield_outlined;
-      case 'sports':
-        return Icons.sports_soccer;
-      default:
-        return Icons.rss_feed;
-    }
+    final lower = id.toLowerCase();
+    if (lower.contains('tech') || lower.contains('dev') || lower.contains('program') || lower.contains('engineering')) return Icons.memory_rounded;
+    if (lower.contains('ai') || lower.contains('data') || lower.contains('intelligence')) return Icons.smart_toy_outlined;
+    if (lower.contains('design') || lower.contains('ui') || lower.contains('ux')) return Icons.palette_outlined;
+    if (lower.contains('business') || lower.contains('startup') || lower.contains('economy') || lower.contains('finance') || lower.contains('money')) return Icons.trending_up;
+    if (lower.contains('news') || lower.contains('world') || lower.contains('country-') || lower.contains('local') || lower.contains('public')) return Icons.public;
+    if (lower.contains('science') || lower.contains('space') || lower.contains('nasa')) return Icons.science_outlined;
+    if (lower.contains('security') || lower.contains('shield') || lower.contains('hacker') || lower.contains('cyber')) return Icons.shield_outlined;
+    if (lower.contains('sport') || lower.contains('tennis') || lower.contains('cricket') || lower.contains('football') || lower.contains('soccer')) return Icons.sports_soccer;
+    if (lower.contains('health') || lower.contains('beauty') || lower.contains('fitness')) return Icons.spa_outlined;
+    if (lower.contains('food') || lower.contains('cook') || lower.contains('recipe') || lower.contains('restaurant')) return Icons.restaurant_outlined;
+    if (lower.contains('gaming') || lower.contains('game')) return Icons.sports_esports_outlined;
+    if (lower.contains('movie') || lower.contains('film') || lower.contains('television') || lower.contains('tv')) return Icons.movie_outlined;
+    if (lower.contains('music') || lower.contains('audio') || lower.contains('podcast')) return Icons.music_note_outlined;
+    if (lower.contains('photo') || lower.contains('camera') || lower.contains('image')) return Icons.camera_alt_outlined;
+    if (lower.contains('book') || lower.contains('read') || lower.contains('literature')) return Icons.menu_book_outlined;
+    if (lower.contains('travel') || lower.contains('tourism') || lower.contains('flight')) return Icons.flight_outlined;
+    if (lower.contains('architecture') || lower.contains('building') || lower.contains('apartment')) return Icons.apartment_outlined;
+    if (lower.contains('fashion') || lower.contains('style') || lower.contains('cloth')) return Icons.checkroom_outlined;
+    if (lower.contains('car') || lower.contains('auto') || lower.contains('vehicle')) return Icons.directions_car_outlined;
+    if (lower.contains('history') || lower.contains('heritage')) return Icons.history_outlined;
+    if (lower.contains('diy') || lower.contains('interior') || lower.contains('home')) return Icons.handyman_outlined;
+    if (lower.contains('funny') || lower.contains('humor') || lower.contains('comedy')) return Icons.emoji_emotions_outlined;
+    if (lower.contains('android')) return Icons.android_outlined;
+    if (lower.contains('apple') || lower.contains('ios')) return Icons.apple_outlined;
+    if (lower.contains('personal') || lower.contains('self')) return Icons.person_outlined;
+    return Icons.rss_feed;
   }
 
   String _labelFor(String? id) {
-    return _categories.firstWhere(
-          (c) => c.id == id,
-          orElse: () => _CategoryMeta(
-            id: id ?? 'feed',
-            label: id ?? 'feed',
-            color: Colors.blue,
-          ),
-        ).label;
+    return _categories[id]?.label ?? (id ?? 'feed');
   }
 }
 

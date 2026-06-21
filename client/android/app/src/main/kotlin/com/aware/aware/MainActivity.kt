@@ -1,4 +1,4 @@
-package com.example.aware.aware
+package com.aware.aware
 
 import com.ryanheise.audioservice.AudioServiceActivity
 

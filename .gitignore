@@ -26,6 +26,14 @@ pubspec.lock
 /.dart_tool/
 /.idea/
 
+# Keystore / signing (never commit)
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# Local config overrides
+**/config.json
+
 # VS Code
 .vscode/
 

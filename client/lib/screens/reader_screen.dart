@@ -19,6 +19,7 @@ import '../providers/app_state.dart';
 import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
 import '../theme/theme.dart';
+import '../widgets/ad_banner.dart';
 
 class ReaderScreen extends StatefulWidget {
   final List<Article> articles;
@@ -788,6 +789,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              AdBanner(isTtsActive: _isPlaying || _isPaused),
               Row(
                 children: [
                   _UnreadBadge(articles: widget.articles),
