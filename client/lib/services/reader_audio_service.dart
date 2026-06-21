@@ -471,12 +471,14 @@ class ReaderAudioHandler extends BaseAudioHandler
     _tts.setPauseHandler(() {
       _isPlaying = false;
       _isPaused = true;
+      _publishSnapshot();
       _broadcastState(processingState: AudioProcessingState.ready);
     });
 
     _tts.setContinueHandler(() {
       _isPlaying = true;
       _isPaused = false;
+      _publishSnapshot();
       _broadcastState(processingState: AudioProcessingState.ready);
     });
   }

@@ -45,17 +45,6 @@ class FeedService {
     );
   }
 
-  Future<void> checkFeedReachable(String url) async {
-    _validateUrl(url);
-    final response = await _client.get(Uri.parse(url));
-    if (response.statusCode != 200) {
-      throw Exception('Feed unreachable: ${response.statusCode}');
-    }
-    if (response.body.isEmpty) {
-      throw Exception('Empty response from feed URL');
-    }
-  }
-
   Future<List<Article>> fetchArticles(String url) async {
     _validateUrl(url);
     final response = await _client.get(Uri.parse(url));

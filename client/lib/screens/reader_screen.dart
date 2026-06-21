@@ -18,6 +18,7 @@ import '../models/article.dart';
 import '../providers/app_state.dart';
 import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
+import '../services/storage_service.dart';
 import '../theme/theme.dart';
 import '../widgets/ad_banner.dart';
 import '../l10n/app_localizations.dart';
@@ -63,6 +64,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
   bool _autoScrollSuspendedForUser = false;
   static const Duration _autoScrollResumeDelay = Duration(seconds: 2);
   Timer? _progressDebounce;
+  int _tapCount = 0;
+  int _lastTappedParagraph = -1;
+  Timer? _tapTimer;
+  bool _showOnboarding = false;
+  int _onboardingStep = 0;
   bool _hasAutoPlayed = false;
 
   @override
@@ -78,7 +84,13 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _handleReaderPlaybackSnapshot,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final storage = await StorageService.getInstance();
+      final seen = await storage.read('reader_onboarding_seen');
+      if (seen != 'true' && mounted) {
+        setState(() => _showOnboarding = true);
+        await storage.write('reader_onboarding_seen', 'true');
+      }
       final lowDataMode = context.read<AppState>().lowDataMode;
       _prefetchReader(widget.articles[_currentIndex], showLoader: true);
       _updateTextForArticle(widget.articles[_currentIndex], _currentIndex);
@@ -795,6 +807,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
               );
             },
           ),
+          if (_showOnboarding) _buildOnboardingOverlay(),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -871,6 +884,163 @@ class _ReaderScreenState extends State<ReaderScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _handleParagraphTap(int index) {
+    if (_lastTappedParagraph != index) {
+      _tapCount = 0;
+      _lastTappedParagraph = index;
+    }
+    _tapCount++;
+    _tapTimer?.cancel();
+    if (_tapCount >= 3) {
+      _tapCount = 0;
+      if (_displayParagraphs.isNotEmpty && index < _displayParagraphs.length) {
+        readerAudioHandler.playFromParagraph(index);
+      }
+    } else {
+      _tapTimer = Timer(const Duration(milliseconds: 400), () {
+        _tapCount = 0;
+      });
+    }
+  }
+
+  Widget _buildOnboardingOverlay() {
+    final steps = [
+      _OnboardingStepData(
+        icon: Icons.touch_app,
+        title: 'Tap to Read Aloud',
+        desc: 'Tap any paragraph to start audio playback from that point.',
+      ),
+      _OnboardingStepData(
+        icon: Icons.exposure_plus_2,
+        title: 'Triple-Tap to Seek',
+        desc: 'Triple-tap any paragraph to seek audio to that exact section.',
+      ),
+      _OnboardingStepData(
+        icon: Icons.open_in_new,
+        title: 'Switch to Web View',
+        desc: 'Tap the icon in the toolbar to view the original article page.',
+      ),
+      _OnboardingStepData(
+        icon: Icons.swipe,
+        title: 'Navigate Articles',
+        desc: 'Use the skip buttons at the bottom to move between articles.',
+      ),
+    ];
+
+    final step = _onboardingStep.clamp(0, steps.length - 1);
+    final data = steps[step];
+
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {},
+          child: Container(color: Colors.black54),
+        ),
+        Positioned(
+          left: 24,
+          right: 24,
+          bottom: MediaQuery.of(context).size.height * 0.3,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(data.icon, size: 48,
+                        color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(height: 16),
+                    Text(
+                      data.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      data.desc,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      children: List.generate(steps.length, (i) {
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          width: i == step ? 20 : 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: i == step
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.3),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () => setState(() => _showOnboarding = false),
+                    child: Text(AppLocalizations.of(context)!.skip),
+                  ),
+                  Row(
+                    children: [
+                      if (step > 0)
+                        OutlinedButton(
+                          onPressed: () => setState(() => _onboardingStep--),
+                          child: const Text('Back'),
+                        ),
+                      const SizedBox(width: 12),
+                      FilledButton(
+                        onPressed: () {
+                          if (step < steps.length - 1) {
+                            setState(() => _onboardingStep++);
+                          } else {
+                            setState(() => _showOnboarding = false);
+                          }
+                        },
+                        child: Text(
+                          step < steps.length - 1
+                              ? AppLocalizations.of(context)!.next
+                              : AppLocalizations.of(context)!.getStarted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1203,6 +1373,17 @@ class _EmbeddedVideoPlayerState extends State<_EmbeddedVideoPlayer> {
       ),
     );
   }
+}
+
+class _OnboardingStepData {
+  final IconData icon;
+  final String title;
+  final String desc;
+  const _OnboardingStepData({
+    required this.icon,
+    required this.title,
+    required this.desc,
+  });
 }
 
 class _UnreadBadge extends StatelessWidget {

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/feed.dart';
 import '../providers/app_state.dart';
-import '../services/feed_service.dart';
 import '../theme/theme.dart';
 
 class MarketplaceScreen extends StatefulWidget {
@@ -18,7 +17,6 @@ class MarketplaceScreen extends StatefulWidget {
 }
 
 class _MarketplaceScreenState extends State<MarketplaceScreen> {
-  final FeedService _feedService = FeedService();
   Map<String, List<Feed>> _feedsByCategory = {};
   final Map<String, _CategoryMeta> _categories = {};
   bool _isLoading = true;
@@ -112,7 +110,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       }
 
       final feedsJson = data['feeds'] as List<dynamic>;
-      final candidateFeeds = feedsJson.where((f) {
+      final feeds = feedsJson.where((f) {
         final m = f as Map<String, dynamic>;
         final url = m['url'] as String;
         final uri = Uri.tryParse(url);
@@ -127,37 +125,14 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         );
       }).toList();
 
-      final validatedFeeds = <Feed>[];
-      const batchSize = 10;
-      for (var i = 0; i < candidateFeeds.length; i += batchSize) {
-        final batch = candidateFeeds.skip(i).take(batchSize).toList();
-        final results = await Future.wait(
-          batch.map((feed) => _validateFeed(feed)),
-          eagerError: false,
-        );
-        for (final feed in results) {
-          if (feed != null) validatedFeeds.add(feed);
-        }
-      }
-
       setState(() {
         _feedsByCategory =
-            _groupBy(validatedFeeds, (feed) => feed.category ?? 'Uncategorized');
+            _groupBy(feeds, (feed) => feed.category ?? 'Uncategorized');
         _isLoading = false;
       });
     } catch (e) {
       debugPrint('Failed to load curated feeds: $e');
       setState(() => _isLoading = false);
-    }
-  }
-
-  Future<Feed?> _validateFeed(Feed feed) async {
-    try {
-      await _feedService.checkFeedReachable(feed.url)
-          .timeout(const Duration(seconds: 10));
-      return feed;
-    } catch (_) {
-      return null;
     }
   }
 

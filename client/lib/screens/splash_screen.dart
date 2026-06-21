@@ -22,12 +22,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
     final storage = await StorageService.getInstance();
     final onboardingComplete = await storage.read('onboarding_complete');
+
+    if (!mounted) return;
 
     if (onboardingComplete == 'true') {
       Navigator.of(context).pushReplacement(
