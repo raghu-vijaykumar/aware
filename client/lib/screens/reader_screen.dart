@@ -1075,28 +1075,31 @@ class _ReaderScreenState extends State<ReaderScreen> {
       final paragraph = isActive
           ? _highlightCurrentWordInParagraph(_displayParagraphs[index])
           : _displayParagraphs[index];
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        margin: const EdgeInsets.only(bottom: AppSpacing.s12),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.s8,
-          vertical: AppSpacing.s8,
-        ),
-        decoration: BoxDecoration(
-          color: isActive
-              ? Colors.yellowAccent.withOpacity(0.18)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: MarkdownBody(
-          data: paragraph,
-          onTapLink: (_, href, __) => _handleMarkdownLink(href),
-          inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
-          builders: {
-            'video': _VideoBuilder(),
-          },
-          styleSheet: markdownStyleSheet,
+      return GestureDetector(
+        onTap: () => _handleParagraphTap(index),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.only(bottom: AppSpacing.s12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s8,
+            vertical: AppSpacing.s8,
+          ),
+          decoration: BoxDecoration(
+            color: isActive
+                ? Colors.yellowAccent.withOpacity(0.18)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: MarkdownBody(
+            data: paragraph,
+            onTapLink: (_, href, __) => _handleMarkdownLink(href),
+            inlineSyntaxes: [_VideoInlineSyntax(), _TtsInlineSyntax()],
+            builders: {
+              'video': _VideoBuilder(),
+            },
+            styleSheet: markdownStyleSheet,
+          ),
         ),
       );
     });
