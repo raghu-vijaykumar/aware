@@ -4,9 +4,9 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+/// The translations for Hindi (`hi`).
+class AppLocalizationsHi extends AppLocalizations {
+  AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
   String get appName => 'aware';
@@ -622,46 +622,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
-  String get languageSubtitle => 'English';
+  String get languageSubtitle => 'हिन्दी';
 
   @override
   String get selectLanguage => 'Select Language';
 
   @override
-  String get languageEnglish => 'English';
+  String get languageEnglish => 'अंग्रेज़ी';
 
   @override
-  String get languageChinese => 'Chinese';
+  String get languageChinese => 'चीनी';
 
   @override
-  String get languageSpanish => 'Spanish';
+  String get languageSpanish => 'स्पैनिश';
 
   @override
-  String get languageHindi => 'Hindi';
+  String get languageHindi => 'हिन्दी';
 
   @override
-  String get languageArabic => 'Arabic';
+  String get languageArabic => 'अरबी';
 
   @override
-  String get languageFrench => 'French';
+  String get languageFrench => 'फ़्रेंच';
 
   @override
-  String get languagePortuguese => 'Portuguese';
+  String get languagePortuguese => 'पुर्तगाली';
 
   @override
-  String get languageRussian => 'Russian';
+  String get languageRussian => 'रूसी';
 
   @override
-  String get languageJapanese => 'Japanese';
+  String get languageJapanese => 'जापानी';
 
   @override
-  String get languageGerman => 'German';
+  String get languageGerman => 'जर्मन';
 
   @override
-  String get languageKorean => 'Korean';
+  String get languageKorean => 'कोरियाई';
 
   @override
-  String get languageItalian => 'Italian';
+  String get languageItalian => 'इतालवी';
 
   @override
   String get sectionLegal => 'Legal';

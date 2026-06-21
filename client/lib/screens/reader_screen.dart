@@ -54,6 +54,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   List<String> _displayParagraphs = [];
   List<int> _paragraphOffsets = [];
   final Map<int, ScrollController> _scrollControllers = {};
+  final Map<int, webview.WebViewController> _webControllers = {};
   final Map<int, bool> _headerCollapsedByArticle = {};
   final Map<int, double> _scrollProgressByArticle = {};
   final Map<int, double> _audioProgressByArticle = {};
@@ -93,6 +94,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     for (final controller in _scrollControllers.values) {
       controller.dispose();
     }
+    _webControllers.clear();
     _pageController.dispose();
     super.dispose();
   }
@@ -204,7 +206,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       _currentWord = snapshot.currentWord;
     });
     _recordAudioProgress(snapshot.progress);
-    if (snapshot.isPlaying) {
+    if (snapshot.isPlaying && !_showWebView) {
       _scrollToProgress(snapshot.progress);
     }
   }
@@ -623,7 +625,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     setState(() {
                       _showWebView = !_showWebView;
                     });
-                    if (!_showWebView) {
+                    if (_showWebView) {
+                      final c = _webControllers[_currentIndex];
+                      if (c == null) {
+                        final controller = webview.WebViewController()
+                          ..setJavaScriptMode(webview.JavaScriptMode.unrestricted);
+                        controller.loadRequest(Uri.parse(article.url!));
+                        _webControllers[_currentIndex] = controller;
+                      }
+                    } else {
                       _prefetchReader(article);
                     }
                   }
@@ -649,9 +659,24 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   index) {
                 await readerAudioHandler.activateArticle(index);
               }
-              _prefetchReader(widget.articles[index], showLoader: true);
-              _updateTextForArticle(widget.articles[index], index);
-              _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
+              if (_showWebView) {
+                final url = widget.articles[index].url;
+                if (url != null) {
+                  final c = _webControllers[index];
+                  if (c == null) {
+                    final controller = webview.WebViewController()
+                      ..setJavaScriptMode(webview.JavaScriptMode.unrestricted);
+                    controller.loadRequest(Uri.parse(url));
+                    _webControllers[index] = controller;
+                  } else {
+                    c.loadRequest(Uri.parse(url));
+                  }
+                }
+              } else {
+                _prefetchReader(widget.articles[index], showLoader: true);
+                _updateTextForArticle(widget.articles[index], index);
+                _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
+              }
             },
             itemBuilder: (context, index) {
               final item = widget.articles[index];
@@ -664,9 +689,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
               if (_showWebView &&
                   item.url != null &&
                   (Platform.isAndroid || Platform.isIOS)) {
-                final controller = webview.WebViewController()
-                  ..setJavaScriptMode(webview.JavaScriptMode.unrestricted)
-                  ..loadRequest(Uri.parse(item.url!));
+                final controller = _webControllers.putIfAbsent(index, () {
+                  final c = webview.WebViewController()
+                    ..setJavaScriptMode(webview.JavaScriptMode.unrestricted);
+                  c.loadRequest(Uri.parse(item.url!));
+                  return c;
+                });
 
                 return SafeArea(
                   child: webview.WebViewWidget(

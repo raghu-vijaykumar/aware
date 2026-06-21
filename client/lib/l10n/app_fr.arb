@@ -1,5 +1,5 @@
 ﻿{
-  "@@locale": "en",
+  "@@locale": "fr",
 
   "appName": "aware",
 
@@ -1163,7 +1163,7 @@
     "description": "Language setting title"
   },
 
-  "languageSubtitle": "English",
+  "languageSubtitle": "Français",
 
   "@languageSubtitle": {
     "description": "Language setting subtitle - currently selected language"
@@ -1175,19 +1175,19 @@
     "description": "Language selection dialog title"
   },
 
-  "languageEnglish": "English",
+  "languageEnglish": "Anglais",
 
   "@languageEnglish": {
     "description": "English language option"
   },
 
-  "languageChinese": "Chinese",
+  "languageChinese": "Chinois",
 
   "@languageChinese": {
     "description": "Chinese language option"
   },
 
-  "languageSpanish": "Spanish",
+  "languageSpanish": "Espagnol",
 
   "@languageSpanish": {
     "description": "Spanish language option"
@@ -1199,49 +1199,49 @@
     "description": "Hindi language option"
   },
 
-  "languageArabic": "Arabic",
+  "languageArabic": "Arabe",
 
   "@languageArabic": {
     "description": "Arabic language option"
   },
 
-  "languageFrench": "French",
+  "languageFrench": "Français",
 
   "@languageFrench": {
     "description": "French language option"
   },
 
-  "languagePortuguese": "Portuguese",
+  "languagePortuguese": "Portugais",
 
   "@languagePortuguese": {
     "description": "Portuguese language option"
   },
 
-  "languageRussian": "Russian",
+  "languageRussian": "Russe",
 
   "@languageRussian": {
     "description": "Russian language option"
   },
 
-  "languageJapanese": "Japanese",
+  "languageJapanese": "Japonais",
 
   "@languageJapanese": {
     "description": "Japanese language option"
   },
 
-  "languageGerman": "German",
+  "languageGerman": "Allemand",
 
   "@languageGerman": {
     "description": "German language option"
   },
 
-  "languageKorean": "Korean",
+  "languageKorean": "Coréen",
 
   "@languageKorean": {
     "description": "Korean language option"
   },
 
-  "languageItalian": "Italian",
+  "languageItalian": "Italien",
 
   "@languageItalian": {
     "description": "Italian language option"

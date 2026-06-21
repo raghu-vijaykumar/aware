@@ -124,6 +124,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             builder: (context, appState, child) {
                               final currentCode =
                                   appState.locale?.languageCode ?? 'en';
+                              final localeLabels = <String, String Function(AppLocalizations)>{
+                                'en': (l) => l.languageEnglish,
+                                'zh': (l) => l.languageChinese,
+                                'es': (l) => l.languageSpanish,
+                                'hi': (l) => l.languageHindi,
+                                'ar': (l) => l.languageArabic,
+                                'fr': (l) => l.languageFrench,
+                                'pt': (l) => l.languagePortuguese,
+                                'ru': (l) => l.languageRussian,
+                                'ja': (l) => l.languageJapanese,
+                                'de': (l) => l.languageGerman,
+                                'ko': (l) => l.languageKorean,
+                                'it': (l) => l.languageItalian,
+                              };
+                              final l10n = AppLocalizations.of(context)!;
                               return Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 decoration: BoxDecoration(
@@ -136,14 +151,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   value: currentCode,
                                   isExpanded: true,
                                   underline: const SizedBox(),
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 'en',
-                                      child: Text(
-                                        AppLocalizations.of(context)!.languageEnglish,
-                                      ),
-                                    ),
-                                  ],
+                                  items: localeLabels.entries.map((entry) {
+                                    return DropdownMenuItem(
+                                      value: entry.key,
+                                      child: Text(entry.value(l10n)),
+                                    );
+                                  }).toList(),
                                   onChanged: (code) {
                                     if (code != null) {
                                       appState.setLocale(code);

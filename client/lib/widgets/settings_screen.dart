@@ -726,20 +726,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           builder: (context, appState, child) {
                             final currentCode =
                                 appState.locale?.languageCode ?? 'en';
+                            final localeLabels = <String, String Function(AppLocalizations)>{
+                              'en': (l) => l.languageEnglish,
+                              'zh': (l) => l.languageChinese,
+                              'es': (l) => l.languageSpanish,
+                              'hi': (l) => l.languageHindi,
+                              'ar': (l) => l.languageArabic,
+                              'fr': (l) => l.languageFrench,
+                              'pt': (l) => l.languagePortuguese,
+                              'ru': (l) => l.languageRussian,
+                              'ja': (l) => l.languageJapanese,
+                              'de': (l) => l.languageGerman,
+                              'ko': (l) => l.languageKorean,
+                              'it': (l) => l.languageItalian,
+                            };
+                            final l10n = AppLocalizations.of(context)!;
                             return Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: [
-                                RadioListTile<String>(
-                                  value: 'en',
+                              children: localeLabels.entries.map((entry) {
+                                return RadioListTile<String>(
+                                  value: entry.key,
                                   groupValue: currentCode,
-                                  title: Text(AppLocalizations.of(context)!.languageEnglish),
+                                  title: Text(entry.value(l10n)),
                                   onChanged: (code) {
                                     if (code != null) {
                                       Navigator.of(context).pop(code);
                                     }
                                   },
-                                ),
-                              ],
+                                );
+                              }).toList(),
                             );
                           },
                         ),

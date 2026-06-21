@@ -1,5 +1,5 @@
 ﻿{
-  "@@locale": "en",
+  "@@locale": "de",
 
   "appName": "aware",
 
@@ -1163,7 +1163,7 @@
     "description": "Language setting title"
   },
 
-  "languageSubtitle": "English",
+  "languageSubtitle": "Deutsch",
 
   "@languageSubtitle": {
     "description": "Language setting subtitle - currently selected language"
@@ -1175,19 +1175,19 @@
     "description": "Language selection dialog title"
   },
 
-  "languageEnglish": "English",
+  "languageEnglish": "Englisch",
 
   "@languageEnglish": {
     "description": "English language option"
   },
 
-  "languageChinese": "Chinese",
+  "languageChinese": "Chinesisch",
 
   "@languageChinese": {
     "description": "Chinese language option"
   },
 
-  "languageSpanish": "Spanish",
+  "languageSpanish": "Spanisch",
 
   "@languageSpanish": {
     "description": "Spanish language option"
@@ -1199,49 +1199,49 @@
     "description": "Hindi language option"
   },
 
-  "languageArabic": "Arabic",
+  "languageArabic": "Arabisch",
 
   "@languageArabic": {
     "description": "Arabic language option"
   },
 
-  "languageFrench": "French",
+  "languageFrench": "Französisch",
 
   "@languageFrench": {
     "description": "French language option"
   },
 
-  "languagePortuguese": "Portuguese",
+  "languagePortuguese": "Portugiesisch",
 
   "@languagePortuguese": {
     "description": "Portuguese language option"
   },
 
-  "languageRussian": "Russian",
+  "languageRussian": "Russisch",
 
   "@languageRussian": {
     "description": "Russian language option"
   },
 
-  "languageJapanese": "Japanese",
+  "languageJapanese": "Japanisch",
 
   "@languageJapanese": {
     "description": "Japanese language option"
   },
 
-  "languageGerman": "German",
+  "languageGerman": "Deutsch",
 
   "@languageGerman": {
     "description": "German language option"
   },
 
-  "languageKorean": "Korean",
+  "languageKorean": "Koreanisch",
 
   "@languageKorean": {
     "description": "Korean language option"
   },
 
-  "languageItalian": "Italian",
+  "languageItalian": "Italienisch",
 
   "@languageItalian": {
     "description": "Italian language option"
