@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../l10n/app_localizations.dart';
+import '../providers/app_state.dart';
 
 import '../services/storage_service.dart';
 import 'home_screen.dart';
@@ -16,21 +20,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   static const _pages = [
     _OnboardingPage(
+      icon: Icons.language,
+      color: Colors.blue,
+    ),
+    _OnboardingPage(
       icon: Icons.rss_feed,
-      title: 'Welcome to aware',
-      description: 'Your personal feed reader. Stay informed about what matters, all in one place.',
       color: Colors.indigo,
     ),
     _OnboardingPage(
       icon: Icons.library_books,
-      title: 'Read Offline',
-      description: 'Feeds are downloaded so you can read anytime, anywhere. Listen with text-to-speech.',
       color: Colors.teal,
     ),
     _OnboardingPage(
       icon: Icons.notifications,
-      title: 'Never Miss a Post',
-      description: 'Get notified when new articles arrive. Add your first feed to get started.',
       color: Colors.deepPurple,
     ),
   ];
@@ -39,6 +41,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  String _pageTitle(int index) {
+    switch (index) {
+      case 0: return AppLocalizations.of(context)!.onboardingLanguageTitle;
+      case 1: return AppLocalizations.of(context)!.onboardingWelcomeTitle;
+      case 2: return AppLocalizations.of(context)!.onboardingOfflineTitle;
+      case 3: return AppLocalizations.of(context)!.onboardingNotifyTitle;
+      default: return '';
+    }
+  }
+
+  String _pageDesc(int index) {
+    switch (index) {
+      case 0: return AppLocalizations.of(context)!.onboardingLanguageDesc;
+      case 1: return AppLocalizations.of(context)!.onboardingWelcomeDesc;
+      case 2: return AppLocalizations.of(context)!.onboardingOfflineDesc;
+      case 3: return AppLocalizations.of(context)!.onboardingNotifyDesc;
+      default: return '';
+    }
   }
 
   Future<void> _completeOnboarding() async {
@@ -81,7 +103,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         const SizedBox(height: 40),
                         Text(
-                          page.title,
+                          _pageTitle(index),
                           textAlign: TextAlign.center,
                           style: textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -89,13 +111,49 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          page.description,
+                          _pageDesc(index),
                           textAlign: TextAlign.center,
                           style: textTheme.bodyLarge?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                             height: 1.4,
                           ),
                         ),
+                        if (index == 0) ...[
+                          const SizedBox(height: 32),
+                          Consumer<AppState>(
+                            builder: (context, appState, child) {
+                              final currentCode =
+                                  appState.locale?.languageCode ?? 'en';
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: colorScheme.outline.withOpacity(0.3),
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: currentCode,
+                                  isExpanded: true,
+                                  underline: const SizedBox(),
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: 'en',
+                                      child: Text(
+                                        AppLocalizations.of(context)!.languageEnglish,
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (code) {
+                                    if (code != null) {
+                                      appState.setLocale(code);
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ],
                     ),
                   );
@@ -140,7 +198,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     }
                   },
                   child: Text(
-                    _currentPage < _pages.length - 1 ? 'Next' : 'Get Started',
+                    _currentPage < _pages.length - 1 ? AppLocalizations.of(context)!.next : AppLocalizations.of(context)!.getStarted,
                   ),
                 ),
               ),
@@ -149,7 +207,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               TextButton(
                 onPressed: _completeOnboarding,
                 child: Text(
-                  'Skip',
+                  AppLocalizations.of(context)!.skip,
                   style: TextStyle(color: colorScheme.onSurfaceVariant),
                 ),
               )
@@ -165,14 +223,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
 class _OnboardingPage {
   final IconData icon;
-  final String title;
-  final String description;
   final Color color;
 
   const _OnboardingPage({
     required this.icon,
-    required this.title,
-    required this.description,
     required this.color,
   });
 }

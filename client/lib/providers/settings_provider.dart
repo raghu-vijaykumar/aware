@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +15,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _autoMarkReadKey = 'app_auto_mark_read_enabled';
   static const String _autoMarkReadThresholdKey = 'app_auto_mark_read_threshold';
   static const String _textScaleKey = 'app_text_scale';
+  static const String _localeKey = 'app_locale';
 
   static const double speechRateBase = 0.5;
   static const double speechRateMinRatio = 0.5;
@@ -47,6 +50,16 @@ class SettingsProvider extends ChangeNotifier {
 
   double _textScaleFactor = 1.0;
   double get textScaleFactor => _textScaleFactor;
+
+  Locale? _locale;
+  Locale? get locale => _locale;
+
+  Future<void> setLocale(String languageCode) async {
+    _locale = Locale(languageCode);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_localeKey, languageCode);
+    notifyListeners();
+  }
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -85,6 +98,14 @@ class SettingsProvider extends ChangeNotifier {
       textScaleMin,
       textScaleMax,
     );
+
+    final savedLocale = prefs.getString(_localeKey);
+    if (savedLocale != null && savedLocale.isNotEmpty) {
+      _locale = Locale(savedLocale);
+    } else {
+      final deviceLocale = ui.PlatformDispatcher.instance.locale;
+      _locale = deviceLocale;
+    }
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {

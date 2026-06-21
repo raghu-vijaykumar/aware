@@ -59,8 +59,6 @@ class BackgroundFeedWorker {
 
     if (newArticles > 0) {
       await NotificationService.showNewArticles(newArticles);
-    } else {
-      await NotificationService.showNoNewArticles();
     }
   }
 
@@ -143,7 +141,7 @@ class BackgroundFeedWorker {
       inputData: const {'trigger': 'periodic_refresh'},
       frequency: const Duration(hours: 1),
       initialDelay: const Duration(minutes: 15),
-      existingWorkPolicy: ExistingWorkPolicy.replace,
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
       constraints: Constraints(
         networkType:
             lowDataMode ? NetworkType.unmetered : NetworkType.connected,

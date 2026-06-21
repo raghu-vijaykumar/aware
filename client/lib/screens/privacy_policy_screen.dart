@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../l10n/app_localizations.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -11,48 +12,41 @@ class PrivacyPolicyScreen extends StatelessWidget {
     final bodyStyle = textTheme.bodyMedium?.copyWith(height: 1.6);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Privacy Policy')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.privacyPolicyTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Privacy Policy',
+              AppLocalizations.of(context)!.privacyPolicyTitle,
               style: textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              'Last updated: June 20, 2026',
+              AppLocalizations.of(context)!.privacyPolicyLastUpdated,
               style: textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              'Information We Collect',
+              AppLocalizations.of(context)!.privacyInfoWeCollect,
               style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Aware does not collect, store, or transmit any personal data. '
-              'All app data (feeds, articles, reading progress, preferences, '
-              'and settings) is stored locally on your device and is never '
-              'sent to any server.',
+              AppLocalizations.of(context)!.privacyInfoWeCollectBody,
               style: bodyStyle,
             ),
             const SizedBox(height: 16),
             Text(
-              'Third-Party Services',
+              AppLocalizations.of(context)!.privacyThirdParty,
               style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'Aware uses Google AdMob to display advertisements. AdMob may '
-              'collect non-personal usage data and device identifiers to serve '
-              'relevant ads. Ads are served with non-personalized ad requests '
-              'only. No user-level data is shared with advertisers.\n\n'
-              'Google\'s Privacy Policy applies to data collected by AdMob:\n',
+              AppLocalizations.of(context)!.privacyThirdPartyBody,
               style: bodyStyle,
             ),
             GestureDetector(
@@ -70,28 +64,22 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Data Storage',
+              AppLocalizations.of(context)!.privacyDataStorage,
               style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'All feed subscriptions, articles, reading progress, and app '
-              'preferences are stored locally in a SQLite database on your '
-              'device. You can export your data at any time via the OPML '
-              'export feature in Settings.\n\n'
-              'To delete all data, uninstall the app or clear app data '
-              'from your device settings.',
+              AppLocalizations.of(context)!.privacyDataStorageBody,
               style: bodyStyle,
             ),
             const SizedBox(height: 16),
             Text(
-              'Contact',
+              AppLocalizations.of(context)!.privacyContact,
               style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'If you have questions about this privacy policy, please contact:\n'
-              'aware@raghuv.com',
+              AppLocalizations.of(context)!.privacyContactBody,
               style: bodyStyle,
             ),
             const SizedBox(height: 32),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_state.dart';
 import '../screens/article_list_screen.dart';
 
@@ -23,20 +24,20 @@ class _FeedListState extends State<FeedList> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Feed'),
+          title: Text(AppLocalizations.of(context)!.addFeedTitle),
           content: TextField(
             controller: _urlController,
-            decoration: const InputDecoration(hintText: 'Enter feed URL'),
+            decoration: InputDecoration(hintText: AppLocalizations.of(context)!.addFeedUrlHint),
             keyboardType: TextInputType.url,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Add'),
+              child: Text(AppLocalizations.of(context)!.add),
             ),
           ],
         );
@@ -52,7 +53,7 @@ class _FeedListState extends State<FeedList> {
       } catch (err) {
         if (!mounted) return;
         messenger
-            .showSnackBar(SnackBar(content: Text('Failed to add feed: $err')));
+            .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFeed('$err'))));
       } finally {
         if (mounted) {
           setState(() => _isAdding = false);
@@ -67,7 +68,7 @@ class _FeedListState extends State<FeedList> {
       builder: (context, appState, child) {
         return ArticleListScreen(
           allFeeds: true,
-          feedTitle: 'Feeds',
+          feedTitle: AppLocalizations.of(context)!.tabFeeds,
           onAddFeed: () => _showAddFeedDialog(context),
         );
       },

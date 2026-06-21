@@ -15,6 +15,7 @@ import '../screens/privacy_policy_screen.dart';
 import '../screens/subscriptions_screen.dart';
 import '../services/opml_service.dart';
 import '../theme/theme.dart';
+import '../l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -145,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (urls.isEmpty) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No feeds found in OPML')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.noFeedsFoundOpml)),
         );
         return;
       }
@@ -168,15 +169,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         SnackBar(
           content: Text(
             added > 0
-                ? 'Imported $added feed${added == 1 ? '' : 's'}'
-                : 'All feeds were already added',
+                ? AppLocalizations.of(context)!.importedCount(added)
+                : AppLocalizations.of(context)!.allFeedsAlreadyAdded,
           ),
         ),
       );
     } catch (err) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Import failed: $err')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.importFailed('$err'))),
       );
     }
   }
@@ -187,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (feeds.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No subscriptions to export')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.noSubscriptionsToExport)),
       );
       return;
     }
@@ -202,18 +203,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: 'Aware subscriptions export',
-        subject: 'Aware subscriptions export',
+        text: AppLocalizations.of(context)!.exportShareText,
+        subject: AppLocalizations.of(context)!.exportShareSubject,
       );
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Exported ${feeds.length} feed(s)')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.exportedCount('${feeds.length}'))),
       );
     } catch (err) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export failed: $err')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed('$err'))),
       );
     }
   }
@@ -254,14 +255,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Go Ad-Free',
+                      AppLocalizations.of(context)!.goAdFree,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Just \$1/month. Support indie dev.',
+                      AppLocalizations.of(context)!.goAdFreeSubtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -276,7 +277,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '\$1/mo',
+                  AppLocalizations.of(context)!.pricePerMonth,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -292,13 +293,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _showPremiumDialog(
       BuildContext context, AppState appState) async {
-    if (!appState.isLoggedIn) {
-      final signedIn = await Navigator.of(context).push<bool>(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-      if (signedIn != true || !context.mounted) return;
-    }
-
     if (!context.mounted) return;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -314,48 +308,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Icon(Icons.auto_awesome, color: colorScheme.primary),
               const SizedBox(width: 8),
-              const Text('Aware Premium'),
+              Text(AppLocalizations.of(context)!.premiumTitle),
             ],
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Subscribe for \$1/month and get:',
+              Text(
+                AppLocalizations.of(context)!.premiumSubscribeDesc,
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 16),
-              _featureRow(Icons.videocam_off, 'Ad-free reading experience'),
+              _featureRow(Icons.videocam_off, AppLocalizations.of(context)!.premiumRemoveAds),
               const SizedBox(height: 12),
-              _featureRow(Icons.download_done, 'Save your reading progress'),
+              _featureRow(Icons.cloud, AppLocalizations.of(context)!.premiumCloudStorage),
+              const SizedBox(height: 12),
+              _featureRow(Icons.bookmark, AppLocalizations.of(context)!.premiumCloudSubscriptions),
+              const SizedBox(height: 12),
+              _featureRow(Icons.sync, AppLocalizations.of(context)!.premiumSync),
               const SizedBox(height: 12),
               _featureRow(
-                  Icons.bookmark, 'Save subscriptions across devices'),
-              const SizedBox(height: 12),
-              _featureRow(Icons.sync, 'Sync state across devices'),
-              const SizedBox(height: 12),
-              _featureRow(
-                  Icons.folder_special, 'Unlimited folder organization'),
+                  Icons.folder_special, AppLocalizations.of(context)!.premiumFolders),
+              const SizedBox(height: 20),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.comingSoon,
+                    style: TextStyle(
+                      color: colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Not now'),
-            ),
-            FilledButton.icon(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Subscription coming soon! You\'ll be charged \$1/month.'),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.lock, size: 18),
-              label: const Text('Subscribe \$1/mo'),
+              child: Text(AppLocalizations.of(context)!.notNow),
             ),
           ],
         );
@@ -378,7 +375,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settingsTitle),
       ),
       body: Consumer<AppState>(
         builder: (context, appState, child) {
@@ -391,7 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Advanced',
+                  AppLocalizations.of(context)!.sectionAdvanced,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -400,14 +397,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.auto_awesome_motion),
-                title: const Text('Read tracking'),
-                subtitle: const Text(
-                    'Auto-mark articles as read based on reading progress'),
+                title: Text(AppLocalizations.of(context)!.readTracking),
+                subtitle: Text(
+                    AppLocalizations.of(context)!.readTrackingSubtitle),
               ),
               SwitchListTile(
-                title: const Text('Auto-mark read by progress'),
-                subtitle: const Text(
-                    'Marks as read when scroll or audio reaches your threshold'),
+                title: Text(AppLocalizations.of(context)!.autoMarkRead),
+                subtitle: Text(
+                    AppLocalizations.of(context)!.autoMarkReadSubtitle),
                 value: context
                     .select<AppState, bool>((s) => s.autoMarkReadEnabled),
                 onChanged: (value) =>
@@ -415,7 +412,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.tune),
-                title: const Text('Auto-mark threshold'),
+                title: Text(AppLocalizations.of(context)!.autoMarkThreshold),
                 subtitle: Consumer<AppState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,7 +430,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             : null,
                       ),
                       Text(
-                        '${appState.autoMarkReadThreshold}% progress needed',
+                        AppLocalizations.of(context)!.progressNeeded('${appState.autoMarkReadThreshold}'),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -445,7 +442,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Voice & Read aloud',
+                  AppLocalizations.of(context)!.sectionVoice,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -454,7 +451,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.speed),
-                title: const Text('Default narration speed'),
+                title: Text(AppLocalizations.of(context)!.narrationSpeed),
                 subtitle: Consumer<AppState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,7 +469,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             context.read<AppState>().setSpeechRate(value),
                       ),
                       Text(
-                        '${appState.speechRate.toStringAsFixed(1)}x (1x = calm default)',
+                        AppLocalizations.of(context)!.speedLabel(appState.speechRate.toStringAsFixed(1)),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -481,7 +478,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.record_voice_over),
-                title: const Text('Default voice', style: TextStyle(fontSize: 14)),
+                title: Text(AppLocalizations.of(context)!.defaultVoice, style: TextStyle(fontSize: 14)),
                 subtitle: _loadingVoices
                     ? const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -497,11 +494,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     _voices.any((v) => _voiceKey(v) == current)
                                 ? current
                                 : null,
-                            hint: const Text('System default'),
+                            hint: Text(AppLocalizations.of(context)!.systemDefault),
                             items: [
-                              const DropdownMenuItem<String?>(
+                              DropdownMenuItem<String?>(
                                 value: null,
-                                child: Text('System default'),
+                                child: Text(AppLocalizations.of(context)!.systemDefault),
                               ),
                               ..._voices.asMap().entries.map(
                                     (entry) => DropdownMenuItem<String?>(
@@ -520,9 +517,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
               ),
               SwitchListTile(
-                title: const Text('Auto-play next article'),
-                subtitle: const Text(
-                    'When narration finishes, move to the next item'),
+                title: Text(AppLocalizations.of(context)!.autoPlayNext),
+                subtitle: Text(
+                    AppLocalizations.of(context)!.autoPlayNextSubtitle),
                 value: context.select<AppState, bool>((s) => s.autoPlayNext),
                 onChanged: (value) =>
                     context.read<AppState>().setAutoPlayNext(value),
@@ -532,7 +529,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Data',
+                  AppLocalizations.of(context)!.sectionData,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -540,9 +537,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               SwitchListTile(
-                title: const Text('Low-data mode prefetch'),
-                subtitle: const Text(
-                    'Prefetch article text in background and prefer cached content when available'),
+                title: Text(AppLocalizations.of(context)!.lowDataMode),
+                subtitle: Text(
+                    AppLocalizations.of(context)!.lowDataModeSubtitle),
                 value: context.select<AppState, bool>((s) => s.lowDataMode),
                 onChanged: (value) =>
                     context.read<AppState>().setLowDataMode(value),
@@ -552,7 +549,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Accessibility',
+                  AppLocalizations.of(context)!.sectionAccessibility,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -561,7 +558,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.text_fields),
-                title: const Text('Text size'),
+                title: Text(AppLocalizations.of(context)!.textSize),
                 subtitle: Consumer<AppState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -579,12 +576,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             context.read<AppState>().setTextScaleFactor(value),
                       ),
                       Text(
-                        'Applies across the app, including articles and navigation.',
+                        AppLocalizations.of(context)!.textSizeSubtitle,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'The quick brown fox jumps over the lazy dog.',
+                        AppLocalizations.of(context)!.sampleText,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -596,7 +593,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Subscriptions',
+                  AppLocalizations.of(context)!.sectionSubscriptions,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -605,8 +602,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.subscriptions),
-                title: const Text('Manage Subscriptions'),
-                subtitle: const Text('Add or remove the feeds you follow'),
+                title: Text(AppLocalizations.of(context)!.manageSubscriptions),
+                subtitle: Text(AppLocalizations.of(context)!.manageSubscriptionsSubtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const SubscriptionsScreen(),
@@ -615,8 +612,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.folder),
-                title: const Text('Manage Folders'),
-                subtitle: const Text('Organise feeds into folders'),
+                title: Text(AppLocalizations.of(context)!.manageFolders),
+                subtitle: Text(AppLocalizations.of(context)!.manageFoldersSubtitle),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const FoldersScreen(),
@@ -625,14 +622,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.file_upload),
-                title: const Text('Import Subscriptions'),
-                subtitle: const Text('Import via OPML file'),
+                title: Text(AppLocalizations.of(context)!.importSubscriptions),
+                subtitle: Text(AppLocalizations.of(context)!.importSubscriptionsSubtitle),
                 onTap: _importSubscriptions,
               ),
               ListTile(
                 leading: const Icon(Icons.file_download),
-                title: const Text('Export Subscriptions'),
-                subtitle: const Text('Export your feeds to OPML'),
+                title: Text(AppLocalizations.of(context)!.exportSubscriptions),
+                subtitle: Text(AppLocalizations.of(context)!.exportSubscriptionsSubtitle),
                 onTap: _exportSubscriptions,
               ),
               const Divider(),
@@ -640,7 +637,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Themes',
+                  AppLocalizations.of(context)!.sectionThemes,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -648,14 +645,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
               ListTile(
-                title: const Text('Themes'),
-                subtitle: const Text('Light / Dark / System'),
+                title: Text(AppLocalizations.of(context)!.themes),
+                subtitle: Text(AppLocalizations.of(context)!.themesSubtitle),
                 onTap: () async {
                   final selected = await showDialog<ThemeMode>(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('Select Theme'),
+                        title: Text(AppLocalizations.of(context)!.selectTheme),
                         content: Consumer<AppState>(
                           builder: (context, appState, child) {
                             return Column(
@@ -664,7 +661,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 RadioListTile<ThemeMode>(
                                   value: ThemeMode.system,
                                   groupValue: appState.themeMode,
-                                  title: const Text('System'),
+                                  title: Text(AppLocalizations.of(context)!.system),
                                   onChanged: (mode) {
                                     if (mode != null) {
                                       Navigator.of(context).pop(mode);
@@ -674,7 +671,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 RadioListTile<ThemeMode>(
                                   value: ThemeMode.light,
                                   groupValue: appState.themeMode,
-                                  title: const Text('Light'),
+                                  title: Text(AppLocalizations.of(context)!.light),
                                   onChanged: (mode) {
                                     if (mode != null) {
                                       Navigator.of(context).pop(mode);
@@ -684,7 +681,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 RadioListTile<ThemeMode>(
                                   value: ThemeMode.dark,
                                   groupValue: appState.themeMode,
-                                  title: const Text('Dark'),
+                                  title: Text(AppLocalizations.of(context)!.dark),
                                   onChanged: (mode) {
                                     if (mode != null) {
                                       Navigator.of(context).pop(mode);
@@ -709,7 +706,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  'Legal',
+                  AppLocalizations.of(context)!.sectionLanguage,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.language),
+                subtitle: Text(AppLocalizations.of(context)!.languageSubtitle),
+                onTap: () async {
+                  final selected = await showDialog<String>(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(AppLocalizations.of(context)!.selectLanguage),
+                        content: Consumer<AppState>(
+                          builder: (context, appState, child) {
+                            final currentCode =
+                                appState.locale?.languageCode ?? 'en';
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RadioListTile<String>(
+                                  value: 'en',
+                                  groupValue: currentCode,
+                                  title: Text(AppLocalizations.of(context)!.languageEnglish),
+                                  onChanged: (code) {
+                                    if (code != null) {
+                                      Navigator.of(context).pop(code);
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+
+                  if (selected != null) {
+                    await context.read<AppState>().setLocale(selected);
+                  }
+                },
+              ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  AppLocalizations.of(context)!.sectionLegal,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
@@ -718,7 +766,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.privacy_tip),
-                title: const Text('Privacy Policy'),
+                title: Text(AppLocalizations.of(context)!.privacyPolicy),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const PrivacyPolicyScreen(),
@@ -727,7 +775,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.description),
-                title: const Text('Open Source Licenses'),
+                title: Text(AppLocalizations.of(context)!.openSourceLicenses),
                 onTap: () => showLicensePage(
                   context: context,
                   applicationName: 'Aware',

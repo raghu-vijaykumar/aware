@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import '../models/article.dart';
 import '../models/feed.dart';
 import '../providers/app_state.dart';
+import '../l10n/app_localizations.dart';
 import '../theme/theme.dart';
 import '../widgets/native_ad_tile.dart';
 import 'reader_screen.dart';
@@ -132,12 +133,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Error: $_loadError'),
+            Text(AppLocalizations.of(context)!.error(_loadError!)),
             const SizedBox(height: 16),
             FilledButton.tonalIcon(
               onPressed: _refresh,
               icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+              label: Text(AppLocalizations.of(context)!.retry),
             ),
           ],
         ),
@@ -145,8 +146,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     }
 
     if (_allLoadedArticles.isEmpty) {
-      return const Center(
-        child: Text('No articles yet. Pull to refresh.'),
+      return Center(
+        child: Text(AppLocalizations.of(context)!.noArticlesYet),
       );
     }
 
@@ -160,7 +161,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
       final filteredArticles = _applyFilters(_allLoadedArticles, appState.feeds);
       final articleCount = filteredArticles.length;
-      final adCount = articleCount ~/ 5;
+      final adCount = articleCount ~/ 10;
 
       return Column(
         children: [
@@ -171,10 +172,24 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
             articles: _allLoadedArticles,
             feeds: appState.feeds,
           ),
+          if (_keyword != null && _keyword!.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              child: Text(
+                '$articleCount articles found',
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
           Expanded(
             child: filteredArticles.isEmpty
-                ? const Center(
-                    child: Text('No articles match the current filters.'),
+                ? Center(
+                    child: Text(AppLocalizations.of(context)!.noArticlesMatch),
                   )
                 : ListView.separated(
                     controller: _scrollController,
@@ -260,8 +275,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                 starred: !isStarred);
                             _showActionSnackBar(
                               message: isStarred
-                                  ? 'Removed from saved'
-                                  : 'Saved for later',
+                                  ? AppLocalizations.of(context)!.removedFromSaved
+                                  : AppLocalizations.of(context)!.savedForLater,
                             );
                           }
                           return false;
@@ -303,7 +318,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          article.title ?? 'Untitled',
+                                          article.title ?? AppLocalizations.of(context)!.untitled,
                                           style: textTheme.titleLarge
                                               ?.copyWith(
                                                   fontWeight:
@@ -348,12 +363,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                                 if (!mounted) return;
                                                 _showActionSnackBar(
                                                   message: isLiked
-                                                      ? 'Removed like'
-                                                      : 'Liked article',
+                                                      ? AppLocalizations.of(context)!.removedLike
+                                                      : AppLocalizations.of(context)!.likedArticle,
                                                 );
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.only(left: 2),
+                                                padding: const EdgeInsets.symmetric(horizontal: 6),
                                                 child: Icon(
                                                   isLiked
                                                       ? Icons.favorite
@@ -364,6 +379,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                                 ),
                                               ),
                                             ),
+                                            const SizedBox(width: 4),
                                             InkWell(
                                               borderRadius: BorderRadius.circular(20),
                                               onTap: () async {
@@ -375,12 +391,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                                 if (!mounted) return;
                                                 _showActionSnackBar(
                                                   message: isStarred
-                                                      ? 'Removed from saved'
-                                                      : 'Saved for later',
+                                                      ? AppLocalizations.of(context)!.removedFromSaved
+                                                      : AppLocalizations.of(context)!.savedForLater,
                                                 );
                                               },
                                               child: Padding(
-                                                padding: const EdgeInsets.only(left: 2),
+                                                padding: const EdgeInsets.symmetric(horizontal: 6),
                                                 child: Icon(
                                                   isStarred
                                                       ? Icons.bookmark
@@ -398,7 +414,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                                     _shareArticle(
                                                         context, article),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(left: 2),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 6),
                                                   child: Icon(
                                                       Icons.share,
                                                       size: 18,
@@ -462,7 +478,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
         return FloatingActionButton.extended(
           onPressed: () => _launchCatchUpQueue(context, unread, appState),
           icon: const Icon(Icons.play_arrow),
-          label: const Text('Continue Reading'),
+          label: Text(AppLocalizations.of(context)!.continueReading),
         );
       },
     );
@@ -487,8 +503,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 controller: _searchController,
                 focusNode: _searchFocusNode,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Search articles...',
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.searchArticlesHint,
                   border: InputBorder.none,
                 ),
                 onChanged: (value) {
@@ -513,7 +529,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.search),
-                  tooltip: 'Search',
+                  tooltip: AppLocalizations.of(context)!.searchArticlesHint,
                   onPressed: () {
                     setState(() {
                       _showSearch = true;
@@ -525,7 +541,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 if (widget.onAddFeed != null)
                   IconButton(
                     icon: const Icon(Icons.add_link),
-                    tooltip: 'Add Feed',
+                    tooltip: AppLocalizations.of(context)!.addFeedTitle,
                     onPressed: widget.onAddFeed,
                   ),
                 IconButton(
@@ -569,14 +585,14 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     if (!mounted) return;
 
     if (isRead) {
-      _showActionSnackBar(message: 'Marked unread');
+      _showActionSnackBar(message: AppLocalizations.of(context)!.markedUnread);
       return;
     }
 
     _showActionSnackBar(
-      message: 'Marked read',
+      message: AppLocalizations.of(context)!.markedRead,
       action: SnackBarAction(
-        label: 'Undo',
+        label: AppLocalizations.of(context)!.undo,
         onPressed: () async {
           await appState.markArticleRead(article.guid, read: false);
         },
@@ -710,7 +726,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
             onPressed: () => _openFilterDrawer(
                 context, articles, feeds, textTheme, colorScheme),
             icon: const Icon(Icons.filter_list),
-            label: const Text('Filters'),
+            label: Text(AppLocalizations.of(context)!.filters),
           ),
           const SizedBox(width: AppSpacing.s12),
           Expanded(
@@ -721,26 +737,26 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ChoiceChip(
-                    label: const Text('Unread'),
+                    label: Text(AppLocalizations.of(context)!.unread),
                     selected: _unreadOnly,
                     onSelected: (_) =>
                         setState(() => _unreadOnly = !_unreadOnly),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
-                    label: const Text('Liked'),
+                    label: Text(AppLocalizations.of(context)!.liked),
                     selected: _likedOnly,
                     onSelected: (_) => setState(() => _likedOnly = !_likedOnly),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
-                    label: const Text('Saved'),
+                    label: Text(AppLocalizations.of(context)!.saved),
                     selected: _savedOnly,
                     onSelected: (_) => setState(() => _savedOnly = !_savedOnly),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
-                    label: const Text('Last 24h'),
+                    label: Text(AppLocalizations.of(context)!.last24h),
                     selected: _timeWindow == _TimeWindow.last24h,
                     onSelected: (_) => setState(() => _timeWindow =
                         _timeWindow == _TimeWindow.last24h
@@ -788,7 +804,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                     children: [
                       Row(
                         children: [
-                          Text('Filters', style: textTheme.titleMedium),
+                          Text(AppLocalizations.of(context)!.filters, style: textTheme.titleMedium),
                           const Spacer(),
                           IconButton(
                             icon: const Icon(Icons.close),
@@ -797,24 +813,24 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.s12),
-                      Text('Engagement', style: textTheme.labelLarge),
+                      Text(AppLocalizations.of(context)!.engagement, style: textTheme.labelLarge),
                       Wrap(
                         spacing: AppSpacing.s8,
                         children: [
                           ChoiceChip(
-                            label: const Text('Unread only'),
+                            label: Text(AppLocalizations.of(context)!.unreadOnly),
                             selected: _unreadOnly,
                             onSelected: (_) =>
                                 update(() => _unreadOnly = !_unreadOnly),
                           ),
                           ChoiceChip(
-                            label: const Text('Liked'),
+                            label: Text(AppLocalizations.of(context)!.liked),
                             selected: _likedOnly,
                             onSelected: (_) =>
                                 update(() => _likedOnly = !_likedOnly),
                           ),
                           ChoiceChip(
-                            label: const Text('Saved'),
+                            label: Text(AppLocalizations.of(context)!.saved),
                             selected: _savedOnly,
                             onSelected: (_) =>
                                 update(() => _savedOnly = !_savedOnly),
@@ -822,36 +838,36 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.s12),
-                      Text('Length / preview', style: textTheme.labelLarge),
+                      Text(AppLocalizations.of(context)!.lengthPreview, style: textTheme.labelLarge),
                       Wrap(
                         spacing: AppSpacing.s8,
                         children: [
                           ChoiceChip(
-                            label: const Text('Any'),
+                            label: Text(AppLocalizations.of(context)!.any),
                             selected: _lengthFilter == _LengthFilter.all,
                             onSelected: (_) =>
                                 update(() => _lengthFilter = _LengthFilter.all),
                           ),
                           ChoiceChip(
-                            label: const Text('Short <100w'),
+                            label: Text(AppLocalizations.of(context)!.short),
                             selected: _lengthFilter == _LengthFilter.short,
                             onSelected: (_) => update(
                                 () => _lengthFilter = _LengthFilter.short),
                           ),
                           ChoiceChip(
-                            label: const Text('Medium 100-300'),
+                            label: Text(AppLocalizations.of(context)!.medium),
                             selected: _lengthFilter == _LengthFilter.medium,
                             onSelected: (_) => update(
                                 () => _lengthFilter = _LengthFilter.medium),
                           ),
                           ChoiceChip(
-                            label: const Text('Long >300'),
+                            label: Text(AppLocalizations.of(context)!.long),
                             selected: _lengthFilter == _LengthFilter.long,
                             onSelected: (_) => update(
                                 () => _lengthFilter = _LengthFilter.long),
                           ),
                           ChoiceChip(
-                            label: const Text('2+ paragraphs'),
+                            label: Text(AppLocalizations.of(context)!.multiParagraph),
                             selected:
                                 _lengthFilter == _LengthFilter.multiParagraph,
                             onSelected: (_) => update(() =>
@@ -860,30 +876,30 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.s12),
-                      Text('Time window', style: textTheme.labelLarge),
+                      Text(AppLocalizations.of(context)!.timeWindow, style: textTheme.labelLarge),
                       Wrap(
                         spacing: AppSpacing.s8,
                         children: [
                           ChoiceChip(
-                            label: const Text('All'),
+                            label: Text(AppLocalizations.of(context)!.all),
                             selected: _timeWindow == _TimeWindow.all,
                             onSelected: (_) =>
                                 update(() => _timeWindow = _TimeWindow.all),
                           ),
                           ChoiceChip(
-                            label: const Text('Last 24h'),
+                            label: Text(AppLocalizations.of(context)!.last24h),
                             selected: _timeWindow == _TimeWindow.last24h,
                             onSelected: (_) =>
                                 update(() => _timeWindow = _TimeWindow.last24h),
                           ),
                           ChoiceChip(
-                            label: const Text('Last 7d'),
+                            label: Text(AppLocalizations.of(context)!.last7d),
                             selected: _timeWindow == _TimeWindow.last7d,
                             onSelected: (_) =>
                                 update(() => _timeWindow = _TimeWindow.last7d),
                           ),
                           ChoiceChip(
-                            label: const Text('Last 30d'),
+                            label: Text(AppLocalizations.of(context)!.last30d),
                             selected: _timeWindow == _TimeWindow.last30d,
                             onSelected: (_) =>
                                 update(() => _timeWindow = _TimeWindow.last30d),
@@ -891,12 +907,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.s12),
-                      Text('Sources', style: textTheme.labelLarge),
+                      Text(AppLocalizations.of(context)!.sources, style: textTheme.labelLarge),
                       Wrap(
                         spacing: AppSpacing.s8,
                         children: [
                           ChoiceChip(
-                            label: const Text('All sources'),
+                            label: Text(AppLocalizations.of(context)!.allSources),
                             selected: _selectedSource == null,
                             onSelected: (_) =>
                                 update(() => _selectedSource = null),
@@ -911,11 +927,11 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.s12),
-                      Text('Keyword', style: textTheme.labelLarge),
+                      Text(AppLocalizations.of(context)!.keyword, style: textTheme.labelLarge),
                       TextField(
                         controller: keywordController,
-                        decoration: const InputDecoration(
-                          hintText: 'Title, summary, or content',
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.keywordHint,
                         ),
                         onChanged: (value) => update(() => _keyword =
                             value.trim().isEmpty ? null : value.trim()),
@@ -935,12 +951,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                 _savedOnly = false;
                               });
                             },
-                            child: const Text('Reset'),
+                            child: Text(AppLocalizations.of(context)!.reset),
                           ),
                           const Spacer(),
                           ElevatedButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Done'),
+                            child: Text(AppLocalizations.of(context)!.done),
                           ),
                         ],
                       ),
@@ -1023,7 +1039,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
   String _relativeTimeLabel(Article article) {
     final timestamp = article.publishedAt ?? article.fetchedAt;
-    if (timestamp == null) return 'Publish date unknown';
+    if (timestamp == null) return AppLocalizations.of(context)!.publishDateUnknown;
 
     final publishedDate =
         DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: false);
@@ -1031,30 +1047,30 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
     String label;
     if (diff.inMinutes < 1) {
-      label = 'Just now';
+      label = AppLocalizations.of(context)!.justNow;
     } else if (diff.inMinutes < 60) {
-      label = '${diff.inMinutes}m ago';
+      label = AppLocalizations.of(context)!.minutesAgo('${diff.inMinutes}');
     } else if (diff.inHours < 24) {
-      label = '${diff.inHours}h ago';
+      label = AppLocalizations.of(context)!.hoursAgo('${diff.inHours}');
     } else if (diff.inDays < 7) {
-      label = '${diff.inDays}d ago';
+      label = AppLocalizations.of(context)!.daysAgo('${diff.inDays}');
     } else {
       final weeks = (diff.inDays / 7).floor();
       if (weeks < 5) {
-        label = '${weeks}w ago';
+        label = AppLocalizations.of(context)!.weeksAgo('$weeks');
       } else {
         final months = (diff.inDays / 30).floor();
         if (months < 12) {
-          label = '${months}mo ago';
+          label = AppLocalizations.of(context)!.monthsAgo('$months');
         } else {
           final years = (diff.inDays / 365).floor();
-          label = '${years}y ago';
+          label = AppLocalizations.of(context)!.yearsAgo('$years');
         }
       }
     }
 
     // If we had to fall back to fetchedAt, mark it.
-    return article.publishedAt != null ? label : '$label (fetched)';
+    return article.publishedAt != null ? label : '$label (${AppLocalizations.of(context)!.fetched})';
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../providers/app_state.dart';
 import '../widgets/feed_list.dart';
 import '../widgets/settings_screen.dart';
@@ -46,12 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add RSS Feed'),
+          title: Text(AppLocalizations.of(context)!.addFeedTitle),
           content: TextField(
             controller: _urlController,
-            decoration: const InputDecoration(
-              hintText: 'https://example.com/feed.xml',
-              labelText: 'Feed URL',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.addFeedUrlHint,
+              labelText: AppLocalizations.of(context)!.addFeedUrlLabel,
             ),
             keyboardType: TextInputType.url,
             autofocus: true,
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed:
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Add'),
+                  : Text(AppLocalizations.of(context)!.add),
             ),
           ],
         );
@@ -82,17 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => _isAdding = true);
       try {
         final url = _urlController.text.trim();
-        if (url.isEmpty) throw 'Feed URL is required';
+        if (url.isEmpty) throw AppLocalizations.of(context)!.feedUrlRequired;
         await appState.addFeedFromUrl(url);
         if (!mounted) return;
         _urlController.clear();
         messenger.showSnackBar(
-          const SnackBar(content: Text('Feed added')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.feedAdded)),
         );
       } catch (err) {
         if (mounted) {
           messenger.showSnackBar(
-            SnackBar(content: Text('Failed to add feed: $err')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFeed('$err'))),
           );
         }
       } finally {
@@ -114,18 +115,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.rss_feed),
-            label: 'Feeds',
+            label: AppLocalizations.of(context)!.tabFeeds,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.store),
-            label: 'Marketplace',
+            label: AppLocalizations.of(context)!.tabMarketplace,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: AppLocalizations.of(context)!.tabSettings,
           ),
         ],
         currentIndex: _selectedIndex,

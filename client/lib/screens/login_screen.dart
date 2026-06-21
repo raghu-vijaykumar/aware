@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_state.dart';
 import '../theme/theme.dart';
+import '../l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign in')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.signIn)),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.s16),
         child: Column(
@@ -68,11 +69,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.emailLabel),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Enter your email';
+                        return AppLocalizations.of(context)!.emailRequired;
                       }
                       return null;
                     },
@@ -80,11 +81,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: AppSpacing.s16),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(labelText: 'Password'),
+                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.passwordLabel),
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Enter your password';
+                        return AppLocalizations.of(context)!.passwordRequired;
                       }
                       return null;
                     },
@@ -104,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     )
-                  : const Text('Sign in'),
+                  : Text(AppLocalizations.of(context)!.signIn),
             ),
           ],
         ),

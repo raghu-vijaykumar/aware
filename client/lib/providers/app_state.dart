@@ -80,6 +80,7 @@ class AppState extends ChangeNotifier {
   String? get userEmail => auth.userEmail;
   bool get isLoggedIn => auth.isLoggedIn;
   ThemeMode get themeMode => settings.themeMode;
+  Locale? get locale => settings.locale;
   double get speechRate => settings.speechRateRatio;
   double get speechRateTts => settings.speechRateTts;
   String? get voiceId => settings.voiceId;
@@ -161,6 +162,7 @@ class AppState extends ChangeNotifier {
 
   // Settings
   Future<void> setThemeMode(ThemeMode mode) => settings.setThemeMode(mode);
+  Future<void> setLocale(String languageCode) => settings.setLocale(languageCode);
   Future<void> setSpeechRate(double rate) => settings.setSpeechRate(rate);
   Future<void> setVoiceId(String? voiceId) => settings.setVoiceId(voiceId);
   Future<void> setAutoPlayNext(bool enabled) => settings.setAutoPlayNext(enabled);

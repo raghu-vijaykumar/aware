@@ -115,7 +115,10 @@ class _NativeAdTileState extends State<NativeAdTile> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: AdWidget(ad: _nativeAd!),
+            child: SizedBox(
+              height: 280,
+              child: AdWidget(ad: _nativeAd!),
+            ),
           ),
         ),
       ),

@@ -20,6 +20,7 @@ import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
 import '../theme/theme.dart';
 import '../widgets/ad_banner.dart';
+import '../l10n/app_localizations.dart';
 
 class ReaderScreen extends StatefulWidget {
   final List<Article> articles;
@@ -102,7 +103,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(starred ? 'Saved for later' : 'Removed from saved'),
+        content: Text(starred ? AppLocalizations.of(context)!.readerSavedForLater : AppLocalizations.of(context)!.readerRemovedFromSaved),
       ),
     );
   }
@@ -285,7 +286,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           _hasAutoPlayed = true;
           _currentParagraphIndex = state.lastParagraphIndex!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Resuming last read article')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.resumingLastRead)),
           );
           _startPlayback(paragraphIndex: _currentParagraphIndex);
         } else if (state.readProgress != null && state.readProgress! > 0) {
@@ -298,7 +299,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       } else if (!_hasAutoPlayed && widget.autoPlayMode) {
         _hasAutoPlayed = true;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Starting playback for unread article')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.startingPlayback)),
         );
         _startPlayback();
       }
@@ -627,7 +628,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     }
                   }
                 : null,
-            tooltip: _showWebView ? 'Show reader' : 'Show web view',
+            tooltip: _showWebView ? AppLocalizations.of(context)!.showReader : AppLocalizations.of(context)!.showWebView,
           ),
         ],
       ),
@@ -680,11 +681,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
               if (_showWebView && item.url != null) {
                 // Platform does not support embedded WebView in this build (e.g., Windows).
-                return const Center(
+                return Center(
                   child: Padding(
                     padding: EdgeInsets.all(AppSpacing.s24),
                     child: Text(
-                      'In-app WebView is only supported on Android/iOS.\nShowing text view instead.',
+                      AppLocalizations.of(context)!.webviewUnsupported,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -737,14 +738,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
                                         const SizedBox(height: AppSpacing.s12),
                                       ],
                                       Text(
-                                        item.title ?? 'Untitled',
+                                        item.title ?? AppLocalizations.of(context)!.untitled,
                                         style: Theme.of(context)
                                             .textTheme
                                             .headlineSmall,
                                       ),
                                       const SizedBox(height: AppSpacing.s8),
                                       if (item.author != null) ...[
-                                        Text('By ${item.author!}',
+                                        Text(AppLocalizations.of(context)!.byAuthor(item.author!),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium),
@@ -807,7 +808,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                       if (state?.readAt == null) {
                         await _markRead(article);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Marked read & skipped to next')),
+                          SnackBar(content: Text(AppLocalizations.of(context)!.markedReadSkipped)),
                         );
                         if (_currentIndex < widget.articles.length - 1) {
                           readerAudioHandler.skipToNext();
@@ -818,21 +819,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         await context.read<AppState>().markArticleRead(article.guid, read: false);
                       }
                     },
-                    tooltip: state?.readAt != null ? 'Mark unread' : 'Mark read & play next',
+                    tooltip: state?.readAt != null ? AppLocalizations.of(context)!.markUnread : AppLocalizations.of(context)!.markReadPlay,
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: _currentIndex > 0
                         ? readerAudioHandler.skipToPrevious
                         : null,
-                    tooltip: 'Previous article',
+                    tooltip: AppLocalizations.of(context)!.previousArticle,
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_next),
                     onPressed: _currentIndex < widget.articles.length - 1
                         ? readerAudioHandler.skipToNext
                         : null,
-                    tooltip: 'Next article',
+                    tooltip: AppLocalizations.of(context)!.nextArticle,
                   ),
                 ],
               ),
@@ -1053,14 +1054,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
         ),
         if (canPlay)
           Text(
-            'Playing section ${_currentParagraphIndex + 1}/${_paragraphs.length}',
+            AppLocalizations.of(context)!.playingSection('${_currentParagraphIndex + 1}', '${_paragraphs.length}'),
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
                 ?.copyWith(color: Theme.of(context).hintColor),
           )
         else
-          const Text('Read-aloud not available for this article.'),
+          Text(AppLocalizations.of(context)!.readAloudNotAvailable),
       ],
     );
   }
@@ -1120,8 +1121,8 @@ class _EmbeddedVideoPlayerState extends State<_EmbeddedVideoPlayer> {
           color: Colors.black12,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Center(
-          child: Text('Embedded video is only supported on Android/iOS.'),
+        child: Center(
+          child: Text(AppLocalizations.of(context)!.embeddedVideoUnsupported),
         ),
       );
     }
@@ -1143,7 +1144,7 @@ class _EmbeddedVideoPlayerState extends State<_EmbeddedVideoPlayer> {
               bottom: 12,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.play_arrow),
-                label: const Text('Load Video'),
+                label: Text(AppLocalizations.of(context)!.loadVideo),
                 onPressed: () => setState(() => _showVideo = true),
               ),
             ),
@@ -1187,7 +1188,7 @@ class _UnreadBadge extends StatelessWidget {
             context.watch<AppState>().getArticleState(a.guid)?.readAt == null)
         .length;
     return Chip(
-      label: Text('Unread: $unread'),
+      label: Text(AppLocalizations.of(context)!.unreadCount('$unread')),
     );
   }
 }

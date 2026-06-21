@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_state.dart';
 import '../theme/theme.dart';
+import '../l10n/app_localizations.dart';
 import '../services/database_service.dart';
 
 class SubscriptionsScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Subscriptions'),
+        title: Text(AppLocalizations.of(context)!.subscriptionsTitle),
       ),
       body: Consumer<AppState>(
         builder: (context, appState, child) {
@@ -33,9 +34,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
           final feeds = appState.feeds;
           if (feeds.isEmpty) {
-            return const Center(
-              child:
-                  Text('No subscriptions yet. Add feeds from the Marketplace!'),
+            return Center(
+              child: Text(AppLocalizations.of(context)!.subscriptionsEmpty),
             );
           }
 
@@ -50,9 +50,9 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                   leading: feed.iconUrl != null
                       ? Image.network(feed.iconUrl!, width: 40, height: 40)
                       : const Icon(Icons.rss_feed, size: 40),
-                  title: Text(feed.title ?? 'Untitled Feed'),
+                  title: Text(feed.title ?? AppLocalizations.of(context)!.untitledFeed),
                   subtitle: feed.paused
-                      ? Text('Paused',
+                      ? Text(AppLocalizations.of(context)!.paused,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -69,19 +69,19 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                           final confirmed = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Unsubscribe'),
+                              title: Text(AppLocalizations.of(context)!.unsubscribeTitle),
                               content: Text(
-                                  'Unsubscribe from ${feed.title ?? 'this feed'}?'),
+                                  AppLocalizations.of(context)!.unsubscribeConfirm(feed.title ?? 'this feed')),
                               actions: [
                                 TextButton(
                                   onPressed: () =>
                                       Navigator.of(context).pop(false),
-                                  child: const Text('Cancel'),
+                                  child: Text(AppLocalizations.of(context)!.cancel),
                                 ),
                                 TextButton(
                                   onPressed: () =>
                                       Navigator.of(context).pop(true),
-                                  child: const Text('Unsubscribe'),
+                                  child: Text(AppLocalizations.of(context)!.unsubscribe),
                                 ),
                               ],
                             ),
@@ -96,11 +96,11 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         value: 'pause',
-                        child: Text(feed.paused ? 'Resume' : 'Pause'),
+                        child: Text(feed.paused ? AppLocalizations.of(context)!.resume : AppLocalizations.of(context)!.pause),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'unsubscribe',
-                        child: Text('Unsubscribe'),
+                        child: Text(AppLocalizations.of(context)!.unsubscribe),
                       ),
                     ],
                   ),

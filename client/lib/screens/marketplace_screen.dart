@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/feed.dart';
 import '../providers/app_state.dart';
+import '../services/feed_service.dart';
 import '../theme/theme.dart';
 
 class MarketplaceScreen extends StatefulWidget {
@@ -16,11 +18,14 @@ class MarketplaceScreen extends StatefulWidget {
 }
 
 class _MarketplaceScreenState extends State<MarketplaceScreen> {
+  final FeedService _feedService = FeedService();
   Map<String, List<Feed>> _feedsByCategory = {};
   final Map<String, _CategoryMeta> _categories = {};
   bool _isLoading = true;
   String? _selectedCategory;
   final _urlController = TextEditingController();
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
   bool _isAdding = false;
 
   @override
@@ -32,6 +37,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   @override
   void dispose() {
     _urlController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -43,20 +49,20 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Feed'),
+          title: Text(AppLocalizations.of(context)!.addFeedTitle),
           content: TextField(
             controller: _urlController,
-            decoration: const InputDecoration(hintText: 'Enter feed URL'),
+            decoration: InputDecoration(hintText: AppLocalizations.of(context)!.addFeedUrlHint),
             keyboardType: TextInputType.url,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Add'),
+              child: Text(AppLocalizations.of(context)!.add),
             ),
           ],
         );
@@ -69,10 +75,10 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         await appState.addFeedFromUrl(_urlController.text.trim());
         if (!mounted) return;
         _urlController.clear();
-        messenger.showSnackBar(const SnackBar(content: Text('Feed added')));
+        messenger.showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.feedAdded)));
       } catch (err) {
         if (!mounted) return;
-        messenger.showSnackBar(SnackBar(content: Text('Failed to add feed: $err')));
+        messenger.showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFeed('$err'))));
       } finally {
         if (mounted) {
           setState(() => _isAdding = false);
@@ -106,7 +112,12 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       }
 
       final feedsJson = data['feeds'] as List<dynamic>;
-      final feeds = feedsJson.map((f) {
+      final candidateFeeds = feedsJson.where((f) {
+        final m = f as Map<String, dynamic>;
+        final url = m['url'] as String;
+        final uri = Uri.tryParse(url);
+        return uri != null && uri.hasScheme && uri.hasAuthority && (uri.scheme == 'http' || uri.scheme == 'https');
+      }).map((f) {
         final m = f as Map<String, dynamic>;
         return Feed(
           url: m['url'] as String,
@@ -116,14 +127,37 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         );
       }).toList();
 
+      final validatedFeeds = <Feed>[];
+      const batchSize = 10;
+      for (var i = 0; i < candidateFeeds.length; i += batchSize) {
+        final batch = candidateFeeds.skip(i).take(batchSize).toList();
+        final results = await Future.wait(
+          batch.map((feed) => _validateFeed(feed)),
+          eagerError: false,
+        );
+        for (final feed in results) {
+          if (feed != null) validatedFeeds.add(feed);
+        }
+      }
+
       setState(() {
         _feedsByCategory =
-            _groupBy(feeds, (feed) => feed.category ?? 'Uncategorized');
+            _groupBy(validatedFeeds, (feed) => feed.category ?? 'Uncategorized');
         _isLoading = false;
       });
     } catch (e) {
       debugPrint('Failed to load curated feeds: $e');
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<Feed?> _validateFeed(Feed feed) async {
+    try {
+      await _feedService.checkFeedReachable(feed.url)
+          .timeout(const Duration(seconds: 10));
+      return feed;
+    } catch (_) {
+      return null;
     }
   }
 
@@ -137,6 +171,28 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     return map;
   }
 
+  int get _filteredFeedCount =>
+      _filteredFeedsByCategory.values.fold<int>(0, (sum, list) => sum + list.length);
+
+  Map<String, List<Feed>> get _filteredFeedsByCategory {
+    final query = _searchQuery.toLowerCase().trim();
+    if (query.isEmpty) return _feedsByCategory;
+    final filtered = <String, List<Feed>>{};
+    _feedsByCategory.forEach((category, feeds) {
+      final matching = feeds.where((feed) {
+        final label = _labelFor(feed.category).toLowerCase();
+        return (feed.title?.toLowerCase().contains(query) ?? false) ||
+            (feed.description?.toLowerCase().contains(query) ?? false) ||
+            feed.url.toLowerCase().contains(query) ||
+            label.contains(query);
+      }).toList();
+      if (matching.isNotEmpty) {
+        filtered[category] = matching;
+      }
+    });
+    return filtered;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -148,9 +204,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Marketplace'),
+            Text(AppLocalizations.of(context)!.marketplaceTitle),
             Text(
-              'Curated RSS links by category',
+              AppLocalizations.of(context)!.marketplaceSubtitle,
               style: textTheme.bodySmall
                   ?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
@@ -159,7 +215,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add_link),
-            tooltip: 'Add Feed',
+            tooltip: AppLocalizations.of(context)!.addFeedTitle,
             onPressed: () => _showAddFeedDialog(context),
           ),
         ],
@@ -178,6 +234,20 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHero(context),
+                    const SizedBox(height: AppSpacing.s12),
+                    _buildSearchBar(context),
+                    if (_searchQuery.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacing.s4),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+                        child: Text(
+                          '${_filteredFeedCount} feeds found',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.s12),
                     _buildCategoryFilters(context),
                     const SizedBox(height: AppSpacing.s12),
@@ -232,13 +302,13 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Discover quality feeds fast',
+                  AppLocalizations.of(context)!.marketplaceHeroTitle,
                   style: textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacing.s4),
                 Text(
-                  'Browse trusted sources by topic. Tap follow to add them to your home feed instantly.',
+                  AppLocalizations.of(context)!.marketplaceHeroDesc,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -248,8 +318,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                   spacing: AppSpacing.s12,
                   children: [
                     _statPill(
-                        context, Icons.category, '${_feedsByCategory.length} categories'),
-                    _statPill(context, Icons.rss_feed, '$totalFeeds feeds'),
+                        context, Icons.category, AppLocalizations.of(context)!.marketplaceCategoriesCount('${_feedsByCategory.length}')),
+                    _statPill(context, Icons.rss_feed, AppLocalizations.of(context)!.marketplaceFeedsCount('$totalFeeds')),
                   ],
                 ),
               ],
@@ -286,6 +356,37 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               style: TextStyle(
                   color: colorScheme.onSurface, fontWeight: FontWeight.w600)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: AppLocalizations.of(context)!.marketplaceSearchHint,
+          prefixIcon: const Icon(Icons.search, size: 20),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, size: 18),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() => _searchQuery = '');
+                  },
+                )
+              : null,
+          filled: true,
+          fillColor: colorScheme.surfaceVariant.withOpacity(0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        ),
+        onChanged: (value) => setState(() => _searchQuery = value),
       ),
     );
   }
@@ -333,7 +434,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   }
 
   List<Widget> _buildCategorySections() {
-    final visibleCategories = _feedsByCategory.entries.where((entry) {
+    final source = _filteredFeedsByCategory;
+    final visibleCategories = source.entries.where((entry) {
       if (_selectedCategory == null) return true;
       return entry.key == _selectedCategory;
     }).toList()
@@ -374,7 +476,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                 style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               subtitle: Text(
-                '${feeds.length} curated sources',
+                AppLocalizations.of(context)!.marketplaceCuratedSources('${feeds.length}'),
                 style: textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
               expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
@@ -416,114 +518,93 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                 ),
               ),
               padding: const EdgeInsets.all(AppSpacing.s16),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.s8),
-                    decoration: BoxDecoration(
-                      color: accent.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(12),
+                  Text(
+                    feed.title ?? AppLocalizations.of(context)!.marketplaceUntitledFeed,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                    child: const Icon(Icons.rss_feed, size: 20),
                   ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                feed.title ?? 'Untitled feed',
-                                style: textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.s8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: accent.withOpacity(0.14),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                _labelFor(feed.category),
-                                style: TextStyle(
-                                  color: accent.darken(),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                          ],
+                  const SizedBox(height: AppSpacing.s8),
+                  Row(
+                    children: [
+                      Text(
+                        _labelFor(feed.category),
+                        style: textTheme.titleSmall?.copyWith(
+                          color: accent.darken(),
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(height: AppSpacing.s8),
-                        if (feed.description != null &&
-                            feed.description!.isNotEmpty)
-                          Text(
-                            feed.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
-                            ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          isSubscribed
+                              ? Icons.rss_feed
+                              : Icons.rss_feed_outlined,
+                          color: isSubscribed
+                              ? accent
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                        tooltip: isSubscribed ? AppLocalizations.of(context)!.marketplaceSubscribed : AppLocalizations.of(context)!.marketplaceFollow,
+                        onPressed: isSubscribed
+                            ? null
+                            : () async {
+                                try {
+                                  await appState.addFeedFromUrl(feed.url);
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                    content: Text(
+                                        AppLocalizations.of(context)!.marketplaceSubscribedTo(feed.title ?? 'feed')),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  final msg = e is ArgumentError
+                                      ? AppLocalizations.of(context)!.marketplaceInvalidUrl
+                                      : AppLocalizations.of(context)!.marketplaceUnreachable;
+                                  messenger.showSnackBar(
+                                    SnackBar(content: Text(msg)),
+                                  );
+                                }
+                              },
+                      ),
+                    ],
+                  ),
+                  if (feed.description != null &&
+                      feed.description!.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.s8),
+                    Text(
+                      feed.description!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: AppSpacing.s8),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.link,
+                        size: 16,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: AppSpacing.s4),
+                      Expanded(
+                        child: Text(
+                          Uri.tryParse(feed.url)?.host ?? feed.url,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
-                        const SizedBox(height: AppSpacing.s8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.link,
-                              size: 16,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: AppSpacing.s4),
-                            Expanded(
-                              child: Text(
-                                Uri.tryParse(feed.url)?.host ?? feed.url,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  ElevatedButton(
-                    onPressed: isSubscribed
-                        ? null
-                        : () async {
-                            try {
-                              await appState.addFeedFromUrl(feed.url);
-                              messenger.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      'Subscribed to ${feed.title ?? 'feed'}'),
-                                ),
-                              );
-                            } catch (e) {
-                              messenger.showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Failed to subscribe: $e')),
-                              );
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isSubscribed ? colorScheme.surface : accent,
-                      foregroundColor:
-                          isSubscribed ? colorScheme.onSurface : Colors.white,
-                      side: BorderSide(color: accent.withOpacity(0.4)),
-                    ),
-                    child: Text(isSubscribed ? 'Subscribed' : 'Follow'),
+                      ),
+                    ],
                   ),
                 ],
               ),

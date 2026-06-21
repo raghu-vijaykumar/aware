@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 import '../services/storage_service.dart';
 import '../theme/theme.dart';
 import 'home_screen.dart';
@@ -63,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: AppSpacing.s24),
               Text(
-                'aware',
+                AppLocalizations.of(context)!.appName,
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: Theme.of(context).colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
@@ -71,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: AppSpacing.s16),
               Text(
-                'Stay informed, effortlessly',
+                AppLocalizations.of(context)!.splashTagline,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context)
                           .colorScheme

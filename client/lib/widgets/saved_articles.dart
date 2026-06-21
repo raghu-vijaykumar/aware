@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/article.dart';
 import '../providers/app_state.dart';
 import '../screens/reader_screen.dart';
@@ -29,7 +30,7 @@ class _SavedArticlesState extends State<SavedArticles> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Articles'),
+        title: Text(AppLocalizations.of(context)!.savedArticlesTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -51,12 +52,12 @@ class _SavedArticlesState extends State<SavedArticles> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text(AppLocalizations.of(context)!.error('${snapshot.error}')));
           }
 
           final articles = snapshot.data ?? [];
           if (articles.isEmpty) {
-            return const Center(child: Text('No saved articles yet.'));
+            return Center(child: Text(AppLocalizations.of(context)!.noSavedArticlesYet));
           }
 
           return ListView.separated(
@@ -65,7 +66,7 @@ class _SavedArticlesState extends State<SavedArticles> {
             itemBuilder: (context, index) {
               final article = articles[index];
               return ListTile(
-                title: Text(article.title ?? 'Untitled'),
+                title: Text(article.title ?? AppLocalizations.of(context)!.untitled),
                 subtitle: Text(article.summary ?? ''),
                 trailing: IconButton(
                   icon: const Icon(Icons.star),

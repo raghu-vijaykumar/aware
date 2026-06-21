@@ -26,6 +26,13 @@ class FeedProvider extends ChangeNotifier {
   }
 
   Future<void> addFeedFromUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
+      throw ArgumentError('Invalid feed URL');
+    }
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      throw ArgumentError('Only http and https URLs are supported');
+    }
     final feed = await _feedService.fetchFeedMetadata(url);
     final id = await _db.insertFeed(feed);
     final articles = await _feedService.fetchArticles(url);

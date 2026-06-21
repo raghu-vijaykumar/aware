@@ -12,7 +12,18 @@ class FeedService {
 
   FeedService({http.Client? client}) : _client = client ?? http.Client();
 
+  void _validateUrl(String url) {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
+      throw ArgumentError('Invalid feed URL: $url');
+    }
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
+      throw ArgumentError('Only http and https URLs are supported: $url');
+    }
+  }
+
   Future<Feed> fetchFeedMetadata(String url) async {
+    _validateUrl(url);
     final response = await _client.get(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('Failed to fetch feed');
@@ -34,7 +45,19 @@ class FeedService {
     );
   }
 
+  Future<void> checkFeedReachable(String url) async {
+    _validateUrl(url);
+    final response = await _client.get(Uri.parse(url));
+    if (response.statusCode != 200) {
+      throw Exception('Feed unreachable: ${response.statusCode}');
+    }
+    if (response.body.isEmpty) {
+      throw Exception('Empty response from feed URL');
+    }
+  }
+
   Future<List<Article>> fetchArticles(String url) async {
+    _validateUrl(url);
     final response = await _client.get(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('Failed to fetch feed articles');

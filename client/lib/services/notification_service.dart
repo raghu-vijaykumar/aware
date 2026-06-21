@@ -91,38 +91,4 @@ class NotificationService {
     }
   }
 
-  static Future<void> showNoNewArticles() async {
-    if (kIsWeb) return;
-    if (!_initialized) {
-      await ensureInitialized();
-    }
-
-    const notificationDetails = NotificationDetails(
-      android: AndroidNotificationDetails(
-        _channelId,
-        _channelName,
-        styleInformation: BigTextStyleInformation(
-            'Background refresh finished with no changes.'),
-        importance: Importance.high,
-        priority: Priority.high,
-        ticker: 'Feed refresh',
-      ),
-      iOS: DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: false,
-      ),
-    );
-
-    try {
-      await _plugin.show(
-        _summaryNotificationId,
-        'No new articles',
-        'Background refresh finished with no changes.',
-        notificationDetails,
-      );
-    } catch (e) {
-      debugPrint('Notification error: $e');
-    }
-  }
 }

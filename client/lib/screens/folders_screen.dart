@@ -5,6 +5,7 @@ import '../models/folder.dart';
 import '../providers/app_state.dart';
 import '../services/database_service.dart';
 import '../theme/theme.dart';
+import '../l10n/app_localizations.dart';
 
 class FoldersScreen extends StatefulWidget {
   const FoldersScreen({super.key});
@@ -41,23 +42,23 @@ class _FoldersScreenState extends State<FoldersScreen> {
     final name = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('New Folder'),
+        title: Text(AppLocalizations.of(context)!.createFolderTitle),
         content: TextField(
           controller: nameController,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Folder name',
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.folderNameHint,
           ),
           onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(nameController.text.trim()),
-            child: const Text('Create'),
+            child: Text(AppLocalizations.of(context)!.create),
           ),
         ],
       ),
@@ -74,23 +75,23 @@ class _FoldersScreenState extends State<FoldersScreen> {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Rename Folder'),
+        title: Text(AppLocalizations.of(context)!.renameFolderTitle),
         content: TextField(
           controller: nameController,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Folder name',
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.folderNameHint,
           ),
           onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(nameController.text.trim()),
-            child: const Text('Rename'),
+            child: Text(AppLocalizations.of(context)!.rename),
           ),
         ],
       ),
@@ -106,17 +107,17 @@ class _FoldersScreenState extends State<FoldersScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Folder'),
-        content: Text('Remove "${folder.name}" and ungroup its feeds?'),
+        title: Text(AppLocalizations.of(context)!.deleteFolderTitle),
+        content: Text(AppLocalizations.of(context)!.deleteFolderConfirm(folder.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -135,11 +136,11 @@ class _FoldersScreenState extends State<FoldersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Folders'),
+        title: Text(AppLocalizations.of(context)!.foldersTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: 'Create Folder',
+            tooltip: AppLocalizations.of(context)!.createFolderTooltip,
             onPressed: _createFolder,
           ),
         ],
@@ -155,7 +156,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                           size: 64, color: colorScheme.onSurfaceVariant.withOpacity(0.4)),
                       const SizedBox(height: 16),
                       Text(
-                        'No folders yet',
+                        AppLocalizations.of(context)!.noFoldersYet,
                         style: textTheme.titleMedium?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -164,7 +165,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                       TextButton.icon(
                         onPressed: _createFolder,
                         icon: const Icon(Icons.add),
-                        label: const Text('Create your first folder'),
+                        label: Text(AppLocalizations.of(context)!.createFirstFolder),
                       ),
                     ],
                   ),
@@ -197,7 +198,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                             ),
                           ),
                           subtitle: Text(
-                            '$feedCount feed${feedCount == 1 ? '' : 's'}',
+                            AppLocalizations.of(context)!.feedCount(feedCount),
                             style: textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),
@@ -214,19 +215,19 @@ class _FoldersScreenState extends State<FoldersScreen> {
                               }
                             },
                             itemBuilder: (context) => [
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'rename',
                                 child: ListTile(
                                   leading: Icon(Icons.edit),
-                                  title: Text('Rename'),
+                                  title: Text(AppLocalizations.of(context)!.rename),
                                   dense: true,
                                 ),
                               ),
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'delete',
                                 child: ListTile(
                                   leading: Icon(Icons.delete, color: Colors.red),
-                                  title: Text('Delete', style: TextStyle(color: Colors.red)),
+                                  title: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: Colors.red)),
                                   dense: true,
                                 ),
                               ),
