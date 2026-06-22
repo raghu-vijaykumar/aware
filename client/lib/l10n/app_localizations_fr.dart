@@ -18,614 +18,618 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appVersion => '1.0.0';
 
   @override
-  String get splashTagline => 'Stay informed, effortlessly';
+  String get splashTagline => 'Restez informé, en toute simplicité';
 
   @override
-  String get onboardingLanguageTitle => 'Choose your language';
+  String get onboardingLanguageTitle => 'Choisissez votre langue';
 
   @override
   String get onboardingLanguageDesc =>
-      'Select your preferred language for the app interface.';
+      'Sélectionnez votre langue préférée pour l\'interface de l\'application.';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to aware';
+  String get onboardingWelcomeTitle => 'Bienvenue sur aware';
 
   @override
   String get onboardingWelcomeDesc =>
-      'Your personal feed reader. Stay informed about what matters, all in one place.';
+      'Votre lecteur de flux personnel. Restez informé de ce qui compte, le tout au même endroit.';
 
   @override
-  String get onboardingOfflineTitle => 'Read Offline';
+  String get onboardingOfflineTitle => 'Lire hors ligne';
 
   @override
   String get onboardingOfflineDesc =>
-      'Feeds are downloaded so you can read anytime, anywhere. Listen with text-to-speech.';
+      'Les flux sont téléchargés pour que vous puissiez lire à tout moment, n\'importe où. Écoutez avec la synthèse vocale.';
 
   @override
-  String get onboardingNotifyTitle => 'Never Miss a Post';
+  String get onboardingNotifyTitle => 'Ne manquez aucun article';
 
   @override
   String get onboardingNotifyDesc =>
-      'Get notified when new articles arrive. Add your first feed to get started.';
+      'Soyez averti lorsque de nouveaux articles arrivent. Ajoutez votre premier flux pour commencer.';
 
   @override
-  String get next => 'Next';
+  String get next => 'Suivant';
 
   @override
-  String get getStarted => 'Get Started';
+  String get getStarted => 'Commencer';
 
   @override
-  String get skip => 'Skip';
+  String get skip => 'Passer';
 
   @override
-  String get tabFeeds => 'Feeds';
+  String get tabFeeds => 'Flux';
 
   @override
-  String get tabMarketplace => 'Marketplace';
+  String get tabMarketplace => 'Marché';
 
   @override
-  String get tabSettings => 'Settings';
+  String get tabSettings => 'Paramètres';
 
   @override
-  String get addFeedTitle => 'Add RSS Feed';
+  String get addFeedTitle => 'Ajouter un flux RSS';
 
   @override
-  String get addFeedUrlLabel => 'Feed URL';
+  String get addFeedUrlLabel => 'URL du flux';
 
   @override
-  String get addFeedUrlHint => 'https://example.com/feed.xml';
+  String get addFeedUrlHint => 'https://exemple.com/feed.xml';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'Annuler';
 
   @override
-  String get add => 'Add';
+  String get add => 'Ajouter';
 
   @override
-  String get feedAdded => 'Feed added';
+  String get feedAdded => 'Flux ajouté';
 
   @override
   String failedToAddFeed(Object error) {
-    return 'Failed to add feed: $error';
+    return 'Échec de l\'ajout du flux : $error';
   }
 
   @override
-  String get feedUrlRequired => 'Feed URL is required';
+  String get feedUrlRequired => 'L\'URL du flux est requise';
 
   @override
-  String get marketplaceTitle => 'Marketplace';
+  String get marketplaceTitle => 'Marché';
 
   @override
-  String get marketplaceSubtitle => 'Curated RSS links by category';
+  String get marketplaceSubtitle => 'Liens RSS sélectionnés par catégorie';
 
   @override
-  String get marketplaceHeroTitle => 'Discover quality feeds fast';
+  String get marketplaceHeroTitle => 'Découvrez rapidement des flux de qualité';
 
   @override
   String get marketplaceHeroDesc =>
-      'Browse trusted sources by topic. Tap follow to add them to your home feed instantly.';
+      'Parcourez des sources fiables par sujet. Appuyez sur Suivre pour les ajouter instantanément à votre fil d\'accueil.';
 
   @override
   String marketplaceCategoriesCount(Object count) {
-    return '$count categories';
+    return '$count catégories';
   }
 
   @override
   String marketplaceFeedsCount(Object count) {
-    return '$count feeds';
+    return '$count flux';
   }
 
   @override
-  String get marketplaceSearchHint => 'Search feeds...';
+  String get marketplaceSearchHint => 'Rechercher des flux...';
 
   @override
-  String get marketplaceUntitledFeed => 'Untitled feed';
+  String get marketplaceUntitledFeed => 'Flux sans titre';
 
   @override
-  String get marketplaceSubscribed => 'Subscribed';
+  String get marketplaceSubscribed => 'Abonné';
 
   @override
-  String get marketplaceFollow => 'Follow';
+  String get marketplaceFollow => 'Suivre';
 
   @override
   String marketplaceSubscribedTo(Object title) {
-    return 'Subscribed to $title';
+    return 'Abonné à $title';
   }
 
   @override
-  String get marketplaceInvalidUrl => 'Invalid feed URL';
+  String get marketplaceInvalidUrl => 'URL de flux invalide';
 
   @override
   String get marketplaceUnreachable =>
-      'Failed to subscribe: feed may be unreachable';
+      'Échec de l\'abonnement : le flux est peut-être inaccessible';
 
   @override
   String marketplaceCuratedSources(Object count) {
-    return '$count curated sources';
+    return '$count sources sélectionnées';
   }
 
   @override
-  String get signIn => 'Sign in';
+  String get signIn => 'Connexion';
 
   @override
-  String get emailLabel => 'Email';
+  String get emailLabel => 'E-mail';
 
   @override
-  String get passwordLabel => 'Password';
+  String get passwordLabel => 'Mot de passe';
 
   @override
-  String get emailRequired => 'Enter your email';
+  String get emailRequired => 'Saisissez votre e-mail';
 
   @override
-  String get passwordRequired => 'Enter your password';
+  String get passwordRequired => 'Saisissez votre mot de passe';
 
   @override
-  String get subscriptionsTitle => 'Subscriptions';
+  String get subscriptionsTitle => 'Abonnements';
 
   @override
   String get subscriptionsEmpty =>
-      'No subscriptions yet. Add feeds from the Marketplace!';
+      'Pas encore d\'abonnements. Ajoutez des flux depuis le Marché !';
 
   @override
-  String get untitledFeed => 'Untitled Feed';
+  String get untitledFeed => 'Flux sans titre';
 
   @override
-  String get paused => 'Paused';
+  String get paused => 'En pause';
 
   @override
-  String get resume => 'Resume';
+  String get resume => 'Reprendre';
 
   @override
   String get pause => 'Pause';
 
   @override
-  String get unsubscribe => 'Unsubscribe';
+  String get unsubscribe => 'Se désabonner';
 
   @override
-  String get unsubscribeTitle => 'Unsubscribe';
+  String get unsubscribeTitle => 'Se désabonner';
 
   @override
   String unsubscribeConfirm(Object title) {
-    return 'Unsubscribe from $title?';
+    return 'Se désabonner de $title ?';
   }
 
   @override
-  String get foldersTitle => 'Folders';
+  String get foldersTitle => 'Dossiers';
 
   @override
-  String get createFolderTitle => 'New Folder';
+  String get createFolderTitle => 'Nouveau dossier';
 
   @override
-  String get folderNameHint => 'Folder name';
+  String get folderNameHint => 'Nom du dossier';
 
   @override
-  String get create => 'Create';
+  String get create => 'Créer';
 
   @override
-  String get rename => 'Rename';
+  String get rename => 'Renommer';
 
   @override
-  String get renameFolderTitle => 'Rename Folder';
+  String get renameFolderTitle => 'Renommer le dossier';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Supprimer';
 
   @override
-  String get deleteFolderTitle => 'Delete Folder';
+  String get deleteFolderTitle => 'Supprimer le dossier';
 
   @override
   String deleteFolderConfirm(Object name) {
-    return 'Remove \"$name\" and ungroup its feeds?';
+    return 'Supprimer « $name » et dissocier ses flux ?';
   }
 
   @override
-  String get createFolderTooltip => 'Create Folder';
+  String get createFolderTooltip => 'Créer un dossier';
 
   @override
-  String get noFoldersYet => 'No folders yet';
+  String get noFoldersYet => 'Pas encore de dossiers';
 
   @override
-  String get createFirstFolder => 'Create your first folder';
+  String get createFirstFolder => 'Créez votre premier dossier';
 
   @override
   String feedCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 's',
+      other: '',
       one: '',
     );
-    return '$count feed$_temp0';
+    return '$count flux$_temp0';
   }
 
   @override
-  String get filters => 'Filters';
+  String get filters => 'Filtres';
 
   @override
-  String get unread => 'Unread';
+  String get unread => 'Non lus';
 
   @override
-  String get liked => 'Liked';
+  String get liked => 'J\'aime';
 
   @override
-  String get saved => 'Saved';
+  String get saved => 'Enregistrés';
 
   @override
-  String get last24h => 'Last 24h';
+  String get last24h => '24 dernières h';
 
   @override
-  String get last7d => 'Last 7d';
+  String get last7d => '7 derniers j';
 
   @override
-  String get last30d => 'Last 30d';
+  String get last30d => '30 derniers j';
 
   @override
   String get engagement => 'Engagement';
 
   @override
-  String get unreadOnly => 'Unread only';
+  String get unreadOnly => 'Non lus uniquement';
 
   @override
-  String get lengthPreview => 'Length / preview';
+  String get lengthPreview => 'Longueur / aperçu';
 
   @override
-  String get any => 'Any';
+  String get any => 'Tout';
 
   @override
-  String get short => 'Short <100w';
+  String get short => 'Court <100m';
 
   @override
-  String get medium => 'Medium 100-300';
+  String get medium => 'Moyen 100–300';
 
   @override
   String get long => 'Long >300';
 
   @override
-  String get multiParagraph => '2+ paragraphs';
+  String get multiParagraph => '2+ paragraphes';
 
   @override
-  String get timeWindow => 'Time window';
+  String get timeWindow => 'Période';
 
   @override
-  String get all => 'All';
+  String get all => 'Tout';
 
   @override
   String get sources => 'Sources';
 
   @override
-  String get allSources => 'All sources';
+  String get allSources => 'Toutes les sources';
 
   @override
-  String get keyword => 'Keyword';
+  String get keyword => 'Mot-clé';
 
   @override
-  String get keywordHint => 'Title, summary, or content';
+  String get keywordHint => 'Titre, résumé ou contenu';
 
   @override
-  String get reset => 'Reset';
+  String get reset => 'Réinitialiser';
 
   @override
-  String get done => 'Done';
+  String get done => 'Terminé';
 
   @override
-  String get searchArticlesHint => 'Search articles...';
+  String get searchArticlesHint => 'Rechercher des articles...';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Réessayer';
 
   @override
-  String get noArticlesYet => 'No articles yet. Pull to refresh.';
+  String get noArticlesYet => 'Pas encore d\'articles. Tirez pour actualiser.';
 
   @override
-  String get noArticlesMatch => 'No articles match the current filters.';
+  String get noArticlesMatch =>
+      'Aucun article ne correspond aux filtres actuels.';
 
   @override
-  String get untitled => 'Untitled';
+  String get untitled => 'Sans titre';
 
   @override
-  String get removedLike => 'Removed like';
+  String get removedLike => 'J\'aime retiré';
 
   @override
-  String get likedArticle => 'Liked article';
+  String get likedArticle => 'Article aimé';
 
   @override
-  String get removedFromSaved => 'Removed from saved';
+  String get removedFromSaved => 'Retiré des enregistrés';
 
   @override
-  String get savedForLater => 'Saved for later';
+  String get savedForLater => 'Enregistré pour plus tard';
 
   @override
-  String get markedUnread => 'Marked unread';
+  String get markedUnread => 'Marqué comme non lu';
 
   @override
-  String get markedRead => 'Marked read';
+  String get markedRead => 'Marqué comme lu';
 
   @override
-  String get undo => 'Undo';
+  String get undo => 'Annuler';
 
   @override
-  String get publishDateUnknown => 'Publish date unknown';
+  String get publishDateUnknown => 'Date de publication inconnue';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => 'À l\'instant';
 
   @override
   String minutesAgo(Object count) {
-    return '${count}m ago';
+    return 'Il y a $count min';
   }
 
   @override
   String hoursAgo(Object count) {
-    return '${count}h ago';
+    return 'Il y a $count h';
   }
 
   @override
   String daysAgo(Object count) {
-    return '${count}d ago';
+    return 'Il y a $count j';
   }
 
   @override
   String weeksAgo(Object count) {
-    return '${count}w ago';
+    return 'Il y a $count sem';
   }
 
   @override
   String monthsAgo(Object count) {
-    return '${count}mo ago';
+    return 'Il y a $count mois';
   }
 
   @override
   String yearsAgo(Object count) {
-    return '${count}y ago';
+    return 'Il y a $count ans';
   }
 
   @override
-  String get fetched => 'fetched';
+  String get fetched => 'récupéré';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => 'Continuer la lecture';
 
   @override
-  String get readerSavedForLater => 'Saved for later';
+  String get readerSavedForLater => 'Enregistré pour plus tard';
 
   @override
-  String get readerRemovedFromSaved => 'Removed from saved';
+  String get readerRemovedFromSaved => 'Retiré des enregistrés';
 
   @override
-  String get resumingLastRead => 'Resuming last read article';
+  String get resumingLastRead => 'Reprise du dernier article lu';
 
   @override
-  String get startingPlayback => 'Starting playback for unread article';
+  String get startingPlayback =>
+      'Démarrage de la lecture pour l\'article non lu';
 
   @override
-  String get showReader => 'Show reader';
+  String get showReader => 'Afficher le lecteur';
 
   @override
-  String get showWebView => 'Show web view';
+  String get showWebView => 'Afficher la vue web';
 
   @override
   String get webviewUnsupported =>
-      'In-app WebView is only supported on Android/iOS.\nShowing text view instead.';
+      'La vue Web intégrée n\'est prise en charge que sur Android/iOS.\nAffichage de la vue texte à la place.';
 
   @override
   String byAuthor(Object author) {
-    return 'By $author';
+    return 'Par $author';
   }
 
   @override
-  String get markedReadSkipped => 'Marked read & skipped to next';
+  String get markedReadSkipped => 'Marqué comme lu et passé au suivant';
 
   @override
-  String get markUnread => 'Mark unread';
+  String get markUnread => 'Marquer comme non lu';
 
   @override
-  String get markReadPlay => 'Mark read & play next';
+  String get markReadPlay => 'Marquer comme lu et lire le suivant';
 
   @override
-  String get previousArticle => 'Previous article';
+  String get previousArticle => 'Article précédent';
 
   @override
-  String get nextArticle => 'Next article';
+  String get nextArticle => 'Article suivant';
 
   @override
   String playingSection(Object current, Object total) {
-    return 'Playing section $current/$total';
+    return 'Lecture de la section $current/$total';
   }
 
   @override
   String get readAloudNotAvailable =>
-      'Read-aloud not available for this article.';
+      'La lecture à voix haute n\'est pas disponible pour cet article.';
 
   @override
   String unreadCount(Object count) {
-    return 'Unread: $count';
+    return 'Non lus : $count';
   }
 
   @override
   String get embeddedVideoUnsupported =>
-      'Embedded video is only supported on Android/iOS.';
+      'La vidéo intégrée n\'est prise en charge que sur Android/iOS.';
 
   @override
-  String get loadVideo => 'Load Video';
+  String get loadVideo => 'Charger la vidéo';
 
   @override
-  String get settingsTitle => 'Settings';
+  String get settingsTitle => 'Paramètres';
 
   @override
-  String get goAdFree => 'Go Ad-Free';
+  String get goAdFree => 'Sans publicité';
 
   @override
-  String get goAdFreeSubtitle => 'Just \$1/month. Support indie dev.';
+  String get goAdFreeSubtitle =>
+      'Seulement 1 €/mois. Soutenez un développeur indépendant.';
 
   @override
-  String get pricePerMonth => '\$1/mo';
+  String get pricePerMonth => '1 €/mois';
 
   @override
   String get premiumTitle => 'Aware Premium';
 
   @override
-  String get premiumSubscribeDesc => 'Subscribe for \$1/month and get:';
+  String get premiumSubscribeDesc => 'Abonnez-vous pour 1 €/mois et obtenez :';
 
   @override
-  String get premiumRemoveAds => 'Remove all ads';
+  String get premiumRemoveAds => 'Supprimer toutes les publicités';
 
   @override
-  String get premiumCloudStorage => 'Cloud storage for your data';
+  String get premiumCloudStorage => 'Stockage cloud pour vos données';
 
   @override
-  String get premiumCloudSubscriptions => 'Save subscriptions in the cloud';
+  String get premiumCloudSubscriptions =>
+      'Sauvegarder les abonnements dans le cloud';
 
   @override
-  String get premiumSync => 'Sign in & sync across devices';
+  String get premiumSync => 'Connectez-vous et synchronisez entre appareils';
 
   @override
-  String get premiumFolders => 'Unlimited folder organization';
+  String get premiumFolders => 'Organisation illimitée des dossiers';
 
   @override
-  String get notNow => 'Not now';
+  String get notNow => 'Pas maintenant';
 
   @override
-  String get comingSoon => 'Coming Soon';
+  String get comingSoon => 'Prochainement';
 
   @override
-  String get subscribeNow => 'Subscribe \$1/mo';
+  String get subscribeNow => 'S\'abonner 1 €/mois';
 
   @override
   String get subscriptionComingSoon =>
-      'Subscription coming soon! You\'ll be charged \$1/month.';
+      'Abonnement bientôt disponible ! 1 €/mois vous sera facturé.';
 
   @override
-  String get sectionAdvanced => 'Advanced';
+  String get sectionAdvanced => 'Avancé';
 
   @override
-  String get readTracking => 'Read tracking';
+  String get readTracking => 'Suivi de lecture';
 
   @override
   String get readTrackingSubtitle =>
-      'Auto-mark articles as read based on reading progress';
+      'Marquer automatiquement les articles comme lus en fonction de la progression';
 
   @override
-  String get autoMarkRead => 'Auto-mark read by progress';
+  String get autoMarkRead => 'Marquage auto selon la progression';
 
   @override
   String get autoMarkReadSubtitle =>
-      'Marks as read when scroll or audio reaches your threshold';
+      'Marque comme lu lorsque le défilement ou l\'audio atteint votre seuil';
 
   @override
-  String get autoMarkThreshold => 'Auto-mark threshold';
+  String get autoMarkThreshold => 'Seuil de marquage automatique';
 
   @override
   String progressNeeded(Object percent) {
-    return '$percent% progress needed';
+    return '$percent% de progression nécessaire';
   }
 
   @override
-  String get sectionVoice => 'Voice & Read aloud';
+  String get sectionVoice => 'Voix et lecture à voix haute';
 
   @override
-  String get narrationSpeed => 'Default narration speed';
+  String get narrationSpeed => 'Vitesse de narration par défaut';
 
   @override
   String speedLabel(Object speed) {
-    return '${speed}x (1x = calm default)';
+    return '${speed}x (1x = calme par défaut)';
   }
 
   @override
-  String get defaultVoice => 'Default voice';
+  String get defaultVoice => 'Voix par défaut';
 
   @override
-  String get systemDefault => 'System default';
+  String get systemDefault => 'Par défaut du système';
 
   @override
-  String get autoPlayNext => 'Auto-play next article';
+  String get autoPlayNext => 'Lire automatiquement l\'article suivant';
 
   @override
   String get autoPlayNextSubtitle =>
-      'When narration finishes, move to the next item';
+      'Lorsque la narration se termine, passer à l\'élément suivant';
 
   @override
-  String get sectionData => 'Data';
+  String get sectionData => 'Données';
 
   @override
-  String get lowDataMode => 'Low-data mode prefetch';
+  String get lowDataMode => 'Préchargement en mode faible consommation';
 
   @override
   String get lowDataModeSubtitle =>
-      'Prefetch article text in background and prefer cached content when available';
+      'Précharger le texte des articles en arrière-plan et privilégier le contenu mis en cache lorsqu\'il est disponible';
 
   @override
-  String get sectionAccessibility => 'Accessibility';
+  String get sectionAccessibility => 'Accessibilité';
 
   @override
-  String get textSize => 'Text size';
+  String get textSize => 'Taille du texte';
 
   @override
   String get textSizeSubtitle =>
-      'Applies across the app, including articles and navigation.';
+      'S\'applique à toute l\'application, y compris les articles et la navigation.';
 
   @override
-  String get sampleText => 'The quick brown fox jumps over the lazy dog.';
+  String get sampleText => 'Portez ce vieux whisky au juge blond qui fume.';
 
   @override
-  String get sectionSubscriptions => 'Subscriptions';
+  String get sectionSubscriptions => 'Abonnements';
 
   @override
-  String get manageSubscriptions => 'Manage Subscriptions';
+  String get manageSubscriptions => 'Gérer les abonnements';
 
   @override
   String get manageSubscriptionsSubtitle =>
-      'Add or remove the feeds you follow';
+      'Ajouter ou supprimer les flux que vous suivez';
 
   @override
-  String get manageFolders => 'Manage Folders';
+  String get manageFolders => 'Gérer les dossiers';
 
   @override
-  String get manageFoldersSubtitle => 'Organise feeds into folders';
+  String get manageFoldersSubtitle => 'Organiser les flux dans des dossiers';
 
   @override
-  String get importSubscriptions => 'Import Subscriptions';
+  String get importSubscriptions => 'Importer des abonnements';
 
   @override
-  String get importSubscriptionsSubtitle => 'Import via OPML file';
+  String get importSubscriptionsSubtitle => 'Importer via fichier OPML';
 
   @override
-  String get exportSubscriptions => 'Export Subscriptions';
+  String get exportSubscriptions => 'Exporter des abonnements';
 
   @override
-  String get exportSubscriptionsSubtitle => 'Export your feeds to OPML';
+  String get exportSubscriptionsSubtitle => 'Exporter vos flux vers OPML';
 
   @override
-  String get sectionThemes => 'Themes';
+  String get sectionThemes => 'Thèmes';
 
   @override
-  String get themes => 'Themes';
+  String get themes => 'Thèmes';
 
   @override
-  String get themesSubtitle => 'Light / Dark / System';
+  String get themesSubtitle => 'Clair / Sombre / Système';
 
   @override
-  String get selectTheme => 'Select Theme';
+  String get selectTheme => 'Choisir le thème';
 
   @override
-  String get system => 'System';
+  String get system => 'Système';
 
   @override
-  String get light => 'Light';
+  String get light => 'Clair';
 
   @override
-  String get dark => 'Dark';
+  String get dark => 'Sombre';
 
   @override
-  String get sectionLanguage => 'Language';
+  String get sectionLanguage => 'Langue';
 
   @override
-  String get language => 'Language';
+  String get language => 'Langue';
 
   @override
   String get languageSubtitle => 'Français';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => 'Choisir la langue';
 
   @override
   String get languageEnglish => 'Anglais';
@@ -664,97 +668,97 @@ class AppLocalizationsFr extends AppLocalizations {
   String get languageItalian => 'Italien';
 
   @override
-  String get sectionLegal => 'Legal';
+  String get sectionLegal => 'Mentions légales';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => 'Politique de confidentialité';
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => 'Licences open source';
 
   @override
-  String get noFeedsFoundOpml => 'No feeds found in OPML';
+  String get noFeedsFoundOpml => 'Aucun flux trouvé dans l\'OPML';
 
   @override
   String importedCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 's',
+      other: '',
       one: '',
     );
-    return 'Imported $count feed$_temp0';
+    return '$count flux$_temp0 importés';
   }
 
   @override
-  String get allFeedsAlreadyAdded => 'All feeds were already added';
+  String get allFeedsAlreadyAdded => 'Tous les flux ont déjà été ajoutés';
 
   @override
   String importFailed(Object error) {
-    return 'Import failed: $error';
+    return 'Échec de l\'importation : $error';
   }
 
   @override
-  String get noSubscriptionsToExport => 'No subscriptions to export';
+  String get noSubscriptionsToExport => 'Aucun abonnement à exporter';
 
   @override
   String exportedCount(Object count) {
-    return 'Exported $count feed(s)';
+    return '$count flux exportés';
   }
 
   @override
   String exportFailed(Object error) {
-    return 'Export failed: $error';
+    return 'Échec de l\'exportation : $error';
   }
 
   @override
-  String get exportShareText => 'Aware subscriptions export';
+  String get exportShareText => 'Exportation des abonnements Aware';
 
   @override
-  String get exportShareSubject => 'Aware subscriptions export';
+  String get exportShareSubject => 'Exportation des abonnements Aware';
 
   @override
-  String get savedArticlesTitle => 'Saved Articles';
+  String get savedArticlesTitle => 'Articles enregistrés';
 
   @override
-  String get noSavedArticlesYet => 'No saved articles yet.';
+  String get noSavedArticlesYet => 'Pas encore d\'articles enregistrés.';
 
   @override
   String error(Object error) {
-    return 'Error: $error';
+    return 'Erreur : $error';
   }
 
   @override
-  String get privacyPolicyTitle => 'Privacy Policy';
+  String get privacyPolicyTitle => 'Politique de confidentialité';
 
   @override
-  String get privacyPolicyLastUpdated => 'Last updated: June 20, 2026';
+  String get privacyPolicyLastUpdated => 'Dernière mise à jour : 20 juin 2026';
 
   @override
-  String get privacyInfoWeCollect => 'Information We Collect';
+  String get privacyInfoWeCollect => 'Informations que nous collectons';
 
   @override
   String get privacyInfoWeCollectBody =>
-      'Aware does not collect, store, or transmit any personal data. All app data (feeds, articles, reading progress, preferences, and settings) is stored locally on your device and is never sent to any server.';
+      'Aware ne collecte, ne stocke ni ne transmet aucune donnée personnelle. Toutes les données de l\'application (flux, articles, progression de lecture, préférences et paramètres) sont stockées localement sur votre appareil et ne sont jamais envoyées à un serveur.';
 
   @override
-  String get privacyThirdParty => 'Third-Party Services';
+  String get privacyThirdParty => 'Services tiers';
 
   @override
   String get privacyThirdPartyBody =>
-      'Aware uses Google AdMob to display advertisements. AdMob may collect non-personal usage data and device identifiers to serve relevant ads. Ads are served with non-personalized ad requests only. No user-level data is shared with advertisers.\n\nGoogle\'s Privacy Policy applies to data collected by AdMob:\n';
+      'Aware utilise Google AdMob pour afficher des publicités. AdMob peut collecter des données d\'utilisation non personnelles et des identifiants d\'appareil pour diffuser des annonces pertinentes. Les annonces sont diffusées uniquement avec des demandes non personnalisées. Aucune donnée utilisateur n\'est partagée avec les annonceurs.\n\nLa politique de confidentialité de Google s\'applique aux données collectées par AdMob :\n';
 
   @override
-  String get privacyDataStorage => 'Data Storage';
+  String get privacyDataStorage => 'Stockage des données';
 
   @override
   String get privacyDataStorageBody =>
-      'All feed subscriptions, articles, reading progress, and app preferences are stored locally in a SQLite database on your device. You can export your data at any time via the OPML export feature in Settings.\n\nTo delete all data, uninstall the app or clear app data from your device settings.';
+      'Tous les abonnements aux flux, articles, progression de lecture et préférences de l\'application sont stockés localement dans une base de données SQLite sur votre appareil. Vous pouvez exporter vos données à tout moment via la fonction d\'exportation OPML dans les Paramètres.\n\nPour supprimer toutes les données, désinstallez l\'application ou effacez les données de l\'application depuis les paramètres de votre appareil.';
 
   @override
   String get privacyContact => 'Contact';
 
   @override
   String get privacyContactBody =>
-      'If you have questions about this privacy policy, please contact us through the app\'s support channels.';
+      'Si vous avez des questions concernant cette politique de confidentialité, veuillez nous contacter via les canaux d\'assistance de l\'application.';
 }

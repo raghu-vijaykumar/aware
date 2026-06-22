@@ -18,614 +18,591 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appVersion => '1.0.0';
 
   @override
-  String get splashTagline => 'Stay informed, effortlessly';
+  String get splashTagline => '轻松掌握信息';
 
   @override
-  String get onboardingLanguageTitle => 'Choose your language';
+  String get onboardingLanguageTitle => '选择你的语言';
 
   @override
-  String get onboardingLanguageDesc =>
-      'Select your preferred language for the app interface.';
+  String get onboardingLanguageDesc => '选择你偏好的应用界面语言。';
 
   @override
-  String get onboardingWelcomeTitle => 'Welcome to aware';
+  String get onboardingWelcomeTitle => '欢迎使用 aware';
 
   @override
-  String get onboardingWelcomeDesc =>
-      'Your personal feed reader. Stay informed about what matters, all in one place.';
+  String get onboardingWelcomeDesc => '你的个人订阅源阅读器。在一个地方了解重要信息。';
 
   @override
-  String get onboardingOfflineTitle => 'Read Offline';
+  String get onboardingOfflineTitle => '离线阅读';
 
   @override
-  String get onboardingOfflineDesc =>
-      'Feeds are downloaded so you can read anytime, anywhere. Listen with text-to-speech.';
+  String get onboardingOfflineDesc => '订阅源已下载，你可以随时随地阅读。使用文字转语音收听。';
 
   @override
-  String get onboardingNotifyTitle => 'Never Miss a Post';
+  String get onboardingNotifyTitle => '不错过任何文章';
 
   @override
-  String get onboardingNotifyDesc =>
-      'Get notified when new articles arrive. Add your first feed to get started.';
+  String get onboardingNotifyDesc => '新文章到达时接收通知。添加你的第一个订阅源开始使用。';
 
   @override
-  String get next => 'Next';
+  String get next => '下一步';
 
   @override
-  String get getStarted => 'Get Started';
+  String get getStarted => '开始';
 
   @override
-  String get skip => 'Skip';
+  String get skip => '跳过';
 
   @override
-  String get tabFeeds => 'Feeds';
+  String get tabFeeds => '订阅源';
 
   @override
-  String get tabMarketplace => 'Marketplace';
+  String get tabMarketplace => '市场';
 
   @override
-  String get tabSettings => 'Settings';
+  String get tabSettings => '设置';
 
   @override
-  String get addFeedTitle => 'Add RSS Feed';
+  String get addFeedTitle => '添加 RSS 订阅源';
 
   @override
-  String get addFeedUrlLabel => 'Feed URL';
+  String get addFeedUrlLabel => '订阅源 URL';
 
   @override
   String get addFeedUrlHint => 'https://example.com/feed.xml';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => '取消';
 
   @override
-  String get add => 'Add';
+  String get add => '添加';
 
   @override
-  String get feedAdded => 'Feed added';
+  String get feedAdded => '订阅源已添加';
 
   @override
   String failedToAddFeed(Object error) {
-    return 'Failed to add feed: $error';
+    return '添加订阅源失败：$error';
   }
 
   @override
-  String get feedUrlRequired => 'Feed URL is required';
+  String get feedUrlRequired => '需要订阅源 URL';
 
   @override
-  String get marketplaceTitle => 'Marketplace';
+  String get marketplaceTitle => '市场';
 
   @override
-  String get marketplaceSubtitle => 'Curated RSS links by category';
+  String get marketplaceSubtitle => '按类别精选的 RSS 链接';
 
   @override
-  String get marketplaceHeroTitle => 'Discover quality feeds fast';
+  String get marketplaceHeroTitle => '快速发现优质订阅源';
 
   @override
-  String get marketplaceHeroDesc =>
-      'Browse trusted sources by topic. Tap follow to add them to your home feed instantly.';
+  String get marketplaceHeroDesc => '按主题浏览可信来源。点击关注即可立即添加到你的首页订阅源。';
 
   @override
   String marketplaceCategoriesCount(Object count) {
-    return '$count categories';
+    return '$count 个分类';
   }
 
   @override
   String marketplaceFeedsCount(Object count) {
-    return '$count feeds';
+    return '$count 个订阅源';
   }
 
   @override
-  String get marketplaceSearchHint => 'Search feeds...';
+  String get marketplaceSearchHint => '搜索订阅源...';
 
   @override
-  String get marketplaceUntitledFeed => 'Untitled feed';
+  String get marketplaceUntitledFeed => '未命名的订阅源';
 
   @override
-  String get marketplaceSubscribed => 'Subscribed';
+  String get marketplaceSubscribed => '已订阅';
 
   @override
-  String get marketplaceFollow => 'Follow';
+  String get marketplaceFollow => '关注';
 
   @override
   String marketplaceSubscribedTo(Object title) {
-    return 'Subscribed to $title';
+    return '已订阅 $title';
   }
 
   @override
-  String get marketplaceInvalidUrl => 'Invalid feed URL';
+  String get marketplaceInvalidUrl => '无效的订阅源 URL';
 
   @override
-  String get marketplaceUnreachable =>
-      'Failed to subscribe: feed may be unreachable';
+  String get marketplaceUnreachable => '订阅失败：订阅源可能无法访问';
 
   @override
   String marketplaceCuratedSources(Object count) {
-    return '$count curated sources';
+    return '$count 个精选来源';
   }
 
   @override
-  String get signIn => 'Sign in';
+  String get signIn => '登录';
 
   @override
-  String get emailLabel => 'Email';
+  String get emailLabel => '电子邮件';
 
   @override
-  String get passwordLabel => 'Password';
+  String get passwordLabel => '密码';
 
   @override
-  String get emailRequired => 'Enter your email';
+  String get emailRequired => '输入你的电子邮件';
 
   @override
-  String get passwordRequired => 'Enter your password';
+  String get passwordRequired => '输入你的密码';
 
   @override
-  String get subscriptionsTitle => 'Subscriptions';
+  String get subscriptionsTitle => '订阅';
 
   @override
-  String get subscriptionsEmpty =>
-      'No subscriptions yet. Add feeds from the Marketplace!';
+  String get subscriptionsEmpty => '还没有订阅。从市场添加订阅源！';
 
   @override
-  String get untitledFeed => 'Untitled Feed';
+  String get untitledFeed => '未命名的订阅源';
 
   @override
-  String get paused => 'Paused';
+  String get paused => '已暂停';
 
   @override
-  String get resume => 'Resume';
+  String get resume => '恢复';
 
   @override
-  String get pause => 'Pause';
+  String get pause => '暂停';
 
   @override
-  String get unsubscribe => 'Unsubscribe';
+  String get unsubscribe => '取消订阅';
 
   @override
-  String get unsubscribeTitle => 'Unsubscribe';
+  String get unsubscribeTitle => '取消订阅';
 
   @override
   String unsubscribeConfirm(Object title) {
-    return 'Unsubscribe from $title?';
+    return '取消订阅 $title？';
   }
 
   @override
-  String get foldersTitle => 'Folders';
+  String get foldersTitle => '文件夹';
 
   @override
-  String get createFolderTitle => 'New Folder';
+  String get createFolderTitle => '新建文件夹';
 
   @override
-  String get folderNameHint => 'Folder name';
+  String get folderNameHint => '文件夹名称';
 
   @override
-  String get create => 'Create';
+  String get create => '创建';
 
   @override
-  String get rename => 'Rename';
+  String get rename => '重命名';
 
   @override
-  String get renameFolderTitle => 'Rename Folder';
+  String get renameFolderTitle => '重命名文件夹';
 
   @override
-  String get delete => 'Delete';
+  String get delete => '删除';
 
   @override
-  String get deleteFolderTitle => 'Delete Folder';
+  String get deleteFolderTitle => '删除文件夹';
 
   @override
   String deleteFolderConfirm(Object name) {
-    return 'Remove \"$name\" and ungroup its feeds?';
+    return '移除\"$name\"并取消其订阅源的分组？';
   }
 
   @override
-  String get createFolderTooltip => 'Create Folder';
+  String get createFolderTooltip => '创建文件夹';
 
   @override
-  String get noFoldersYet => 'No folders yet';
+  String get noFoldersYet => '还没有文件夹';
 
   @override
-  String get createFirstFolder => 'Create your first folder';
+  String get createFirstFolder => '创建你的第一个文件夹';
 
   @override
   String feedCount(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 's',
-      one: '',
-    );
-    return '$count feed$_temp0';
+    return '$count 个订阅源';
   }
 
   @override
-  String get filters => 'Filters';
+  String get filters => '筛选';
 
   @override
-  String get unread => 'Unread';
+  String get unread => '未读';
 
   @override
-  String get liked => 'Liked';
+  String get liked => '已赞';
 
   @override
-  String get saved => 'Saved';
+  String get saved => '已保存';
 
   @override
-  String get last24h => 'Last 24h';
+  String get last24h => '最近 24 小时';
 
   @override
-  String get last7d => 'Last 7d';
+  String get last7d => '最近 7 天';
 
   @override
-  String get last30d => 'Last 30d';
+  String get last30d => '最近 30 天';
 
   @override
-  String get engagement => 'Engagement';
+  String get engagement => '互动';
 
   @override
-  String get unreadOnly => 'Unread only';
+  String get unreadOnly => '仅未读';
 
   @override
-  String get lengthPreview => 'Length / preview';
+  String get lengthPreview => '长度/预览';
 
   @override
-  String get any => 'Any';
+  String get any => '任意';
 
   @override
-  String get short => 'Short <100w';
+  String get short => '短 <100 词';
 
   @override
-  String get medium => 'Medium 100-300';
+  String get medium => '中 100-300';
 
   @override
-  String get long => 'Long >300';
+  String get long => '长 >300';
 
   @override
-  String get multiParagraph => '2+ paragraphs';
+  String get multiParagraph => '2+ 段落';
 
   @override
-  String get timeWindow => 'Time window';
+  String get timeWindow => '时间范围';
 
   @override
-  String get all => 'All';
+  String get all => '全部';
 
   @override
-  String get sources => 'Sources';
+  String get sources => '来源';
 
   @override
-  String get allSources => 'All sources';
+  String get allSources => '所有来源';
 
   @override
-  String get keyword => 'Keyword';
+  String get keyword => '关键词';
 
   @override
-  String get keywordHint => 'Title, summary, or content';
+  String get keywordHint => '标题、摘要或内容';
 
   @override
-  String get reset => 'Reset';
+  String get reset => '重置';
 
   @override
-  String get done => 'Done';
+  String get done => '完成';
 
   @override
-  String get searchArticlesHint => 'Search articles...';
+  String get searchArticlesHint => '搜索文章...';
 
   @override
-  String get retry => 'Retry';
+  String get retry => '重试';
 
   @override
-  String get noArticlesYet => 'No articles yet. Pull to refresh.';
+  String get noArticlesYet => '还没有文章。下拉刷新。';
 
   @override
-  String get noArticlesMatch => 'No articles match the current filters.';
+  String get noArticlesMatch => '没有符合当前筛选条件的文章。';
 
   @override
-  String get untitled => 'Untitled';
+  String get untitled => '未命名';
 
   @override
-  String get removedLike => 'Removed like';
+  String get removedLike => '已取消点赞';
 
   @override
-  String get likedArticle => 'Liked article';
+  String get likedArticle => '已点赞文章';
 
   @override
-  String get removedFromSaved => 'Removed from saved';
+  String get removedFromSaved => '已从保存中移除';
 
   @override
-  String get savedForLater => 'Saved for later';
+  String get savedForLater => '已保存供以后使用';
 
   @override
-  String get markedUnread => 'Marked unread';
+  String get markedUnread => '已标记为未读';
 
   @override
-  String get markedRead => 'Marked read';
+  String get markedRead => '已标记为已读';
 
   @override
-  String get undo => 'Undo';
+  String get undo => '撤销';
 
   @override
-  String get publishDateUnknown => 'Publish date unknown';
+  String get publishDateUnknown => '发布日期未知';
 
   @override
-  String get justNow => 'Just now';
+  String get justNow => '刚刚';
 
   @override
   String minutesAgo(Object count) {
-    return '${count}m ago';
+    return '$count 分钟前';
   }
 
   @override
   String hoursAgo(Object count) {
-    return '${count}h ago';
+    return '$count 小时前';
   }
 
   @override
   String daysAgo(Object count) {
-    return '${count}d ago';
+    return '$count 天前';
   }
 
   @override
   String weeksAgo(Object count) {
-    return '${count}w ago';
+    return '$count 周前';
   }
 
   @override
   String monthsAgo(Object count) {
-    return '${count}mo ago';
+    return '$count 个月前';
   }
 
   @override
   String yearsAgo(Object count) {
-    return '${count}y ago';
+    return '$count 年前';
   }
 
   @override
-  String get fetched => 'fetched';
+  String get fetched => '已获取';
 
   @override
-  String get continueReading => 'Continue Reading';
+  String get continueReading => '继续阅读';
 
   @override
-  String get readerSavedForLater => 'Saved for later';
+  String get readerSavedForLater => '已保存供以后使用';
 
   @override
-  String get readerRemovedFromSaved => 'Removed from saved';
+  String get readerRemovedFromSaved => '已从保存中移除';
 
   @override
-  String get resumingLastRead => 'Resuming last read article';
+  String get resumingLastRead => '继续上一次阅读的文章';
 
   @override
-  String get startingPlayback => 'Starting playback for unread article';
+  String get startingPlayback => '开始播放未读文章';
 
   @override
-  String get showReader => 'Show reader';
+  String get showReader => '显示阅读器';
 
   @override
-  String get showWebView => 'Show web view';
+  String get showWebView => '显示网页视图';
 
   @override
-  String get webviewUnsupported =>
-      'In-app WebView is only supported on Android/iOS.\nShowing text view instead.';
+  String get webviewUnsupported => '应用内 WebView 仅在 Android/iOS 上支持。\n改为显示文本视图。';
 
   @override
   String byAuthor(Object author) {
-    return 'By $author';
+    return '作者：$author';
   }
 
   @override
-  String get markedReadSkipped => 'Marked read & skipped to next';
+  String get markedReadSkipped => '已标记为已读并跳转到下一篇';
 
   @override
-  String get markUnread => 'Mark unread';
+  String get markUnread => '标记为未读';
 
   @override
-  String get markReadPlay => 'Mark read & play next';
+  String get markReadPlay => '标记为已读并播放下一篇';
 
   @override
-  String get previousArticle => 'Previous article';
+  String get previousArticle => '上一篇文章';
 
   @override
-  String get nextArticle => 'Next article';
+  String get nextArticle => '下一篇文章';
 
   @override
   String playingSection(Object current, Object total) {
-    return 'Playing section $current/$total';
+    return '正在播放部分 $current/$total';
   }
 
   @override
-  String get readAloudNotAvailable =>
-      'Read-aloud not available for this article.';
+  String get readAloudNotAvailable => '此文章不支持朗读。';
 
   @override
   String unreadCount(Object count) {
-    return 'Unread: $count';
+    return '未读：$count';
   }
 
   @override
-  String get embeddedVideoUnsupported =>
-      'Embedded video is only supported on Android/iOS.';
+  String get embeddedVideoUnsupported => '嵌入式视频仅在 Android/iOS 上支持。';
 
   @override
-  String get loadVideo => 'Load Video';
+  String get loadVideo => '加载视频';
 
   @override
-  String get settingsTitle => 'Settings';
+  String get settingsTitle => '设置';
 
   @override
-  String get goAdFree => 'Go Ad-Free';
+  String get goAdFree => '去除广告';
 
   @override
-  String get goAdFreeSubtitle => 'Just \$1/month. Support indie dev.';
+  String get goAdFreeSubtitle => '仅 \$1/月。支持独立开发者。';
 
   @override
-  String get pricePerMonth => '\$1/mo';
+  String get pricePerMonth => '\$1/月';
 
   @override
   String get premiumTitle => 'Aware Premium';
 
   @override
-  String get premiumSubscribeDesc => 'Subscribe for \$1/month and get:';
+  String get premiumSubscribeDesc => '订阅仅 \$1/月，即可获得：';
 
   @override
-  String get premiumRemoveAds => 'Remove all ads';
+  String get premiumRemoveAds => '去除所有广告';
 
   @override
-  String get premiumCloudStorage => 'Cloud storage for your data';
+  String get premiumCloudStorage => '数据云存储';
 
   @override
-  String get premiumCloudSubscriptions => 'Save subscriptions in the cloud';
+  String get premiumCloudSubscriptions => '在云端保存订阅';
 
   @override
-  String get premiumSync => 'Sign in & sync across devices';
+  String get premiumSync => '登录并在设备间同步';
 
   @override
-  String get premiumFolders => 'Unlimited folder organization';
+  String get premiumFolders => '无限文件夹组织';
 
   @override
-  String get notNow => 'Not now';
+  String get notNow => '稍后';
 
   @override
-  String get comingSoon => 'Coming Soon';
+  String get comingSoon => '即将推出';
 
   @override
-  String get subscribeNow => 'Subscribe \$1/mo';
+  String get subscribeNow => '订阅 \$1/月';
 
   @override
-  String get subscriptionComingSoon =>
-      'Subscription coming soon! You\'ll be charged \$1/month.';
+  String get subscriptionComingSoon => '订阅即将推出！每月将收取 \$1。';
 
   @override
-  String get sectionAdvanced => 'Advanced';
+  String get sectionAdvanced => '高级';
 
   @override
-  String get readTracking => 'Read tracking';
+  String get readTracking => '阅读跟踪';
 
   @override
-  String get readTrackingSubtitle =>
-      'Auto-mark articles as read based on reading progress';
+  String get readTrackingSubtitle => '根据阅读进度自动标记文章为已读';
 
   @override
-  String get autoMarkRead => 'Auto-mark read by progress';
+  String get autoMarkRead => '按进度自动标记已读';
 
   @override
-  String get autoMarkReadSubtitle =>
-      'Marks as read when scroll or audio reaches your threshold';
+  String get autoMarkReadSubtitle => '当滚动或音频达到你的阈值时标记为已读';
 
   @override
-  String get autoMarkThreshold => 'Auto-mark threshold';
+  String get autoMarkThreshold => '自动标记阈值';
 
   @override
   String progressNeeded(Object percent) {
-    return '$percent% progress needed';
+    return '需要 $percent% 的进度';
   }
 
   @override
-  String get sectionVoice => 'Voice & Read aloud';
+  String get sectionVoice => '语音与朗读';
 
   @override
-  String get narrationSpeed => 'Default narration speed';
+  String get narrationSpeed => '默认朗读速度';
 
   @override
   String speedLabel(Object speed) {
-    return '${speed}x (1x = calm default)';
+    return '${speed}x（1x = 平静默认）';
   }
 
   @override
-  String get defaultVoice => 'Default voice';
+  String get defaultVoice => '默认声音';
 
   @override
-  String get systemDefault => 'System default';
+  String get systemDefault => '系统默认';
 
   @override
-  String get autoPlayNext => 'Auto-play next article';
+  String get autoPlayNext => '自动播放下一篇文章';
 
   @override
-  String get autoPlayNextSubtitle =>
-      'When narration finishes, move to the next item';
+  String get autoPlayNextSubtitle => '朗读结束时，转到下一项';
 
   @override
-  String get sectionData => 'Data';
+  String get sectionData => '数据';
 
   @override
-  String get lowDataMode => 'Low-data mode prefetch';
+  String get lowDataMode => '低数据模式预取';
 
   @override
-  String get lowDataModeSubtitle =>
-      'Prefetch article text in background and prefer cached content when available';
+  String get lowDataModeSubtitle => '在后台预取文章文本，并在可用时优先使用缓存内容';
 
   @override
-  String get sectionAccessibility => 'Accessibility';
+  String get sectionAccessibility => '无障碍';
 
   @override
-  String get textSize => 'Text size';
+  String get textSize => '文字大小';
 
   @override
-  String get textSizeSubtitle =>
-      'Applies across the app, including articles and navigation.';
+  String get textSizeSubtitle => '适用于整个应用，包括文章和导航。';
 
   @override
-  String get sampleText => 'The quick brown fox jumps over the lazy dog.';
+  String get sampleText => '敏捷的棕色狐狸跳过了懒狗。';
 
   @override
-  String get sectionSubscriptions => 'Subscriptions';
+  String get sectionSubscriptions => '订阅';
 
   @override
-  String get manageSubscriptions => 'Manage Subscriptions';
+  String get manageSubscriptions => '管理订阅';
 
   @override
-  String get manageSubscriptionsSubtitle =>
-      'Add or remove the feeds you follow';
+  String get manageSubscriptionsSubtitle => '添加或删除你关注的订阅源';
 
   @override
-  String get manageFolders => 'Manage Folders';
+  String get manageFolders => '管理文件夹';
 
   @override
-  String get manageFoldersSubtitle => 'Organise feeds into folders';
+  String get manageFoldersSubtitle => '将订阅源组织到文件夹中';
 
   @override
-  String get importSubscriptions => 'Import Subscriptions';
+  String get importSubscriptions => '导入订阅';
 
   @override
-  String get importSubscriptionsSubtitle => 'Import via OPML file';
+  String get importSubscriptionsSubtitle => '通过 OPML 文件导入';
 
   @override
-  String get exportSubscriptions => 'Export Subscriptions';
+  String get exportSubscriptions => '导出订阅';
 
   @override
-  String get exportSubscriptionsSubtitle => 'Export your feeds to OPML';
+  String get exportSubscriptionsSubtitle => '将你的订阅源导出为 OPML';
 
   @override
-  String get sectionThemes => 'Themes';
+  String get sectionThemes => '主题';
 
   @override
-  String get themes => 'Themes';
+  String get themes => '主题';
 
   @override
-  String get themesSubtitle => 'Light / Dark / System';
+  String get themesSubtitle => '浅色 / 深色 / 系统';
 
   @override
-  String get selectTheme => 'Select Theme';
+  String get selectTheme => '选择主题';
 
   @override
-  String get system => 'System';
+  String get system => '系统';
 
   @override
-  String get light => 'Light';
+  String get light => '浅色';
 
   @override
-  String get dark => 'Dark';
+  String get dark => '深色';
 
   @override
-  String get sectionLanguage => 'Language';
+  String get sectionLanguage => '语言';
 
   @override
-  String get language => 'Language';
+  String get language => '语言';
 
   @override
   String get languageSubtitle => '中文';
 
   @override
-  String get selectLanguage => 'Select Language';
+  String get selectLanguage => '选择语言';
 
   @override
   String get languageEnglish => '英语';
@@ -664,97 +641,90 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageItalian => '意大利语';
 
   @override
-  String get sectionLegal => 'Legal';
+  String get sectionLegal => '法律信息';
 
   @override
-  String get privacyPolicy => 'Privacy Policy';
+  String get privacyPolicy => '隐私政策';
 
   @override
-  String get openSourceLicenses => 'Open Source Licenses';
+  String get openSourceLicenses => '开源许可证';
 
   @override
-  String get noFeedsFoundOpml => 'No feeds found in OPML';
+  String get noFeedsFoundOpml => '在 OPML 中未找到订阅源';
 
   @override
   String importedCount(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 's',
-      one: '',
-    );
-    return 'Imported $count feed$_temp0';
+    return '已导入 $count 个订阅源';
   }
 
   @override
-  String get allFeedsAlreadyAdded => 'All feeds were already added';
+  String get allFeedsAlreadyAdded => '所有订阅源已添加';
 
   @override
   String importFailed(Object error) {
-    return 'Import failed: $error';
+    return '导入失败：$error';
   }
 
   @override
-  String get noSubscriptionsToExport => 'No subscriptions to export';
+  String get noSubscriptionsToExport => '没有可导出的订阅';
 
   @override
   String exportedCount(Object count) {
-    return 'Exported $count feed(s)';
+    return '已导出 $count 个订阅源';
   }
 
   @override
   String exportFailed(Object error) {
-    return 'Export failed: $error';
+    return '导出失败：$error';
   }
 
   @override
-  String get exportShareText => 'Aware subscriptions export';
+  String get exportShareText => 'Aware 订阅导出';
 
   @override
-  String get exportShareSubject => 'Aware subscriptions export';
+  String get exportShareSubject => 'Aware 订阅导出';
 
   @override
-  String get savedArticlesTitle => 'Saved Articles';
+  String get savedArticlesTitle => '已保存的文章';
 
   @override
-  String get noSavedArticlesYet => 'No saved articles yet.';
+  String get noSavedArticlesYet => '还没有已保存的文章。';
 
   @override
   String error(Object error) {
-    return 'Error: $error';
+    return '错误：$error';
   }
 
   @override
-  String get privacyPolicyTitle => 'Privacy Policy';
+  String get privacyPolicyTitle => '隐私政策';
 
   @override
-  String get privacyPolicyLastUpdated => 'Last updated: June 20, 2026';
+  String get privacyPolicyLastUpdated => '最后更新：2026 年 6 月 20 日';
 
   @override
-  String get privacyInfoWeCollect => 'Information We Collect';
+  String get privacyInfoWeCollect => '我们收集的信息';
 
   @override
   String get privacyInfoWeCollectBody =>
-      'Aware does not collect, store, or transmit any personal data. All app data (feeds, articles, reading progress, preferences, and settings) is stored locally on your device and is never sent to any server.';
+      'Aware 不会收集、存储或传输任何个人数据。所有应用数据（订阅源、文章、阅读进度、偏好和设置）均存储在设备本地，绝不会发送到任何服务器。';
 
   @override
-  String get privacyThirdParty => 'Third-Party Services';
+  String get privacyThirdParty => '第三方服务';
 
   @override
   String get privacyThirdPartyBody =>
-      'Aware uses Google AdMob to display advertisements. AdMob may collect non-personal usage data and device identifiers to serve relevant ads. Ads are served with non-personalized ad requests only. No user-level data is shared with advertisers.\n\nGoogle\'s Privacy Policy applies to data collected by AdMob:\n';
+      'Aware 使用 Google AdMob 展示广告。AdMob 可能会收集非个人使用数据和设备标识符以提供相关广告。广告仅通过非个性化广告请求提供。不会与广告商共享任何用户数据。\n\nGoogle 的隐私政策适用于 AdMob 收集的数据：\n';
 
   @override
-  String get privacyDataStorage => 'Data Storage';
+  String get privacyDataStorage => '数据存储';
 
   @override
   String get privacyDataStorageBody =>
-      'All feed subscriptions, articles, reading progress, and app preferences are stored locally in a SQLite database on your device. You can export your data at any time via the OPML export feature in Settings.\n\nTo delete all data, uninstall the app or clear app data from your device settings.';
+      '所有订阅源、文章、阅读进度和应用偏好都存储在设备本地的 SQLite 数据库中。你可以随时通过设置中的 OPML 导出功能导出数据。\n\n要删除所有数据，请卸载应用或从设备设置中清除应用数据。';
 
   @override
-  String get privacyContact => 'Contact';
+  String get privacyContact => '联系方式';
 
   @override
-  String get privacyContactBody =>
-      'If you have questions about this privacy policy, please contact us through the app\'s support channels.';
+  String get privacyContactBody => '如果你对此隐私政策有疑问，请通过应用的支持渠道联系我们。';
 }

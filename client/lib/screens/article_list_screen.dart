@@ -295,7 +295,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                             child: Ink(
                               decoration: BoxDecoration(
                                 color: isRead
-                                    ? theme.cardColor.withOpacity(0.9)
+                                    ? colorScheme.surfaceContainerHighest
                                     : theme.cardColor,
                                 borderRadius: BorderRadius.circular(16),
                               ),
