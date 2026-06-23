@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 import 'package:html/parser.dart' as html_parser;
@@ -120,6 +121,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        duration: const Duration(seconds: 2),
         content: Text(starred ? AppLocalizations.of(context)!.readerSavedForLater : AppLocalizations.of(context)!.readerRemovedFromSaved),
       ),
     );
@@ -242,7 +244,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     for (final para in markdownParagraphs) {
       final sanitized = _sanitizeForTts(para);
       final isVideo = para.contains('VIDEO_EMBED_START:');
-      if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
+      if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized) || _isAdText(sanitized))) continue;
       displayParagraphs.add(para.trim());
       ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
     }
@@ -253,7 +255,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       for (final para in textParagraphs) {
         final sanitized = _sanitizeForTts(para);
         final isVideo = para.contains('VIDEO_EMBED_START:');
-        if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized))) continue;
+        if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized) || _isAdText(sanitized))) continue;
         displayParagraphs.add(para.trim());
         ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
       }
@@ -311,7 +313,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           _currentParagraphIndex = state.lastParagraphIndex!;
           debugPrint('[ReaderScreen] _updateTextForArticle: resuming from paragraph $_currentParagraphIndex');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.resumingLastRead)),
+            SnackBar(duration: const Duration(seconds: 2), content: Text(AppLocalizations.of(context)!.resumingLastRead)),
           );
           _startPlayback(paragraphIndex: _currentParagraphIndex);
         } else if (state.readProgress != null && state.readProgress! > 0) {
@@ -326,7 +328,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         _hasAutoPlayed = true;
         debugPrint('[ReaderScreen] _updateTextForArticle: starting auto playback from beginning');
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.startingPlayback)),
+            SnackBar(duration: const Duration(seconds: 2), content: Text(AppLocalizations.of(context)!.startingPlayback)),
         );
         _startPlayback();
       }
@@ -482,6 +484,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
     // Treat as noise if mostly symbols, or if almost no alphanumeric characters exist.
     if (alphaNumCount <= 2 && symbolCount > 0) return true;
     return symbolCount / nonWhitespace.length > 0.6;
+  }
+
+  bool _isAdText(String paragraph) {
+    final lower = paragraph.toLowerCase();
+    final adPatterns = [
+      'advertisement',
+      'advertising',
+      'sponsored',
+      'paid promotion',
+      'promoted by',
+      'this content was produced by',
+      'brought to you by',
+      'presented by',
+    ];
+    return adPatterns.any((p) => lower.contains(p));
   }
 
   Future<void> _startPlayback({int paragraphIndex = 0}) async {
@@ -683,7 +700,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     await Clipboard.setData(ClipboardData(text: article.url!));
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(AppLocalizations.of(context)!.linkCopied)),
+                        SnackBar(duration: const Duration(seconds: 2), content: Text(AppLocalizations.of(context)!.linkCopied)),
                       );
                     }
                   }
@@ -924,7 +941,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                       if (state?.readAt == null) {
                         await _markRead(article);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(AppLocalizations.of(context)!.markedReadSkipped)),
+                          SnackBar(duration: const Duration(seconds: 2), content: Text(AppLocalizations.of(context)!.markedReadSkipped)),
                         );
                         if (_currentIndex < widget.articles.length - 1) {
                           readerAudioHandler.skipToNext();
@@ -1257,15 +1274,89 @@ class _ReaderScreenState extends State<ReaderScreen> {
       }
 
       debugPrint('[ReaderScreen] _prefetchReader: parsing from URL');
-      final parsed = await readability.parseAsync(url);
-      final content = (parsed.content ?? parsed.textContent ?? '').trim();
-      debugPrint('[ReaderScreen] _prefetchReader: parsed content length=${content.length}');
+      String content = '';
+      try {
+        final parsed = await readability.parseAsync(url);
+        content = (parsed.content ?? parsed.textContent ?? '').trim();
+        debugPrint('[ReaderScreen] _prefetchReader: readability content length=${content.length}');
+      } catch (e) {
+        debugPrint('[ReaderScreen] _prefetchReader: readability parse error: $e');
+      }
+
+      // Fetch raw HTML to extract images and videos readability might have missed
+      String? rawHtml;
+      try {
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          },
+        );
+        if (response.statusCode == 200) {
+          rawHtml = response.body;
+        }
+      } catch (e) {
+        debugPrint('[ReaderScreen] _prefetchReader: raw HTML fetch error: $e');
+      }
+
+      if (rawHtml != null) {
+        final doc = html_parser.parse(rawHtml);
+        final mediaHtml = StringBuffer();
+
+        // Extract <img> tags not already in content
+        for (final img in doc.querySelectorAll('img')) {
+          var src = img.attributes['src'];
+          if (src == null || src.isEmpty) continue;
+          src = _resolveUrl(src, url);
+          if (content.contains(src)) continue;
+          final alt = img.attributes['alt'] ?? '';
+          mediaHtml.writeln('<p><img src="$src" alt="$alt" /></p>');
+        }
+
+        // Extract <picture> <source> srcset images
+        for (final picture in doc.querySelectorAll('picture')) {
+          final img = picture.querySelector('img');
+          if (img == null) continue;
+          var src = img.attributes['src'];
+          if (src == null || src.isEmpty) {
+            // Try srcset
+            final source = picture.querySelector('source');
+            src = source?.attributes['srcset'];
+            if (src != null) {
+              src = src.split(' ').first;
+            }
+          }
+          if (src == null || src.isEmpty) continue;
+          src = _resolveUrl(src, url);
+          if (content.contains(src)) continue;
+          final alt = img.attributes['alt'] ?? '';
+          mediaHtml.writeln('<p><img src="$src" alt="$alt" /></p>');
+        }
+
+        // Extract <iframe> embeds (YouTube, etc.) not already in content
+        for (final iframe in doc.querySelectorAll('iframe')) {
+          var src = iframe.attributes['src'];
+          if (src == null || src.isEmpty) continue;
+          src = _resolveUrl(src, url);
+          if (content.contains(src)) continue;
+          mediaHtml.writeln('<iframe src="$src"></iframe>');
+        }
+
+        if (mediaHtml.isNotEmpty) {
+          content = '$content\n${mediaHtml.toString()}';
+          debugPrint('[ReaderScreen] _prefetchReader: appended media HTML, content length=${content.length}');
+        }
+      }
+
       if (content.isNotEmpty) {
         _readerCache[article.guid] = content;
         await _db.upsertPrefetchedArticleContent(article.guid, content);
         if (mounted && article.guid == widget.articles[_currentIndex].guid) {
           _updateTextForArticle(article, widget.articles.indexOf(article));
         }
+      } else {
+        debugPrint('[ReaderScreen] _prefetchReader: no content extracted');
       }
     } finally {
       _prefetchInFlight.remove(article.guid);
@@ -1275,6 +1366,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
         });
       }
     }
+  }
+
+  String _resolveUrl(String src, String baseUrl) {
+    if (src.startsWith('http://') || src.startsWith('https://')) return src;
+    final base = Uri.tryParse(baseUrl);
+    if (base == null) return src;
+    if (src.startsWith('//')) return '${base.scheme}:$src';
+    return base.resolve(src).toString();
   }
 
   Future<void> _handleMarkdownLink(String? href) async {
