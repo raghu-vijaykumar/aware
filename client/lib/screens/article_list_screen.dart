@@ -372,81 +372,86 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                               ),
                                             ),
                                             const Spacer(),
-                                            SizedBox(
-                                              width: 28,
-                                              height: 28,
-                                              child: IconButton(
-                                                padding: EdgeInsets.zero,
-                                                visualDensity: VisualDensity.compact,
-                                                icon: Icon(
-                                                  isLiked
-                                                      ? Icons.favorite
-                                                      : Icons.favorite_border,
-                                                  size: 18,
-                                                  color: likeIconColor,
-                                                ),
-                                                onPressed: () async {
-                                                  await appState
-                                                      .markArticleLiked(
-                                                    article.guid,
-                                                    liked: !isLiked,
-                                                  );
-                                                  if (!mounted) return;
-                                                  _showActionSnackBar(
-                                                    message: isLiked
-                                                        ? AppLocalizations.of(context)!.removedLike
-                                                        : AppLocalizations.of(context)!.likedArticle,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 28,
-                                              height: 28,
-                                              child: IconButton(
-                                                padding: EdgeInsets.zero,
-                                                visualDensity: VisualDensity.compact,
-                                                icon: Icon(
-                                                  isStarred
-                                                      ? Icons.bookmark
-                                                      : Icons.bookmark_border,
-                                                  size: 18,
-                                                  color: saveIconColor,
-                                                ),
-                                                onPressed: () async {
-                                                  await appState
-                                                      .markArticleStarred(
-                                                    article.guid,
-                                                    starred: !isStarred,
-                                                  );
-                                                  if (!mounted) return;
-                                                  _showActionSnackBar(
-                                                    message: isStarred
-                                                        ? AppLocalizations.of(context)!.removedFromSaved
-                                                        : AppLocalizations.of(context)!.savedForLater,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            if (article.url != null)
-                                              SizedBox(
-                                                width: 28,
-                                                height: 28,
-                                                child: IconButton(
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
                                                   padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(
+                                                    minWidth: 28,
+                                                    minHeight: 28,
+                                                  ),
                                                   visualDensity: VisualDensity.compact,
                                                   icon: Icon(
-                                                    Icons.share,
+                                                    isLiked
+                                                        ? Icons.favorite
+                                                        : Icons.favorite_border,
                                                     size: 18,
-                                                    color: colorScheme
-                                                        .onSurfaceVariant
-                                                        .withOpacity(0.6),
+                                                    color: likeIconColor,
                                                   ),
-                                                  onPressed: () =>
-                                                      _shareArticle(
-                                                          context, article),
+                                                  onPressed: () async {
+                                                    await appState
+                                                        .markArticleLiked(
+                                                      article.guid,
+                                                      liked: !isLiked,
+                                                    );
+                                                    if (!mounted) return;
+                                                    _showActionSnackBar(
+                                                      message: isLiked
+                                                          ? AppLocalizations.of(context)!.removedLike
+                                                          : AppLocalizations.of(context)!.likedArticle,
+                                                    );
+                                                  },
                                                 ),
-                                              ),
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(
+                                                    minWidth: 28,
+                                                    minHeight: 28,
+                                                  ),
+                                                  visualDensity: VisualDensity.compact,
+                                                  icon: Icon(
+                                                    isStarred
+                                                        ? Icons.bookmark
+                                                        : Icons.bookmark_border,
+                                                    size: 18,
+                                                    color: saveIconColor,
+                                                  ),
+                                                  onPressed: () async {
+                                                    await appState
+                                                        .markArticleStarred(
+                                                      article.guid,
+                                                      starred: !isStarred,
+                                                    );
+                                                    if (!mounted) return;
+                                                    _showActionSnackBar(
+                                                      message: isStarred
+                                                          ? AppLocalizations.of(context)!.removedFromSaved
+                                                          : AppLocalizations.of(context)!.savedForLater,
+                                                    );
+                                                  },
+                                                ),
+                                                if (article.url != null)
+                                                  IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    constraints: const BoxConstraints(
+                                                      minWidth: 28,
+                                                      minHeight: 28,
+                                                    ),
+                                                    visualDensity: VisualDensity.compact,
+                                                    icon: Icon(
+                                                      Icons.share,
+                                                      size: 18,
+                                                      color: colorScheme
+                                                          .onSurfaceVariant
+                                                          .withOpacity(0.6),
+                                                    ),
+                                                    onPressed: () =>
+                                                        _shareArticle(
+                                                            context, article),
+                                                  ),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                         if (isPartiallyRead)
