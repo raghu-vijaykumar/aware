@@ -318,14 +318,34 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          article.title ?? AppLocalizations.of(context)!.untitled,
-                                          style: textTheme.titleLarge
+                                          article.title ??
+                                              AppLocalizations.of(
+                                                  context)!
+                                                  .untitled,
+                                          style: textTheme
+                                              .titleLarge
                                               ?.copyWith(
-                                                  fontWeight:
-                                                      FontWeight.w700),
+                                            fontWeight:
+                                                FontWeight.w700,
+                                          ),
                                         ),
                                         const SizedBox(
-                                            height: AppSpacing.s8),
+                                            height: AppSpacing.s4),
+                                        Text(
+                                          _feedTitleFor(article, appState.feeds),
+                                          style: textTheme.bodySmall
+                                              ?.copyWith(
+                                            color: colorScheme
+                                                .onSurfaceVariant,
+                                            fontWeight:
+                                                FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                          overflow:
+                                              TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(
+                                            height: AppSpacing.s4),
                                         Row(
                                           children: [
                                             Icon(
@@ -338,7 +358,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                                 width: AppSpacing.s4),
                                             Flexible(
                                               child: Text(
-                                                '${_relativeTimeLabel(article)}  ${_articleSource(article, appState.feeds)}',
+                                                _relativeTimeLabel(article),
                                                 style: textTheme.bodySmall
                                                     ?.copyWith(
                                                   color: colorScheme
@@ -352,75 +372,79 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                               ),
                                             ),
                                             const Spacer(),
-                                            InkWell(
-                                              borderRadius: BorderRadius.circular(20),
-                                              onTap: () async {
-                                                await appState
-                                                    .markArticleLiked(
-                                                  article.guid,
-                                                  liked: !isLiked,
-                                                );
-                                                if (!mounted) return;
-                                                _showActionSnackBar(
-                                                  message: isLiked
-                                                      ? AppLocalizations.of(context)!.removedLike
-                                                      : AppLocalizations.of(context)!.likedArticle,
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 6),
-                                                child: Icon(
+                                            SizedBox(
+                                              width: 28,
+                                              height: 28,
+                                              child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                visualDensity: VisualDensity.compact,
+                                                icon: Icon(
                                                   isLiked
                                                       ? Icons.favorite
-                                                      : Icons
-                                                          .favorite_border,
+                                                      : Icons.favorite_border,
                                                   size: 18,
                                                   color: likeIconColor,
                                                 ),
+                                                onPressed: () async {
+                                                  await appState
+                                                      .markArticleLiked(
+                                                    article.guid,
+                                                    liked: !isLiked,
+                                                  );
+                                                  if (!mounted) return;
+                                                  _showActionSnackBar(
+                                                    message: isLiked
+                                                        ? AppLocalizations.of(context)!.removedLike
+                                                        : AppLocalizations.of(context)!.likedArticle,
+                                                  );
+                                                },
                                               ),
                                             ),
-                                            const SizedBox(width: 4),
-                                            InkWell(
-                                              borderRadius: BorderRadius.circular(20),
-                                              onTap: () async {
-                                                await appState
-                                                    .markArticleStarred(
-                                                  article.guid,
-                                                  starred: !isStarred,
-                                                );
-                                                if (!mounted) return;
-                                                _showActionSnackBar(
-                                                  message: isStarred
-                                                      ? AppLocalizations.of(context)!.removedFromSaved
-                                                      : AppLocalizations.of(context)!.savedForLater,
-                                                );
-                                              },
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 6),
-                                                child: Icon(
+                                            SizedBox(
+                                              width: 28,
+                                              height: 28,
+                                              child: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                visualDensity: VisualDensity.compact,
+                                                icon: Icon(
                                                   isStarred
                                                       ? Icons.bookmark
-                                                      : Icons
-                                                          .bookmark_border,
+                                                      : Icons.bookmark_border,
                                                   size: 18,
                                                   color: saveIconColor,
                                                 ),
+                                                onPressed: () async {
+                                                  await appState
+                                                      .markArticleStarred(
+                                                    article.guid,
+                                                    starred: !isStarred,
+                                                  );
+                                                  if (!mounted) return;
+                                                  _showActionSnackBar(
+                                                    message: isStarred
+                                                        ? AppLocalizations.of(context)!.removedFromSaved
+                                                        : AppLocalizations.of(context)!.savedForLater,
+                                                  );
+                                                },
                                               ),
                                             ),
                                             if (article.url != null)
-                                              InkWell(
-                                                borderRadius: BorderRadius.circular(20),
-                                                onTap: () =>
-                                                    _shareArticle(
-                                                        context, article),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                                                  child: Icon(
-                                                      Icons.share,
-                                                      size: 18,
-                                                      color: colorScheme
-                                                          .onSurfaceVariant
-                                                          .withOpacity(0.6)),
+                                              SizedBox(
+                                                width: 28,
+                                                height: 28,
+                                                child: IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  visualDensity: VisualDensity.compact,
+                                                  icon: Icon(
+                                                    Icons.share,
+                                                    size: 18,
+                                                    color: colorScheme
+                                                        .onSurfaceVariant
+                                                        .withOpacity(0.6),
+                                                  ),
+                                                  onPressed: () =>
+                                                      _shareArticle(
+                                                          context, article),
                                                 ),
                                               ),
                                           ],
@@ -451,6 +475,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       );
     });
   }
+
 
   Widget _buildContinueReadingFAB() {
     if (_allLoadedArticles.isEmpty) {
@@ -572,6 +597,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       SnackBar(
         content: Text(message),
         action: action,
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -589,15 +615,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       return;
     }
 
-    _showActionSnackBar(
-      message: AppLocalizations.of(context)!.markedRead,
-      action: SnackBarAction(
-        label: AppLocalizations.of(context)!.undo,
-        onPressed: () async {
-          await appState.markArticleRead(article.guid, read: false);
-        },
-      ),
-    );
+    _showActionSnackBar(message: AppLocalizations.of(context)!.markedRead);
   }
 
   String _articleSource(Article article, List<Feed> feeds) {
@@ -737,10 +755,17 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ChoiceChip(
+                    label: Text(AppLocalizations.of(context)!.all),
+                    selected: !_unreadOnly,
+                    onSelected: (_) =>
+                        setState(() => _unreadOnly = false),
+                  ),
+                  const SizedBox(width: AppSpacing.s8),
+                  ChoiceChip(
                     label: Text(AppLocalizations.of(context)!.unread),
                     selected: _unreadOnly,
                     onSelected: (_) =>
-                        setState(() => _unreadOnly = !_unreadOnly),
+                        setState(() => _unreadOnly = true),
                   ),
                   const SizedBox(width: AppSpacing.s8),
                   ChoiceChip(
@@ -818,10 +843,16 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                         spacing: AppSpacing.s8,
                         children: [
                           ChoiceChip(
+                            label: Text(AppLocalizations.of(context)!.all),
+                            selected: !_unreadOnly,
+                            onSelected: (_) =>
+                                update(() => _unreadOnly = false),
+                          ),
+                          ChoiceChip(
                             label: Text(AppLocalizations.of(context)!.unreadOnly),
                             selected: _unreadOnly,
                             onSelected: (_) =>
-                                update(() => _unreadOnly = !_unreadOnly),
+                                update(() => _unreadOnly = true),
                           ),
                           ChoiceChip(
                             label: Text(AppLocalizations.of(context)!.liked),
@@ -1001,6 +1032,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       if (feed.title != null && feed.title!.isNotEmpty) {
         return feed.title!;
       }
+      final uri = Uri.tryParse(feed.url);
+      if (uri != null && uri.host.isNotEmpty) return uri.host;
       return feed.url;
     } catch (_) {
       return 'Unknown';
