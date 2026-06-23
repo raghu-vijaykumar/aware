@@ -387,6 +387,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get startingPlayback => '未読記事の再生を開始';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'リーダー表示';
 
   @override

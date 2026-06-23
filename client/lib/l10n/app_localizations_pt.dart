@@ -398,6 +398,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get startingPlayback => 'Iniciando reprodução para artigo não lido';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'Mostrar leitor';
 
   @override

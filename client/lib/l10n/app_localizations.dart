@@ -814,6 +814,30 @@ abstract class AppLocalizations {
   /// **'Starting playback for unread article'**
   String get startingPlayback;
 
+  /// Menu item to save article
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// Menu item to unsave article
+  ///
+  /// In en, this message translates to:
+  /// **'Unsave'**
+  String get unsave;
+
+  /// Menu item to copy article URL
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get copyLink;
+
+  /// Snackbar when link is copied
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get linkCopied;
+
   /// Tooltip to show reader view
   ///
   /// In en, this message translates to:

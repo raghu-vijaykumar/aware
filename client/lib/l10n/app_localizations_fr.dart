@@ -400,6 +400,18 @@ class AppLocalizationsFr extends AppLocalizations {
       'Démarrage de la lecture pour l\'article non lu';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'Afficher le lecteur';
 
   @override

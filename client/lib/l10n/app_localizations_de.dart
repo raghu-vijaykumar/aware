@@ -400,6 +400,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get startingPlayback => 'Starte Wiedergabe für ungelesenen Artikel';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'Reader anzeigen';
 
   @override

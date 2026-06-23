@@ -10,6 +10,8 @@ import 'package:rxdart/rxdart.dart';
 import '../models/article.dart';
 import '../providers/app_state.dart';
 
+String _logTag(String msg) => '[ReaderAudioHandler] $msg';
+
 ReaderAudioHandler? _readerAudioHandler;
 
 ReaderAudioHandler get readerAudioHandler =>
@@ -132,12 +134,14 @@ class ReaderAudioHandler extends BaseAudioHandler
   ReaderAudioHandler.standalone() : this(isAudioServiceBacked: false);
 
   Future<void> _init() async {
+    debugPrint(_logTag('_init: initializing TTS engine'));
     await _tts.awaitSpeakCompletion(true);
     await _tts.setSpeechRate(AppState.speechRateBase);
     await _tts.setVolume(1.0);
     await _tts.setPitch(1.0);
 
     if (Platform.isIOS) {
+      debugPrint(_logTag('_init: configuring iOS audio category'));
       await _tts.setSharedInstance(true);
       await _tts.setIosAudioCategory(
         IosTextToSpeechAudioCategory.playback,
@@ -151,12 +155,15 @@ class ReaderAudioHandler extends BaseAudioHandler
     }
 
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+      debugPrint(_logTag('_init: configuring audio session'));
       final session = await AudioSession.instance;
       await session.configure(const AudioSessionConfiguration.speech());
     }
 
+    debugPrint(_logTag('_init: attaching TTS handlers'));
     _attachTtsHandlers();
     _broadcastState(processingState: AudioProcessingState.idle);
+    debugPrint(_logTag('_init: complete'));
   }
 
   _ArticleSpeechContent? get _currentContent => _contentByIndex[_currentIndex];
@@ -165,6 +172,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     List<Article> articles, {
     required int currentIndex,
   }) async {
+    debugPrint(_logTag('configureQueue: articles=${articles.length}, currentIndex=$currentIndex'));
     _articles = List<Article>.unmodifiable(articles);
     _currentIndex = _clampIndex(currentIndex);
     final items = List<MediaItem>.generate(
@@ -188,6 +196,7 @@ class ReaderAudioHandler extends BaseAudioHandler
       processingState:
           _isPlaying ? AudioProcessingState.ready : AudioProcessingState.idle,
     );
+    debugPrint(_logTag('configureQueue: done, currentArticleIndex=$_currentIndex'));
   }
 
   Future<void> registerArticleContent({
@@ -196,6 +205,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     required List<int> paragraphOffsets,
     required String plainText,
   }) async {
+    debugPrint(_logTag('registerArticleContent: articleIndex=$articleIndex, paragraphs=${paragraphs.length}, plainText.length=${plainText.length}'));
     _contentByIndex[articleIndex] = _ArticleSpeechContent(
       paragraphs: List<String>.unmodifiable(paragraphs),
       paragraphOffsets: List<int>.unmodifiable(paragraphOffsets),
@@ -203,9 +213,11 @@ class ReaderAudioHandler extends BaseAudioHandler
     );
 
     if (_currentIndex == articleIndex) {
+      debugPrint(_logTag('registerArticleContent: matches current index, pendingAutoplay=$_pendingAutoplay'));
       mediaItem.add(_buildMediaItem(articleIndex));
       _broadcastState();
       if (_pendingAutoplay) {
+        debugPrint(_logTag('registerArticleContent: triggering pending autoplay at paragraph $_currentParagraphIndex'));
         _pendingAutoplay = false;
         await _startPlayback(paragraphIndex: _currentParagraphIndex);
       }
@@ -217,17 +229,23 @@ class ReaderAudioHandler extends BaseAudioHandler
     required String? voiceId,
     required bool autoPlayNext,
   }) async {
+    debugPrint(_logTag('updateSpeechConfig: speechRate=$speechRate, voiceId=$voiceId, autoPlayNext=$autoPlayNext'));
     _autoPlayNext = autoPlayNext;
 
     if ((_speechRate - speechRate).abs() > 0.001) {
+      debugPrint(_logTag('updateSpeechConfig: updating speech rate $_speechRate -> $speechRate'));
       _speechRate = speechRate;
       await _tts.setSpeechRate(speechRate);
     }
 
-    if (_voiceId == voiceId) return;
+    if (_voiceId == voiceId) {
+      debugPrint(_logTag('updateSpeechConfig: voice unchanged, skipping'));
+      return;
+    }
     _voiceId = voiceId;
 
     if (voiceId == null) {
+      debugPrint(_logTag('updateSpeechConfig: clearing voice'));
       try {
         await _tts.setVoice({'name': '', 'locale': ''});
       } catch (_) {
@@ -239,6 +257,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     final parts = voiceId.split('|');
     final name = parts.isNotEmpty ? parts[0] : null;
     final locale = parts.length > 1 ? parts[1] : null;
+    debugPrint(_logTag('updateSpeechConfig: setting voice name=$name, locale=$locale'));
     await _tts.setVoice({
       if (name != null) 'name': name,
       if (locale != null) 'locale': locale,
@@ -250,11 +269,17 @@ class ReaderAudioHandler extends BaseAudioHandler
     bool autoplay = false,
     int paragraphIndex = 0,
   }) async {
-    if (_articles.isEmpty) return;
+    debugPrint(_logTag('activateArticle: index=$index, autoplay=$autoplay, paragraphIndex=$paragraphIndex, articles.isEmpty=${_articles.isEmpty}'));
+    if (_articles.isEmpty) {
+      debugPrint(_logTag('activateArticle: articles empty, returning'));
+      return;
+    }
 
     final targetIndex = _clampIndex(index);
     final changedArticle = targetIndex != _currentIndex;
+    debugPrint(_logTag('activateArticle: targetIndex=$targetIndex, changedArticle=$changedArticle, oldIndex=$_currentIndex'));
     if (changedArticle) {
+      debugPrint(_logTag('activateArticle: stopping current TTS'));
       await _tts.stop();
     }
 
@@ -278,6 +303,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     );
 
     final hasContent = _contentByIndex.containsKey(_currentIndex);
+    debugPrint(_logTag('activateArticle: hasContent=$hasContent, pendingAutoplay=$_pendingAutoplay'));
     _isBuffering = autoplay && !hasContent;
     _broadcastState(
       processingState: _isBuffering
@@ -286,32 +312,50 @@ class ReaderAudioHandler extends BaseAudioHandler
     );
 
     if (autoplay && hasContent) {
+      debugPrint(_logTag('activateArticle: starting playback immediately'));
       _pendingAutoplay = false;
       await _startPlayback(paragraphIndex: _currentParagraphIndex);
     }
   }
 
   Future<void> playFromParagraph(int paragraphIndex) async {
+    debugPrint(_logTag('playFromParagraph: paragraphIndex=$paragraphIndex'));
     await _startPlayback(paragraphIndex: paragraphIndex);
   }
 
   @override
   Future<void> play() async {
+    debugPrint(_logTag('play: _isPaused=$_isPaused, _isPlaying=$_isPlaying, _currentParagraphIndex=$_currentParagraphIndex'));
     if (_isPaused) {
+      debugPrint(_logTag('play: resuming from paused state'));
       await _resumePlayback();
       return;
     }
+    debugPrint(_logTag('play: starting playback from paragraph $_currentParagraphIndex'));
     await _startPlayback(paragraphIndex: _currentParagraphIndex);
   }
 
   @override
   Future<void> pause() async {
-    if (!_isPlaying) return;
+    debugPrint(_logTag('pause: _isPlaying=$_isPlaying, _isBuffering=$_isBuffering, _pendingAutoplay=$_pendingAutoplay'));
+    if (_pendingAutoplay || _isBuffering) {
+      debugPrint(_logTag('pause: cancelling pending autoplay'));
+      _pendingAutoplay = false;
+      _isBuffering = false;
+      _publishSnapshot();
+      _broadcastState(processingState: AudioProcessingState.idle);
+    }
+    if (!_isPlaying) {
+      debugPrint(_logTag('pause: not playing, returning'));
+      return;
+    }
     await _tts.pause();
+    debugPrint(_logTag('pause: TTS paused'));
   }
 
   @override
   Future<void> stop() async {
+    debugPrint(_logTag('stop: called'));
     _pendingAutoplay = false;
     await _tts.stop();
     _isPlaying = false;
@@ -320,14 +364,20 @@ class ReaderAudioHandler extends BaseAudioHandler
     _currentWord = '';
     _publishSnapshot(currentWord: '', progress: readerState.value.progress);
     _broadcastState(processingState: AudioProcessingState.idle);
+    debugPrint(_logTag('stop: complete'));
   }
 
   @override
   Future<void> seek(Duration position) async {
     final content = _currentContent;
-    if (content == null || content.plainText.isEmpty) return;
+    debugPrint(_logTag('seek: position=${position.inMilliseconds}ms, content=${content != null}'));
+    if (content == null || content.plainText.isEmpty) {
+      debugPrint(_logTag('seek: no content, returning'));
+      return;
+    }
 
     final duration = _estimatedDurationForContent(content);
+    debugPrint(_logTag('seek: estimated duration=${duration.inMilliseconds}ms'));
     if (duration.inMilliseconds <= 0) return;
 
     final ratio = (position.inMilliseconds / duration.inMilliseconds).clamp(
@@ -339,12 +389,17 @@ class ReaderAudioHandler extends BaseAudioHandler
       (offset) => offset <= targetOffset,
     );
     final targetParagraph = paragraphIndex < 0 ? 0 : paragraphIndex;
+    debugPrint(_logTag('seek: ratio=$ratio, targetOffset=$targetOffset, targetParagraph=$targetParagraph'));
     await _startPlayback(paragraphIndex: targetParagraph);
   }
 
   @override
   Future<void> skipToNext() async {
-    if (_currentIndex >= _articles.length - 1) return;
+    debugPrint(_logTag('skipToNext: _currentIndex=$_currentIndex, total=${_articles.length}, _isPlaying=$_isPlaying'));
+    if (_currentIndex >= _articles.length - 1) {
+      debugPrint(_logTag('skipToNext: already at last article'));
+      return;
+    }
     await activateArticle(
       _currentIndex + 1,
       autoplay: _isPlaying,
@@ -354,7 +409,11 @@ class ReaderAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> skipToPrevious() async {
-    if (_currentIndex <= 0) return;
+    debugPrint(_logTag('skipToPrevious: _currentIndex=$_currentIndex, _isPlaying=$_isPlaying'));
+    if (_currentIndex <= 0) {
+      debugPrint(_logTag('skipToPrevious: already at first article'));
+      return;
+    }
     await activateArticle(
       _currentIndex - 1,
       autoplay: _isPlaying,
@@ -363,8 +422,10 @@ class ReaderAudioHandler extends BaseAudioHandler
   }
 
   Future<void> _startPlayback({required int paragraphIndex}) async {
+    debugPrint(_logTag('_startPlayback: paragraphIndex=$paragraphIndex, _currentIndex=$_currentIndex'));
     final content = _currentContent;
     if (content == null || content.paragraphs.isEmpty) {
+      debugPrint(_logTag('_startPlayback: no content, buffering'));
       _pendingAutoplay = true;
       _isBuffering = true;
       _broadcastState(processingState: AudioProcessingState.loading);
@@ -373,14 +434,22 @@ class ReaderAudioHandler extends BaseAudioHandler
 
     final targetParagraph =
         paragraphIndex.clamp(0, content.paragraphs.length - 1);
+    debugPrint(_logTag('_startPlayback: targetParagraph=$targetParagraph, totalParagraphs=${content.paragraphs.length}'));
+
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
       final session = await AudioSession.instance;
       final activated = await session.setActive(true);
-      if (!activated) return;
+      debugPrint(_logTag('_startPlayback: audio session activated=$activated'));
+      if (!activated) {
+        debugPrint(_logTag('_startPlayback: audio session activation failed'));
+        return;
+      }
     }
 
     _pendingAutoplay = false;
     _isBuffering = false;
+    _isPlaying = true;
+    _isPaused = false;
     _currentParagraphIndex = targetParagraph;
     _offsetBase = _offsetForParagraph(_currentIndex, targetParagraph);
     _publishSnapshot(
@@ -391,16 +460,22 @@ class ReaderAudioHandler extends BaseAudioHandler
     );
     _broadcastState(processingState: AudioProcessingState.ready);
 
+    debugPrint(_logTag('_startPlayback: stopping previous TTS and speaking paragraph'));
     await _tts.stop();
-    await _tts.speak(content.paragraphs[targetParagraph]);
+    final text = content.paragraphs[targetParagraph];
+    debugPrint(_logTag('_startPlayback: speaking text (length=${text.length})'));
+    await _tts.speak(text);
+    debugPrint(_logTag('_startPlayback: speak() returned'));
   }
 
   Future<void> _resumePlayback() async {
+    debugPrint(_logTag('_resumePlayback: _currentParagraphIndex=$_currentParagraphIndex'));
     await _startPlayback(paragraphIndex: _currentParagraphIndex);
   }
 
   void _attachTtsHandlers() {
     _tts.setStartHandler(() {
+      debugPrint(_logTag('TTS setStartHandler: speech started'));
       _isPlaying = true;
       _isPaused = false;
       _isBuffering = false;
@@ -410,13 +485,17 @@ class ReaderAudioHandler extends BaseAudioHandler
 
     _tts.setProgressHandler((String text, int start, int end, String? word) {
       final content = _currentContent;
-      if (content == null || content.plainText.isEmpty) return;
+      if (content == null || content.plainText.isEmpty) {
+        debugPrint(_logTag('TTS progress: no content, returning'));
+        return;
+      }
 
       final absolute = (_offsetBase + start).clamp(0, content.plainText.length);
       final progress = absolute / content.plainText.length;
       final paragraphIndex = content.paragraphOffsets
           .lastIndexWhere((offset) => offset <= absolute);
 
+      final previousParagraph = _currentParagraphIndex;
       _currentParagraphIndex = paragraphIndex >= 0 ? paragraphIndex : 0;
       _currentWord = _resolveCurrentWord(
         content.plainText,
@@ -425,6 +504,11 @@ class ReaderAudioHandler extends BaseAudioHandler
         end,
         word,
       );
+
+      if (_currentParagraphIndex != previousParagraph) {
+        debugPrint(_logTag('TTS progress: paragraph changed $previousParagraph -> $_currentParagraphIndex, progress=$progress, word="$_currentWord"'));
+      }
+
       _publishSnapshot(
         currentArticleIndex: _currentIndex,
         currentParagraphIndex: _currentParagraphIndex,
@@ -435,15 +519,22 @@ class ReaderAudioHandler extends BaseAudioHandler
     });
 
     _tts.setCompletionHandler(() async {
+      debugPrint(_logTag('TTS setCompletionHandler: paragraph $_currentParagraphIndex finished'));
       final content = _currentContent;
-      if (content == null) return;
+      if (content == null) {
+        debugPrint(_logTag('TTS completion: no content'));
+        return;
+      }
 
       final nextParagraph = _currentParagraphIndex + 1;
+      debugPrint(_logTag('TTS completion: nextParagraph=$nextParagraph, total=${content.paragraphs.length}'));
       if (nextParagraph < content.paragraphs.length) {
+        debugPrint(_logTag('TTS completion: advancing to paragraph $nextParagraph'));
         await _startPlayback(paragraphIndex: nextParagraph);
         return;
       }
 
+      debugPrint(_logTag('TTS completion: article finished'));
       _isPlaying = false;
       _isPaused = false;
       _currentWord = '';
@@ -451,11 +542,13 @@ class ReaderAudioHandler extends BaseAudioHandler
       _broadcastState(processingState: AudioProcessingState.completed);
 
       if (_autoPlayNext && _currentIndex < _articles.length - 1) {
+        debugPrint(_logTag('TTS completion: auto-playing next article'));
         await activateArticle(_currentIndex + 1, autoplay: true);
       }
     });
 
     _tts.setCancelHandler(() {
+      debugPrint(_logTag('TTS setCancelHandler: speech cancelled'));
       _isPlaying = false;
       _isPaused = false;
       _isBuffering = false;
@@ -469,6 +562,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     });
 
     _tts.setPauseHandler(() {
+      debugPrint(_logTag('TTS setPauseHandler: speech paused'));
       _isPlaying = false;
       _isPaused = true;
       _publishSnapshot();
@@ -476,6 +570,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     });
 
     _tts.setContinueHandler(() {
+      debugPrint(_logTag('TTS setContinueHandler: speech continued'));
       _isPlaying = true;
       _isPaused = false;
       _publishSnapshot();
@@ -581,17 +676,17 @@ class ReaderAudioHandler extends BaseAudioHandler
     double? progress,
     String? currentWord,
   }) {
-    readerState.add(
-      readerState.value.copyWith(
-        isPlaying: isPlaying ?? _isPlaying,
-        isPaused: isPaused ?? _isPaused,
-        isBuffering: isBuffering ?? _isBuffering,
-        currentArticleIndex: currentArticleIndex ?? _currentIndex,
-        currentParagraphIndex: currentParagraphIndex ?? _currentParagraphIndex,
-        progress: (progress ?? readerState.value.progress).clamp(0.0, 1.0),
-        currentWord: currentWord ?? _currentWord,
-      ),
+    final snapshot = readerState.value.copyWith(
+      isPlaying: isPlaying ?? _isPlaying,
+      isPaused: isPaused ?? _isPaused,
+      isBuffering: isBuffering ?? _isBuffering,
+      currentArticleIndex: currentArticleIndex ?? _currentIndex,
+      currentParagraphIndex: currentParagraphIndex ?? _currentParagraphIndex,
+      progress: (progress ?? readerState.value.progress).clamp(0.0, 1.0),
+      currentWord: currentWord ?? _currentWord,
     );
+    debugPrint(_logTag('_publishSnapshot: playing=${snapshot.isPlaying}, paused=${snapshot.isPaused}, buffering=${snapshot.isBuffering}, para=${snapshot.currentParagraphIndex}, progress=${snapshot.progress.toStringAsFixed(3)}, word="${snapshot.currentWord}"'));
+    readerState.add(snapshot);
   }
 
   void _broadcastState({

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 import 'package:html/parser.dart' as html_parser;
@@ -74,6 +75,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   @override
   void initState() {
     super.initState();
+    debugPrint('[ReaderScreen] initState: articles=${widget.articles.length}, initialIndex=${widget.initialIndex}, autoPlayMode=${widget.autoPlayMode}');
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
     readerAudioHandler.configureQueue(
@@ -100,6 +102,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   void dispose() {
+    debugPrint('[ReaderScreen] dispose');
     _autoScrollResumeTimer?.cancel();
     _readerStateSubscription?.cancel();
     _progressDebounce?.cancel();
@@ -111,7 +114,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     super.dispose();
   }
 
-  void _toggleStarred(Article article, {required bool starred}) async {
+  Future<void> _toggleStarred(Article article, {required bool starred}) async {
     final appState = context.read<AppState>();
     await appState.markArticleStarred(article.guid, starred: starred);
     if (!mounted) return;
@@ -201,8 +204,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void _handleReaderPlaybackSnapshot(ReaderPlaybackSnapshot snapshot) {
     if (!mounted) return;
 
+    debugPrint('[ReaderScreen] snapshot: playing=${snapshot.isPlaying}, paused=${snapshot.isPaused}, buffering=${snapshot.isBuffering}, article=${snapshot.currentArticleIndex}, para=${snapshot.currentParagraphIndex}, progress=${snapshot.progress.toStringAsFixed(3)}, word="${snapshot.currentWord}"');
+
     final articleChanged = snapshot.currentArticleIndex != _currentIndex;
     if (articleChanged) {
+      debugPrint('[ReaderScreen] snapshot: article changed from $_currentIndex to ${snapshot.currentArticleIndex}');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         _goToArticle(snapshot.currentArticleIndex);
@@ -224,6 +230,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   void _updateTextForArticle(Article article, int articleIndex) {
+    debugPrint('[ReaderScreen] _updateTextForArticle: articleIndex=$articleIndex, guid=${article.guid}');
     final html = _bodyHtml(article);
     final markdown = _htmlToMarkdown(html);
     final safeMarkdown = markdown.trim();
@@ -271,6 +278,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
       return;
     }
 
+    debugPrint('[ReaderScreen] _updateTextForArticle: ttsParagraphs=${ttsParagraphs.length}, displayParagraphs=${displayParagraphs.length}');
     var offset = 0;
     final offsets = <int>[];
     for (final p in ttsParagraphs) {
@@ -295,15 +303,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
     if (articleIndex == _currentIndex) {
       final appState = context.read<AppState>();
       final state = appState.getArticleState(article.guid);
+      debugPrint('[ReaderScreen] _updateTextForArticle: current article, autoPlayMode=${widget.autoPlayMode}, hasAutoPlayed=$_hasAutoPlayed, state=$state');
       if (state != null) {
+        debugPrint('[ReaderScreen] _updateTextForArticle: state readProgress=${state.readProgress}, lastParagraphIndex=${state.lastParagraphIndex}');
         if (!_hasAutoPlayed && widget.autoPlayMode && state.lastParagraphIndex != null) {
           _hasAutoPlayed = true;
           _currentParagraphIndex = state.lastParagraphIndex!;
+          debugPrint('[ReaderScreen] _updateTextForArticle: resuming from paragraph $_currentParagraphIndex');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.resumingLastRead)),
           );
           _startPlayback(paragraphIndex: _currentParagraphIndex);
         } else if (state.readProgress != null && state.readProgress! > 0) {
+          debugPrint('[ReaderScreen] _updateTextForArticle: restoring scroll to ${state.readProgress}');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               _scrollToProgress(state.readProgress!);
@@ -312,6 +324,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         }
       } else if (!_hasAutoPlayed && widget.autoPlayMode) {
         _hasAutoPlayed = true;
+        debugPrint('[ReaderScreen] _updateTextForArticle: starting auto playback from beginning');
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(AppLocalizations.of(context)!.startingPlayback)),
         );
@@ -472,9 +485,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   Future<void> _startPlayback({int paragraphIndex = 0}) async {
-    if (_paragraphs.isEmpty) return;
+    debugPrint('[ReaderScreen] _startPlayback: paragraphIndex=$paragraphIndex, _paragraphs.length=${_paragraphs.length}');
+    if (_paragraphs.isEmpty) {
+      debugPrint('[ReaderScreen] _startPlayback: no paragraphs available');
+      return;
+    }
 
     final appState = context.read<AppState>();
+    debugPrint('[ReaderScreen] _startPlayback: speechRate=${appState.speechRateTts}, voiceId=${appState.voiceId}, autoPlayNext=${appState.autoPlayNext}');
     await readerAudioHandler.updateSpeechConfig(
       speechRate: appState.speechRateTts,
       voiceId: appState.voiceId,
@@ -484,10 +502,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   Future<void> _pausePlayback() async {
+    debugPrint('[ReaderScreen] _pausePlayback');
     await readerAudioHandler.pause();
   }
 
   Future<void> _resumePlayback() async {
+    debugPrint('[ReaderScreen] _resumePlayback');
     await readerAudioHandler.play();
   }
 
@@ -496,11 +516,16 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   void _seekToProgress(double value) {
-    if (_plainText.isEmpty) return;
+    debugPrint('[ReaderScreen] _seekToProgress: value=$value, _plainText.length=${_plainText.length}');
+    if (_plainText.isEmpty) {
+      debugPrint('[ReaderScreen] _seekToProgress: plainText empty');
+      return;
+    }
     final targetOffset = (value * _plainText.length).round();
     final paragraphIdx = _paragraphOffsets.lastIndexWhere(
         (offset) => offset <= targetOffset && offset + 1 < _plainText.length);
     final idx = paragraphIdx < 0 ? 0 : paragraphIdx;
+    debugPrint('[ReaderScreen] _seekToProgress: targetOffset=$targetOffset, paragraphIdx=$paragraphIdx, finalIdx=$idx');
     readerAudioHandler.playFromParagraph(idx);
   }
 
@@ -514,7 +539,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   void _goToArticle(int index) {
-    if (index < 0 || index >= widget.articles.length) return;
+    debugPrint('[ReaderScreen] _goToArticle: index=$index');
+    if (index < 0 || index >= widget.articles.length) {
+      debugPrint('[ReaderScreen] _goToArticle: index out of bounds');
+      return;
+    }
     _autoScrollResumeTimer?.cancel();
     _autoScrollSuspendedForUser = false;
     _pageController.animateToPage(
@@ -569,14 +598,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
   ) {
     if (articleIndex != _currentIndex) return false;
 
-    final userDriven = (notification is ScrollStartNotification &&
-            notification.dragDetails != null) ||
-        (notification is ScrollUpdateNotification &&
-            notification.dragDetails != null) ||
-        (notification is OverscrollNotification &&
-            notification.dragDetails != null);
+    final userDriven =
+        notification is ScrollStartNotification && notification.dragDetails != null;
 
     if (userDriven) {
+      debugPrint('[ReaderScreen] scroll: user scroll started, pausing auto-scroll');
       _pauseAutoScrollForUser();
       _scheduleAutoScrollResume();
       return false;
@@ -626,31 +652,77 @@ class _ReaderScreenState extends State<ReaderScreen> {
       appBar: AppBar(
         title: Text(article.title ?? 'Article'),
         actions: [
-          IconButton(
-            icon: Icon(isStarred ? Icons.bookmark : Icons.bookmark_border),
-            onPressed: () => _toggleStarred(article, starred: !isStarred),
-          ),
-          IconButton(
-            icon: Icon(_showWebView ? Icons.article : Icons.open_in_new),
-            onPressed: article.url != null
-                ? () {
-                    setState(() {
-                      _showWebView = !_showWebView;
-                    });
-                    if (_showWebView) {
-                      final c = _webControllers[_currentIndex];
-                      if (c == null) {
-                        final controller = webview.WebViewController()
-                          ..setJavaScriptMode(webview.JavaScriptMode.unrestricted);
-                        controller.loadRequest(Uri.parse(article.url!));
-                        _webControllers[_currentIndex] = controller;
-                      }
-                    } else {
-                      _prefetchReader(article);
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              switch (value) {
+                case 'save':
+                  await _toggleStarred(article, starred: !isStarred);
+                  break;
+                case 'webview':
+                  setState(() {
+                    _showWebView = true;
+                  });
+                  if (_showWebView) {
+                    final c = _webControllers[_currentIndex];
+                    if (c == null) {
+                      final controller = webview.WebViewController()
+                        ..setJavaScriptMode(webview.JavaScriptMode.unrestricted);
+                      controller.loadRequest(Uri.parse(article.url!));
+                      _webControllers[_currentIndex] = controller;
                     }
                   }
-                : null,
-            tooltip: _showWebView ? AppLocalizations.of(context)!.showReader : AppLocalizations.of(context)!.showWebView,
+                  break;
+                case 'reader':
+                  setState(() {
+                    _showWebView = false;
+                  });
+                  _prefetchReader(article);
+                  break;
+                case 'copylink':
+                  if (article.url != null) {
+                    await Clipboard.setData(ClipboardData(text: article.url!));
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(AppLocalizations.of(context)!.linkCopied)),
+                      );
+                    }
+                  }
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'save',
+                child: ListTile(
+                  leading: Icon(isStarred ? Icons.bookmark : Icons.bookmark_border),
+                  title: Text(isStarred ? AppLocalizations.of(context)!.unsave : AppLocalizations.of(context)!.save),
+                ),
+              ),
+              if (article.url != null && !_showWebView)
+                PopupMenuItem(
+                  value: 'webview',
+                  child: ListTile(
+                    leading: const Icon(Icons.open_in_new),
+                    title: Text(AppLocalizations.of(context)!.showWebView),
+                  ),
+                ),
+              if (article.url != null && _showWebView)
+                PopupMenuItem(
+                  value: 'reader',
+                  child: ListTile(
+                    leading: const Icon(Icons.article),
+                    title: Text(AppLocalizations.of(context)!.showReader),
+                  ),
+                ),
+              if (article.url != null)
+                PopupMenuItem(
+                  value: 'copylink',
+                  child: ListTile(
+                    leading: const Icon(Icons.link),
+                    title: Text(AppLocalizations.of(context)!.copyLink),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -662,13 +734,16 @@ class _ReaderScreenState extends State<ReaderScreen> {
             physics:
                 const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
             onPageChanged: (index) async {
+              debugPrint('[ReaderScreen] onPageChanged: index=$index');
               final lowDataMode = context.read<AppState>().lowDataMode;
               setState(() {
                 _currentIndex = index;
                 _progress = _currentArticleCombinedProgress();
               });
-              if (readerAudioHandler.readerState.value.currentArticleIndex !=
-                  index) {
+              final currentAudioArticle = readerAudioHandler.readerState.value.currentArticleIndex;
+              debugPrint('[ReaderScreen] onPageChanged: readerState article=$currentAudioArticle');
+              if (currentAudioArticle != index) {
+                debugPrint('[ReaderScreen] onPageChanged: activating article $index in audio handler');
                 await readerAudioHandler.activateArticle(index);
               }
               if (_showWebView) {
@@ -888,6 +963,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   void _handleParagraphTap(int index) {
+    debugPrint('[ReaderScreen] _handleParagraphTap: index=$index, tapCount=$_tapCount, lastTapped=$_lastTappedParagraph');
     if (_lastTappedParagraph != index) {
       _tapCount = 0;
       _lastTappedParagraph = index;
@@ -895,6 +971,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     _tapCount++;
     _tapTimer?.cancel();
     if (_tapCount >= 3) {
+      debugPrint('[ReaderScreen] _handleParagraphTap: triple tap, seeking to paragraph $index');
       _tapCount = 0;
       if (_displayParagraphs.isNotEmpty && index < _displayParagraphs.length) {
         readerAudioHandler.playFromParagraph(index);
@@ -1147,9 +1224,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
     bool showLoader = false,
   }) async {
     final url = article.url;
-    if (url == null || url.isEmpty) return;
-    if (_readerCache.containsKey(article.guid)) return;
-    if (_prefetchInFlight.contains(article.guid)) return;
+    debugPrint('[ReaderScreen] _prefetchReader: guid=${article.guid}, url=$url, showLoader=$showLoader');
+    if (url == null || url.isEmpty) {
+      debugPrint('[ReaderScreen] _prefetchReader: no URL');
+      return;
+    }
+    if (_readerCache.containsKey(article.guid)) {
+      debugPrint('[ReaderScreen] _prefetchReader: already cached');
+      return;
+    }
+    if (_prefetchInFlight.contains(article.guid)) {
+      debugPrint('[ReaderScreen] _prefetchReader: already in flight');
+      return;
+    }
     _prefetchInFlight.add(article.guid);
 
     if (showLoader && mounted) {
@@ -1161,6 +1248,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
     try {
       final cached = await _db.getPrefetchedArticleContent(article.guid);
       if (cached != null && cached.trim().isNotEmpty) {
+        debugPrint('[ReaderScreen] _prefetchReader: using cached content, length=${cached.length}');
         _readerCache[article.guid] = cached;
         if (mounted && article.guid == widget.articles[_currentIndex].guid) {
           _updateTextForArticle(article, widget.articles.indexOf(article));
@@ -1168,8 +1256,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
         return;
       }
 
+      debugPrint('[ReaderScreen] _prefetchReader: parsing from URL');
       final parsed = await readability.parseAsync(url);
       final content = (parsed.content ?? parsed.textContent ?? '').trim();
+      debugPrint('[ReaderScreen] _prefetchReader: parsed content length=${content.length}');
       if (content.isNotEmpty) {
         _readerCache[article.guid] = content;
         await _db.upsertPrefetchedArticleContent(article.guid, content);
@@ -1227,12 +1317,15 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   ),
                 ],
               ),
-              onPressed: canPlay && !_isBuffering
+              onPressed: canPlay
                   ? () {
                       if (_isPlaying && !_isPaused) {
                         _pausePlayback();
                       } else if (_isPaused) {
                         _resumePlayback();
+                      } else if (_isBuffering) {
+                        debugPrint('[ReaderScreen] play button: was buffering, starting playback');
+                        _startPlayback(paragraphIndex: _currentParagraphIndex);
                       } else {
                         _startPlayback(paragraphIndex: _currentParagraphIndex);
                       }

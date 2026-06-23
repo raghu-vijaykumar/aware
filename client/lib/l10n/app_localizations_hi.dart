@@ -399,6 +399,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get startingPlayback => 'न पढ़े गए लेख के लिए प्लेबैक शुरू हो रहा है';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'रीडर दिखाएं';
 
   @override

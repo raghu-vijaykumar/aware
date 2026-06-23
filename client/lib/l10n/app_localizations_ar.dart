@@ -396,6 +396,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get startingPlayback => 'بدء التشغيل لمقالة غير مقروءة';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'إظهار القارئ';
 
   @override

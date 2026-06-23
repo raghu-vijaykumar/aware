@@ -388,6 +388,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get startingPlayback => '읽지 않은 기사 재생 시작';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => '리더 보기';
 
   @override

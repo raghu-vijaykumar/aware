@@ -401,6 +401,18 @@ class AppLocalizationsRu extends AppLocalizations {
       'Запуск воспроизведения для непрочитанной статьи';
 
   @override
+  String get save => 'Save';
+
+  @override
+  String get unsave => 'Unsave';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
+
+  @override
   String get showReader => 'Показать ридер';
 
   @override
