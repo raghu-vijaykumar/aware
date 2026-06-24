@@ -797,6 +797,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   applicationVersion: '1.0.0',
                 ),
               ),
+              const SizedBox(height: 24),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+                child: Text(
+                  'Developer',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.bug_report, color: Colors.red),
+                title: const Text('Test Crash'),
+                subtitle: const Text('Force a crash to verify Crashlytics'),
+                onTap: () => throw Exception('Test crash from Settings'),
+              ),
             ],
           );
         },
