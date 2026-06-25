@@ -722,6 +722,22 @@
   "@sampleText": {
     "description": "Sample text for text size preview"
   },
+  "save": "Save",
+  "@save": {
+    "description": "Menu item to save article"
+  },
+  "unsave": "Unsave",
+  "@unsave": {
+    "description": "Menu item to unsave article"
+  },
+  "copyLink": "Copy link",
+  "@copyLink": {
+    "description": "Menu item to copy article URL"
+  },
+  "linkCopied": "Link copied to clipboard",
+  "@linkCopied": {
+    "description": "Snackbar when link is copied"
+  },
   "sectionSubscriptions": "الاشتراكات",
   "@sectionSubscriptions": {
     "description": "Settings section: subscriptions"
