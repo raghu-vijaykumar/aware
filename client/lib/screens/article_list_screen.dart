@@ -587,9 +587,11 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
   Future<void> _shareArticle(BuildContext context, Article article) async {
     if (article.url == null) return;
-    await Share.share(article.url!,
-        subject: article.title ?? 'aware article',
-        sharePositionOrigin: const Rect.fromLTWH(0, 0, 0, 0));
+    await SharePlus.instance.share(ShareParams(
+      text: article.url!,
+      subject: article.title ?? 'aware article',
+      sharePositionOrigin: const Rect.fromLTWH(0, 0, 0, 0),
+    ));
   }
 
   void _showActionSnackBar({

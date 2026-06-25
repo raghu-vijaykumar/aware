@@ -128,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       '${voice['name']}|${voice['locale']}';
 
   Future<void> _importSubscriptions() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['opml', 'xml'],
       withData: true,
@@ -201,11 +201,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final file = File(filePath);
       await file.writeAsString(opmlContent);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile(file.path)],
         text: AppLocalizations.of(context)!.exportShareText,
         subject: AppLocalizations.of(context)!.exportShareSubject,
-      );
+      ));
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
