@@ -25,6 +25,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
   bool _isAdding = false;
+  final Set<String> _followingFeeds = {};
 
   @override
   void initState() {
@@ -529,13 +530,47 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                onPressed: null,
+                                onPressed: () async {
+                                  final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(AppLocalizations.of(context)!.unsubscribeTitle),
+                                      content: Text(
+                                        AppLocalizations.of(context)!.unsubscribeConfirm(feed.title ?? 'this feed')),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(context).pop(false),
+                                          child: Text(AppLocalizations.of(context)!.cancel),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.of(context).pop(true),
+                                          child: Text(AppLocalizations.of(context)!.unsubscribe),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  if (confirmed == true) {
+                                    final subscribedFeed = appState.feeds.firstWhere((f) => f.url == feed.url);
+                                    if (subscribedFeed.id != null) {
+                                      await appState.deleteFeed(subscribedFeed.id!);
+                                    }
+                                  }
+                                },
                               ),
                             )
                           : SizedBox(
                               height: 36,
                               child: FilledButton.icon(
-                                icon: Icon(Icons.rss_feed, size: 18),
+                                icon: _followingFeeds.contains(feed.url)
+                                    ? SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: accent.computeLuminance() < 0.5 ? Colors.white : Colors.black,
+                                        ),
+                                      )
+                                    : Icon(Icons.rss_feed, size: 18),
                                 label: Text(AppLocalizations.of(context)!.marketplaceFollow),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: accent,
@@ -545,24 +580,33 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                onPressed: () async {
-                                  try {
-                                    await appState.addFeedFromUrl(feed.url);
-                                    messenger.showSnackBar(
-                                      SnackBar(
-                                      content: Text(
-                                          AppLocalizations.of(context)!.marketplaceSubscribedTo(feed.title ?? 'feed')),
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    final msg = e is ArgumentError
-                                        ? AppLocalizations.of(context)!.marketplaceInvalidUrl
-                                        : AppLocalizations.of(context)!.marketplaceUnreachable;
-                                    messenger.showSnackBar(
-                                      SnackBar(content: Text(msg)),
-                                    );
-                                  }
-                                },
+                                onPressed: _followingFeeds.contains(feed.url)
+                                    ? null
+                                    : () async {
+                                        setState(() => _followingFeeds.add(feed.url));
+                                        try {
+                                          await appState.addFeedFromUrl(feed.url);
+                                          if (!context.mounted) return;
+                                          messenger.showSnackBar(
+                                            SnackBar(
+                                            content: Text(
+                                                AppLocalizations.of(context)!.marketplaceSubscribedTo(feed.title ?? 'feed')),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          if (!context.mounted) return;
+                                          final msg = e is ArgumentError
+                                              ? AppLocalizations.of(context)!.marketplaceInvalidUrl
+                                              : AppLocalizations.of(context)!.marketplaceUnreachable;
+                                          messenger.showSnackBar(
+                                            SnackBar(content: Text(msg)),
+                                          );
+                                        } finally {
+                                          if (context.mounted) {
+                                            setState(() => _followingFeeds.remove(feed.url));
+                                          }
+                                        }
+                                      },
                               ),
                             ),
                     ],

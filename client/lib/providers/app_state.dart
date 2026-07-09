@@ -138,6 +138,7 @@ class AppState extends ChangeNotifier {
   // Feeds
   Future<void> loadFeeds() => feed.loadFeeds();
   Future<void> addFeedFromUrl(String url) => feed.addFeedFromUrl(url);
+  Future<void> deleteFeed(int feedId) => feed.deleteFeed(feedId);
 
   // Articles
   Future<List<Article>> getArticlesForFeed(int feedId) => article.getArticlesForFeed(feedId);

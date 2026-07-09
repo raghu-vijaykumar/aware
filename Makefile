@@ -33,8 +33,12 @@ backend-test:
 	cd backend && npm test
 
 # Client targets
+.PHONY: validate-feeds
+validate-feeds:
+	python3 scripts/validate_curated_feeds.py
+
 .PHONY: client
-client:
+client: validate-feeds
 	cd client && flutter pub get
 
 .PHONY: client-analyze
