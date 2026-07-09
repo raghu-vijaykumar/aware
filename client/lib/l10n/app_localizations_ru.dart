@@ -778,4 +778,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get privacyContactBody =>
       'Если у вас есть вопросы по этой политике конфиденциальности, свяжитесь с нами через каналы поддержки приложения.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

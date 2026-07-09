@@ -771,4 +771,10 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get privacyContactBody =>
       'यदि आपके पास इस गोपनीयता नीति के बारे में प्रश्न हैं, तो कृपया ऐप के सहायता चैनलों के माध्यम से हमसे संपर्क करें।';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

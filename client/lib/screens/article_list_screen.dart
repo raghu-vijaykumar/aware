@@ -162,6 +162,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       final filteredArticles = _applyFilters(_allLoadedArticles, appState.feeds);
       final articleCount = filteredArticles.length;
       final adCount = articleCount ~/ 10;
+      final grouped = _groupByDate(filteredArticles);
 
       return Column(
         children: [
@@ -193,11 +194,14 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                   )
                 : ListView.separated(
                     controller: _scrollController,
-                    itemCount: articleCount + adCount + (_hasMore ? 1 : 0),
+                    itemCount: _timelineItemCount(grouped) + adCount + (_hasMore ? 1 : 0),
                     separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.s12),
-                    itemBuilder: (context, index) {
-                      if (index == articleCount + adCount) {
+                        const SizedBox(height: AppSpacing.s8),
+                    itemBuilder: (context, rawIndex) {
+                      final timelineTotal = _timelineItemCount(grouped);
+                      final loadingIndex = timelineTotal + adCount;
+
+                      if (rawIndex == loadingIndex && _hasMore) {
                         return Padding(
                           padding: EdgeInsets.all(16),
                           child: Center(
@@ -207,16 +211,44 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           ),
-                          key: ValueKey('loading_$index'),
+                          key: ValueKey('loading_$rawIndex'),
                         );
                       }
 
-                      if ((index + 1) % 5 == 0) {
-                        return NativeAdTile(key: ValueKey('ad_$index'));
+                      // Map rawIndex -> (timelineItemIndex) accounting for ads
+                      // Ads occupy positions where (timelineTotal + adIndex + 1) % 5 == 0
+                      int adOffset = 0;
+                      for (int i = 0; i < rawIndex; i++) {
+                        final adPos = (i + 1) % 5 == 0;
+                        final isLastLoading = (i == loadingIndex);
+                        if (adPos && !isLastLoading) adOffset++;
+                      }
+                      final adjustedIndex = rawIndex - adOffset;
+
+                      if (adjustedIndex >= timelineTotal) {
+                        return const SizedBox.shrink();
                       }
 
-                      final articleIndex = index - ((index + 1) ~/ 5);
-                      final article = filteredArticles[articleIndex];
+                      // Is this position an ad slot?
+                      final posInTimeline = rawIndex - adOffset;
+                      if (posInTimeline > 0 && (posInTimeline) % 5 == 0) {
+                        return NativeAdTile(key: ValueKey('ad_$rawIndex'));
+                      }
+
+                      // Determine if it's a header or article
+                      final (groupIdx, articleIdx) = _timelineIndexFor(grouped, adjustedIndex);
+                      if (groupIdx < 0) return const SizedBox.shrink();
+
+                      // Date header
+                      if (articleIdx == -1) {
+                        return _buildDateHeader(
+                          grouped[groupIdx].key,
+                          colorScheme: colorScheme,
+                          textTheme: textTheme,
+                        );
+                      }
+
+                      final article = grouped[groupIdx].value[articleIdx];
                       final state =
                           appState.getArticleState(article.guid);
                       final isRead = state?.readAt != null;
@@ -294,20 +326,19 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
-                                color: isRead
-                                    ? colorScheme.surfaceContainerHighest
-                                    : theme.cardColor,
+                                color: theme.cardColor,
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: InkWell(
                                   onTap: () {
+                                    final articleIdx = filteredArticles.indexOf(article);
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
                                       builder: (_) => ReaderScreen(
                                           articles: filteredArticles,
-                                          initialIndex: index),
+                                          initialIndex: articleIdx),
                                     ));
                                   },
                                   child: Padding(
@@ -317,17 +348,28 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          article.title ??
-                                              AppLocalizations.of(
-                                                  context)!
-                                                  .untitled,
-                                          style: textTheme
-                                              .titleLarge
-                                              ?.copyWith(
-                                            fontWeight:
-                                                FontWeight.w700,
-                                          ),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            if (!isRead)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 8, right: 10),
+                                                child: Icon(
+                                                  Icons.circle,
+                                                  size: 10,
+                                                  color: colorScheme.primary,
+                                                ),
+                                              ),
+                                            Expanded(
+                                              child: Text(
+                                                article.title ??
+                                                    AppLocalizations.of(context)!.untitled,
+                                                style: textTheme.titleLarge?.copyWith(
+                                                  fontWeight: isRead ? FontWeight.w500 : FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(
                                             height: AppSpacing.s4),
@@ -709,16 +751,9 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     }).toList();
 
     filtered.sort((a, b) {
-      final aState = context.read<AppState>().getArticleState(a.guid);
-      final bState = context.read<AppState>().getArticleState(b.guid);
-      final aUnread = aState?.readAt == null;
-      final bUnread = bState?.readAt == null;
-      if (aUnread != bUnread) {
-        return aUnread ? -1 : 1; // unread first
-      }
       final aTime = a.publishedAt ?? a.fetchedAt ?? 0;
       final bTime = b.publishedAt ?? b.fetchedAt ?? 0;
-      return bTime.compareTo(aTime); // newest first within groups
+      return bTime.compareTo(aTime);
     });
 
     return filtered;
@@ -1075,6 +1110,101 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
         autoPlayMode: true,
       ),
     ));
+  }
+
+  String _dateKey(DateTime dt) {
+    return DateTime(dt.year, dt.month, dt.day).toIso8601String();
+  }
+
+  String _dateLabel(String key) {
+    final dt = DateTime.parse(key);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (dt == today) return AppLocalizations.of(context)!.today;
+    if (dt == yesterday) return AppLocalizations.of(context)!.yesterday;
+
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
+  }
+
+  List<MapEntry<String, List<Article>>> _groupByDate(List<Article> articles) {
+    final groups = <String, List<Article>>{};
+    for (final article in articles) {
+      final ts = article.publishedAt ?? article.fetchedAt;
+      final key = ts != null
+          ? _dateKey(DateTime.fromMillisecondsSinceEpoch(ts))
+          : '__unknown__';
+      groups.putIfAbsent(key, () => []).add(article);
+    }
+    final entries = groups.entries.toList();
+    entries.sort((a, b) {
+      if (a.key == '__unknown__') return 1;
+      if (b.key == '__unknown__') return -1;
+      return b.key.compareTo(a.key);
+    });
+    return entries.map((e) => MapEntry(e.key, e.value)).toList();
+  }
+
+  int _timelineItemCount(List<MapEntry<String, List<Article>>> groups) {
+    int count = 0;
+    for (final group in groups) {
+      count += 1 + group.value.length; // header + articles
+    }
+    return count;
+  }
+
+  (int, int) _timelineIndexFor(
+    List<MapEntry<String, List<Article>>> groups,
+    int itemIndex,
+  ) {
+    int cursor = 0;
+    for (int g = 0; g < groups.length; g++) {
+      final headerPos = cursor;
+      if (headerPos == itemIndex) return (g, -1);
+      cursor++;
+      for (int a = 0; a < groups[g].value.length; a++) {
+        if (cursor == itemIndex) return (g, a);
+        cursor++;
+      }
+    }
+    return (-1, -1);
+  }
+
+  Widget _buildDateHeader(String dateKey, {
+    required ColorScheme colorScheme,
+    required TextTheme textTheme,
+  }) {
+    final label = dateKey == '__unknown__'
+        ? AppLocalizations.of(context)!.publishDateUnknown
+        : _dateLabel(dateKey);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.s16, AppSpacing.s8, AppSpacing.s16, AppSpacing.s4),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 20,
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s12),
+          Text(
+            label,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   String _relativeTimeLabel(Article article) {

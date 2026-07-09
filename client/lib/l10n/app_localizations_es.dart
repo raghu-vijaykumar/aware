@@ -774,4 +774,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get privacyContactBody =>
       'Si tienes preguntas sobre esta política de privacidad, contáctanos a través de los canales de soporte de la aplicación.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

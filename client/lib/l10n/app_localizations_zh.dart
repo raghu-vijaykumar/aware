@@ -739,4 +739,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get privacyContactBody => '如果你对此隐私政策有疑问，请通过应用的支持渠道联系我们。';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

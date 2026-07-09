@@ -774,4 +774,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get privacyContactBody =>
       'Wenn du Fragen zu dieser Datenschutzrichtlinie hast, kontaktiere uns bitte über die Support-Kanäle der App.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

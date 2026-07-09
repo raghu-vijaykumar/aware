@@ -744,4 +744,10 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get privacyContactBody =>
       'このプライバシーポリシーについてご質問がある場合は、アプリのサポートチャネルからお問い合わせください。';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }

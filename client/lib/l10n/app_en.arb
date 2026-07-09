@@ -1434,5 +1434,17 @@
 
   "@privacyContactBody": {
     "description": "Privacy section body: contact"
+  },
+
+  "today": "Today",
+
+  "@today": {
+    "description": "Date label for today"
+  },
+
+  "yesterday": "Yesterday",
+
+  "@yesterday": {
+    "description": "Date label for yesterday"
   }
 }

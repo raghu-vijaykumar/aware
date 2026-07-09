@@ -1479,6 +1479,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'If you have questions about this privacy policy, please contact us through the app\'s support channels.'**
   String get privacyContactBody;
+
+  /// Date label for today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// Date label for yesterday
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
 }
 
 class _AppLocalizationsDelegate

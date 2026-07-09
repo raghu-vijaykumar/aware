@@ -745,4 +745,10 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get privacyContactBody =>
       '이 개인정보 처리방침에 대해 문의사항이 있으면 앱의 지원 채널을 통해 문의해 주세요.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
 }
