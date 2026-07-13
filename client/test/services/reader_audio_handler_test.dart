@@ -9,6 +9,7 @@ import 'package:aware/services/reader_audio_service.dart';
 class _MockFlutterTts extends FlutterTts {
   bool stopped = false;
   bool spoken = false;
+  bool speakThrows = false;
   String? spokenText;
   double? lastSpeechRate;
   Map<String, String>? lastVoiceSettings;
@@ -62,6 +63,7 @@ class _MockFlutterTts extends FlutterTts {
 
   @override
   Future<dynamic> speak(String text) async {
+    if (speakThrows) throw Exception('TTS error');
     spoken = true;
     spokenText = text;
     return null;
@@ -147,6 +149,37 @@ void main() {
 
     tearDown(() {
       handler.readerState.close();
+    });
+
+    test('standalone factory sets isAudioServiceBacked=false', () {
+      // Construct via named constructor with mock TTS to avoid platform calls.
+      final standalone = ReaderAudioHandler(
+        isAudioServiceBacked: false,
+        tts: mockTts,
+      );
+      expect(standalone.isAudioServiceBacked, isFalse);
+      standalone.readerState.close();
+    });
+
+    test('play without content sets pendingAutoplay and buffering', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      // No content registered yet
+      await handler.play();
+      expect(mockTts.spoken, isFalse);
+    });
+
+    test('playback TTS error resets state', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      await handler.registerArticleContent(
+        articleIndex: 0,
+        paragraphs: ['speak error'],
+        paragraphOffsets: [0],
+        plainText: 'speak error',
+      );
+      // Make TTS speak throw
+      mockTts.speakThrows = true;
+      await handler.activateArticle(0, autoplay: true);
+      expect(handler.readerState.value.isPlaying, isFalse);
     });
 
     test('hasContentFor returns false for unregistered content', () {
