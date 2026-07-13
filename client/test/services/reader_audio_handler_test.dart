@@ -557,5 +557,58 @@ void main() {
         expect(handler.readerState.value.currentWord, 'world');
       });
     });
+
+    group('TTS handler callbacks', () {
+      // _init() is async from the constructor; handlers are registered
+      // asynchronously after first await. Pump microtasks to let them complete.
+      Future<void> _pump() async {
+        for (var i = 0; i < 10; i++) {
+          await Future.delayed(Duration.zero);
+        }
+      }
+
+      test('cancelHandler resets state', () async {
+        await _pump();
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        mockTts.cancelHandler!();
+        expect(handler.readerState.value.isPlaying, isFalse);
+        expect(handler.readerState.value.isPaused, isFalse);
+      });
+
+      test('pauseHandler sets paused state', () async {
+        await _pump();
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        mockTts.pauseHandler!();
+        expect(handler.readerState.value.isPaused, isTrue);
+      });
+
+      test('continueHandler sets playing state', () async {
+        await _pump();
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        mockTts.continueHandler!();
+        expect(handler.readerState.value.isPlaying, isTrue);
+        expect(handler.readerState.value.isPaused, isFalse);
+      });
+    });
+
+    group('startPlayback edge cases', () {
+      test('play with empty paragraphs stops immediately', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.registerArticleContent(
+          articleIndex: 0,
+          paragraphs: [],
+          paragraphOffsets: [],
+          plainText: '',
+        );
+        await handler.play();
+        expect(handler.readerState.value.isPlaying, isFalse);
+      });
+
+      test('activateArticle on empty articles list returns silently', () async {
+        // Never call configureQueue — articles list is empty
+        await handler.activateArticle(0, autoplay: false);
+        expect(handler.readerState.value.currentArticleIndex, 0);
+      });
+    });
   });
 }
