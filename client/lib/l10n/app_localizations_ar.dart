@@ -188,42 +188,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'المجلدات';
-
-  @override
-  String get createFolderTitle => 'مجلد جديد';
-
-  @override
-  String get folderNameHint => 'اسم المجلد';
-
-  @override
   String get create => 'إنشاء';
 
   @override
   String get rename => 'إعادة تسمية';
 
   @override
-  String get renameFolderTitle => 'إعادة تسمية المجلد';
-
-  @override
   String get delete => 'حذف';
-
-  @override
-  String get deleteFolderTitle => 'حذف المجلد';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'إزالة \"$name\" وفك تجميع تغذيته؟';
-  }
-
-  @override
-  String get createFolderTooltip => 'إنشاء مجلد';
-
-  @override
-  String get noFoldersYet => 'لا توجد مجلدات بعد';
-
-  @override
-  String get createFirstFolder => 'أنشئ مجلدك الأول';
 
   @override
   String feedCount(num count) {
@@ -489,9 +460,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get premiumSync => 'تسجيل الدخول والمزامنة عبر الأجهزة';
 
   @override
-  String get premiumFolders => 'تنظيم غير محدود للمجلدات';
-
-  @override
   String get notNow => 'ليس الآن';
 
   @override
@@ -553,16 +521,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'عند انتهاء السرد، الانتقال إلى العنصر التالي';
 
   @override
-  String get sectionData => 'البيانات';
-
-  @override
-  String get lowDataMode => 'التحميل المسبق في وضع البيانات المنخفضة';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'تحميل نص المقالات مسبقًا في الخلفية وتفضيل المحتوى المخبأ عند توفره';
-
-  @override
   String get sectionAccessibility => 'إمكانية الوصول';
 
   @override
@@ -584,12 +542,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'إضافة أو إزالة التغذية التي تتابعها';
-
-  @override
-  String get manageFolders => 'إدارة المجلدات';
-
-  @override
-  String get manageFoldersSubtitle => 'تنظيم التغذية في مجلدات';
 
   @override
   String get importSubscriptions => 'استيراد الاشتراكات';
@@ -635,42 +587,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get selectLanguage => 'اختيار اللغة';
-
-  @override
-  String get languageEnglish => 'الإنجليزية';
-
-  @override
-  String get languageChinese => 'الصينية';
-
-  @override
-  String get languageSpanish => 'الإسبانية';
-
-  @override
-  String get languageHindi => 'الهندية';
-
-  @override
-  String get languageArabic => 'العربية';
-
-  @override
-  String get languageFrench => 'الفرنسية';
-
-  @override
-  String get languagePortuguese => 'البرتغالية';
-
-  @override
-  String get languageRussian => 'الروسية';
-
-  @override
-  String get languageJapanese => 'اليابانية';
-
-  @override
-  String get languageGerman => 'الألمانية';
-
-  @override
-  String get languageKorean => 'الكورية';
-
-  @override
-  String get languageItalian => 'الإيطالية';
 
   @override
   String get sectionLegal => 'قانوني';

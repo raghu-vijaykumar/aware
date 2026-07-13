@@ -190,42 +190,13 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Dossiers';
-
-  @override
-  String get createFolderTitle => 'Nouveau dossier';
-
-  @override
-  String get folderNameHint => 'Nom du dossier';
-
-  @override
   String get create => 'Créer';
 
   @override
   String get rename => 'Renommer';
 
   @override
-  String get renameFolderTitle => 'Renommer le dossier';
-
-  @override
   String get delete => 'Supprimer';
-
-  @override
-  String get deleteFolderTitle => 'Supprimer le dossier';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'Supprimer « $name » et dissocier ses flux ?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Créer un dossier';
-
-  @override
-  String get noFoldersYet => 'Pas encore de dossiers';
-
-  @override
-  String get createFirstFolder => 'Créez votre premier dossier';
 
   @override
   String feedCount(num count) {
@@ -495,9 +466,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get premiumSync => 'Connectez-vous et synchronisez entre appareils';
 
   @override
-  String get premiumFolders => 'Organisation illimitée des dossiers';
-
-  @override
   String get notNow => 'Pas maintenant';
 
   @override
@@ -560,16 +528,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Lorsque la narration se termine, passer à l\'élément suivant';
 
   @override
-  String get sectionData => 'Données';
-
-  @override
-  String get lowDataMode => 'Préchargement en mode faible consommation';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Précharger le texte des articles en arrière-plan et privilégier le contenu mis en cache lorsqu\'il est disponible';
-
-  @override
   String get sectionAccessibility => 'Accessibilité';
 
   @override
@@ -591,12 +549,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Ajouter ou supprimer les flux que vous suivez';
-
-  @override
-  String get manageFolders => 'Gérer les dossiers';
-
-  @override
-  String get manageFoldersSubtitle => 'Organiser les flux dans des dossiers';
 
   @override
   String get importSubscriptions => 'Importer des abonnements';
@@ -642,42 +594,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Choisir la langue';
-
-  @override
-  String get languageEnglish => 'Anglais';
-
-  @override
-  String get languageChinese => 'Chinois';
-
-  @override
-  String get languageSpanish => 'Espagnol';
-
-  @override
-  String get languageHindi => 'Hindi';
-
-  @override
-  String get languageArabic => 'Arabe';
-
-  @override
-  String get languageFrench => 'Français';
-
-  @override
-  String get languagePortuguese => 'Portugais';
-
-  @override
-  String get languageRussian => 'Russe';
-
-  @override
-  String get languageJapanese => 'Japonais';
-
-  @override
-  String get languageGerman => 'Allemand';
-
-  @override
-  String get languageKorean => 'Coréen';
-
-  @override
-  String get languageItalian => 'Italien';
 
   @override
   String get sectionLegal => 'Mentions légales';

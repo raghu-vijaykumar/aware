@@ -1,984 +1,921 @@
 {
-  "@@locale": "ru",
-  "appName": "aware",
-  "@appName": {
-    "description": "The name of the application"
-  },
-  "appTitle": "Aware",
-  "@appTitle": {
-    "description": "Application title shown in settings/about"
-  },
-  "appVersion": "1.0.0",
-  "@appVersion": {
-    "description": "Application version number"
-  },
-  "splashTagline": "Будьте в курсе без усилий",
-  "@splashTagline": {
-    "description": "Tagline shown on splash screen"
-  },
-  "onboardingLanguageTitle": "Выберите язык",
-  "@onboardingLanguageTitle": {
-    "description": "Title for onboarding language selection page"
-  },
-  "onboardingLanguageDesc": "Выберите предпочитаемый язык интерфейса приложения.",
-  "@onboardingLanguageDesc": {
-    "description": "Description for onboarding language selection page"
-  },
-  "onboardingWelcomeTitle": "Добро пожаловать в aware",
-  "@onboardingWelcomeTitle": {
-    "description": "Title for first onboarding page"
-  },
-  "onboardingWelcomeDesc": "Ваш персональный RSS-ридер. Будьте в курсе того, что важно, все в одном месте.",
-  "@onboardingWelcomeDesc": {
-    "description": "Description for first onboarding page"
-  },
-  "onboardingOfflineTitle": "Чтение офлайн",
-  "@onboardingOfflineTitle": {
-    "description": "Title for second onboarding page"
-  },
-  "onboardingOfflineDesc": "Ленты загружаются, чтобы вы могли читать в любое время и в любом месте. Слушайте с помощью синтеза речи.",
-  "@onboardingOfflineDesc": {
-    "description": "Description for second onboarding page"
-  },
-  "onboardingNotifyTitle": "Не пропускайте публикации",
-  "@onboardingNotifyTitle": {
-    "description": "Title for third onboarding page"
-  },
-  "onboardingNotifyDesc": "Получайте уведомления о новых статьях. Добавьте свою первую ленту, чтобы начать.",
-  "@onboardingNotifyDesc": {
-    "description": "Description for third onboarding page"
-  },
-  "next": "Далее",
-  "@next": {
-    "description": "Next button"
-  },
-  "getStarted": "Начать",
-  "@getStarted": {
-    "description": "Get Started button on last onboarding page"
-  },
-  "skip": "Пропустить",
-  "@skip": {
-    "description": "Skip button on onboarding"
-  },
-  "tabFeeds": "Ленты",
-  "@tabFeeds": {
-    "description": "Bottom navigation tab for feeds"
-  },
-  "tabMarketplace": "Маркет",
-  "@tabMarketplace": {
-    "description": "Bottom navigation tab for marketplace"
-  },
-  "tabSettings": "Настройки",
-  "@tabSettings": {
-    "description": "Bottom navigation tab for settings"
-  },
-  "addFeedTitle": "Добавить RSS-ленту",
-  "@addFeedTitle": {
-    "description": "Title of the add feed dialog"
-  },
-  "addFeedUrlLabel": "URL ленты",
-  "@addFeedUrlLabel": {
-    "description": "Label for feed URL input"
-  },
-  "addFeedUrlHint": "https://пример.com/feed.xml",
-  "@addFeedUrlHint": {
-    "description": "Hint text for feed URL input"
-  },
-  "cancel": "Отмена",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "add": "Добавить",
-  "@add": {
-    "description": "Add button text"
-  },
-  "feedAdded": "Лента добавлена",
-  "@feedAdded": {
-    "description": "Snackbar message when feed is added"
-  },
-  "failedToAddFeed": "Не удалось добавить ленту: {error}",
-  "@failedToAddFeed": {
-    "description": "Snackbar message when adding a feed fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "feedUrlRequired": "Требуется URL ленты",
-  "@feedUrlRequired": {
-    "description": "Validation message when feed URL is empty"
-  },
-  "marketplaceTitle": "Маркет",
-  "@marketplaceTitle": {
-    "description": "Title of marketplace screen"
-  },
-  "marketplaceSubtitle": "Подборки RSS-ссылок по категориям",
-  "@marketplaceSubtitle": {
-    "description": "Subtitle of marketplace screen"
-  },
-  "marketplaceHeroTitle": "Открывайте качественные ленты быстро",
-  "@marketplaceHeroTitle": {
-    "description": "Hero section title on marketplace"
-  },
-  "marketplaceHeroDesc": "Просматривайте проверенные источники по темам. Нажмите «Подписаться», чтобы мгновенно добавить их в свою ленту.",
-  "@marketplaceHeroDesc": {
-    "description": "Hero section description on marketplace"
-  },
-  "marketplaceCategoriesCount": "{count} категорий",
-  "@marketplaceCategoriesCount": {
-    "description": "Category count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceFeedsCount": "{count} лент",
-  "@marketplaceFeedsCount": {
-    "description": "Feed count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceSearchHint": "Поиск лент...",
-  "@marketplaceSearchHint": {
-    "description": "Search field placeholder"
-  },
-  "marketplaceUntitledFeed": "Лента без названия",
-  "@marketplaceUntitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "marketplaceSubscribed": "Подписано",
-  "@marketplaceSubscribed": {
-    "description": "Tooltip when feed is subscribed"
-  },
-  "marketplaceFollow": "Подписаться",
-  "@marketplaceFollow": {
-    "description": "Follow button tooltip"
-  },
-  "marketplaceSubscribedTo": "Подписано на {title}",
-  "@marketplaceSubscribedTo": {
-    "description": "Snackbar when subscribing to a feed",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "marketplaceInvalidUrl": "Неверный URL ленты",
-  "@marketplaceInvalidUrl": {
-    "description": "Error when feed URL is invalid"
-  },
-  "marketplaceUnreachable": "Не удалось подписаться: лента недоступна",
-  "@marketplaceUnreachable": {
-    "description": "Error when feed subscription fails"
-  },
-  "marketplaceCuratedSources": "{count} проверенных источников",
-  "@marketplaceCuratedSources": {
-    "description": "Subtitle showing curated source count",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "signIn": "Войти",
-  "@signIn": {
-    "description": "Sign in button / title"
-  },
-  "emailLabel": "Эл. почта",
-  "@emailLabel": {
-    "description": "Email field label"
-  },
-  "passwordLabel": "Пароль",
-  "@passwordLabel": {
-    "description": "Password field label"
-  },
-  "emailRequired": "Введите адрес эл. почты",
-  "@emailRequired": {
-    "description": "Validation for empty email"
-  },
-  "passwordRequired": "Введите пароль",
-  "@passwordRequired": {
-    "description": "Validation for empty password"
-  },
-  "subscriptionsTitle": "Подписки",
-  "@subscriptionsTitle": {
-    "description": "Title of subscriptions screen"
-  },
-  "subscriptionsEmpty": "Подписок пока нет. Добавьте ленты из Маркета!",
-  "@subscriptionsEmpty": {
-    "description": "Empty state message"
-  },
-  "untitledFeed": "Лента без названия",
-  "@untitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "paused": "Приостановлено",
-  "@paused": {
-    "description": "Paused feed label"
-  },
-  "resume": "Возобновить",
-  "@resume": {
-    "description": "Resume feed action"
-  },
-  "pause": "Пауза",
-  "@pause": {
-    "description": "Pause feed action"
-  },
-  "unsubscribe": "Отписаться",
-  "@unsubscribe": {
-    "description": "Unsubscribe action"
-  },
-  "unsubscribeTitle": "Отписаться",
-  "@unsubscribeTitle": {
-    "description": "Unsubscribe dialog title"
-  },
-  "unsubscribeConfirm": "Отписаться от {title}?",
-  "@unsubscribeConfirm": {
-    "description": "Unsubscribe confirmation message",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "foldersTitle": "Папки",
-  "@foldersTitle": {
-    "description": "Title of folders screen"
-  },
-  "createFolderTitle": "Новая папка",
-  "@createFolderTitle": {
-    "description": "Create folder dialog title"
-  },
-  "folderNameHint": "Имя папки",
-  "@folderNameHint": {
-    "description": "Folder name input hint"
-  },
-  "create": "Создать",
-  "@create": {
-    "description": "Create button"
-  },
-  "rename": "Переименовать",
-  "@rename": {
-    "description": "Rename button"
-  },
-  "renameFolderTitle": "Переименовать папку",
-  "@renameFolderTitle": {
-    "description": "Rename folder dialog title"
-  },
-  "delete": "Удалить",
-  "@delete": {
-    "description": "Delete button"
-  },
-  "deleteFolderTitle": "Удалить папку",
-  "@deleteFolderTitle": {
-    "description": "Delete folder dialog title"
-  },
-  "deleteFolderConfirm": "Удалить «{name}» и разгруппировать его ленты?",
-  "@deleteFolderConfirm": {
-    "description": "Delete folder confirmation",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "createFolderTooltip": "Создать папку",
-  "@createFolderTooltip": {
-    "description": "Tooltip for create folder button"
-  },
-  "noFoldersYet": "Папок пока нет",
-  "@noFoldersYet": {
-    "description": "Empty state for folders"
-  },
-  "createFirstFolder": "Создайте свою первую папку",
-  "@createFirstFolder": {
-    "description": "Button to create first folder"
-  },
-  "feedCount": "{count} лент{count, plural, one {а} few {ы} many {} other {}}",
-  "@feedCount": {
-    "description": "Feed count with pluralization",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "filters": "Фильтры",
-  "@filters": {
-    "description": "Filters button"
-  },
-  "unread": "Непрочитанные",
-  "@unread": {
-    "description": "Unread filter chip"
-  },
-  "liked": "Понравившиеся",
-  "@liked": {
-    "description": "Liked filter chip"
-  },
-  "saved": "Сохраненные",
-  "@saved": {
-    "description": "Saved filter chip"
-  },
-  "last24h": "Посл. 24 ч",
-  "@last24h": {
-    "description": "Time filter: last 24 hours"
-  },
-  "last7d": "Посл. 7 д",
-  "@last7d": {
-    "description": "Time filter: last 7 days"
-  },
-  "last30d": "Посл. 30 д",
-  "@last30d": {
-    "description": "Time filter: last 30 days"
-  },
-  "engagement": "Вовлеченность",
-  "@engagement": {
-    "description": "Filter section: engagement"
-  },
-  "unreadOnly": "Только непрочитанные",
-  "@unreadOnly": {
-    "description": "Unread only filter option"
-  },
-  "lengthPreview": "Длина / предпросмотр",
-  "@lengthPreview": {
-    "description": "Filter section: length/preview"
-  },
-  "any": "Любая",
-  "@any": {
-    "description": "Any length filter"
-  },
-  "short": "Короткие <100 сл",
-  "@short": {
-    "description": "Short article filter"
-  },
-  "medium": "Средние 100–300",
-  "@medium": {
-    "description": "Medium article filter"
-  },
-  "long": "Длинные >300",
-  "@long": {
-    "description": "Long article filter"
-  },
-  "multiParagraph": "2+ абзаца",
-  "@multiParagraph": {
-    "description": "Multi-paragraph filter"
-  },
-  "timeWindow": "Временной промежуток",
-  "@timeWindow": {
-    "description": "Filter section: time window"
-  },
-  "all": "Все",
-  "@all": {
-    "description": "All filter option"
-  },
-  "sources": "Источники",
-  "@sources": {
-    "description": "Filter section: sources"
-  },
-  "allSources": "Все источники",
-  "@allSources": {
-    "description": "All sources filter option"
-  },
-  "keyword": "Ключевое слово",
-  "@keyword": {
-    "description": "Filter section: keyword"
-  },
-  "keywordHint": "Название, краткое содержание или текст",
-  "@keywordHint": {
-    "description": "Keyword search hint"
-  },
-  "reset": "Сбросить",
-  "@reset": {
-    "description": "Reset filters button"
-  },
-  "done": "Готово",
-  "@done": {
-    "description": "Done button"
-  },
-  "searchArticlesHint": "Поиск статей...",
-  "@searchArticlesHint": {
-    "description": "Search field placeholder in article list"
-  },
-  "retry": "Повторить",
-  "@retry": {
-    "description": "Retry button"
-  },
-  "noArticlesYet": "Статей пока нет. Потяните для обновления.",
-  "@noArticlesYet": {
-    "description": "Empty state for article list"
-  },
-  "noArticlesMatch": "Статьи по текущим фильтрам не найдены.",
-  "@noArticlesMatch": {
-    "description": "Empty state when filters match nothing"
-  },
-  "untitled": "Без названия",
-  "@untitled": {
-    "description": "Fallback article title"
-  },
-  "removedLike": "Оценка «Нравится» убрана",
-  "@removedLike": {
-    "description": "Snackbar when removing a like"
-  },
-  "likedArticle": "Статья понравилась",
-  "@likedArticle": {
-    "description": "Snackbar when liking an article"
-  },
-  "removedFromSaved": "Удалено из сохраненных",
-  "@removedFromSaved": {
-    "description": "Snackbar when removing from saved"
-  },
-  "savedForLater": "Сохранено на потом",
-  "@savedForLater": {
-    "description": "Snackbar when saving for later"
-  },
-  "markedUnread": "Помечено как непрочитанное",
-  "@markedUnread": {
-    "description": "Snackbar when marking unread"
-  },
-  "markedRead": "Помечено как прочитанное",
-  "@markedRead": {
-    "description": "Snackbar when marking read"
-  },
-  "undo": "Отменить",
-  "@undo": {
-    "description": "Undo action label"
-  },
-  "publishDateUnknown": "Дата публикации неизвестна",
-  "@publishDateUnknown": {
-    "description": "Fallback when publish date is unknown"
-  },
-  "justNow": "Только что",
-  "@justNow": {
-    "description": "Time label: just now"
-  },
-  "minutesAgo": "{count} мин. назад",
-  "@minutesAgo": {
-    "description": "Time label: minutes ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "hoursAgo": "{count} ч назад",
-  "@hoursAgo": {
-    "description": "Time label: hours ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "daysAgo": "{count} д. назад",
-  "@daysAgo": {
-    "description": "Time label: days ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "weeksAgo": "{count} нед. назад",
-  "@weeksAgo": {
-    "description": "Time label: weeks ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "monthsAgo": "{count} мес. назад",
-  "@monthsAgo": {
-    "description": "Time label: months ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "yearsAgo": "{count} г. назад",
-  "@yearsAgo": {
-    "description": "Time label: years ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "fetched": "получено",
-  "@fetched": {
-    "description": "Indicator that timestamp is fallback fetched time"
-  },
-  "continueReading": "Продолжить чтение",
-  "@continueReading": {
-    "description": "FAB label for continue reading"
-  },
-  "readerSavedForLater": "Сохранено на потом",
-  "@readerSavedForLater": {
-    "description": "Snackbar when saving in reader"
-  },
-  "readerRemovedFromSaved": "Удалено из сохраненных",
-  "@readerRemovedFromSaved": {
-    "description": "Snackbar when removing save in reader"
-  },
-  "resumingLastRead": "Возобновление последней прочитанной статьи",
-  "@resumingLastRead": {
-    "description": "Snackbar when resuming playback"
-  },
-  "startingPlayback": "Запуск воспроизведения для непрочитанной статьи",
-  "@startingPlayback": {
-    "description": "Snackbar when auto-playing"
-  },
-  "showReader": "Показать ридер",
-  "@showReader": {
-    "description": "Tooltip to show reader view"
-  },
-  "showWebView": "Показать веб-вид",
-  "@showWebView": {
-    "description": "Tooltip to show web view"
-  },
-  "webviewUnsupported": "Встроенный WebView поддерживается только на Android/iOS.\nВместо него отображается текстовый вид.",
-  "@webviewUnsupported": {
-    "description": "Message when WebView is unsupported on platform"
-  },
-  "byAuthor": "Автор: {author}",
-  "@byAuthor": {
-    "description": "Article author attribution",
-    "placeholders": {
-      "author": {}
-    }
-  },
-  "markedReadSkipped": "Помечено как прочитанное и переход к следующей",
-  "@markedReadSkipped": {
-    "description": "Snackbar when marking read and skipping"
-  },
-  "markUnread": "Пометить как непрочитанное",
-  "@markUnread": {
-    "description": "Tooltip to mark as unread"
-  },
-  "markReadPlay": "Пометить как прочитанное и воспроизвести следующее",
-  "@markReadPlay": {
-    "description": "Tooltip to mark read and play next"
-  },
-  "previousArticle": "Предыдущая статья",
-  "@previousArticle": {
-    "description": "Tooltip for previous article button"
-  },
-  "nextArticle": "Следующая статья",
-  "@nextArticle": {
-    "description": "Tooltip for next article button"
-  },
-  "playingSection": "Воспроизведение раздела {current}/{total}",
-  "@playingSection": {
-    "description": "Audio playback progress text",
-    "placeholders": {
-      "current": {},
-      "total": {}
-    }
-  },
-  "readAloudNotAvailable": "Озвучивание недоступно для этой статьи.",
-  "@readAloudNotAvailable": {
-    "description": "Message when TTS is not available"
-  },
-  "unreadCount": "Непрочитанных: {count}",
-  "@unreadCount": {
-    "description": "Unread article count badge",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "embeddedVideoUnsupported": "Встроенное видео поддерживается только на Android/iOS.",
-  "@embeddedVideoUnsupported": {
-    "description": "Message when embedded video is unsupported"
-  },
-  "loadVideo": "Загрузить видео",
-  "@loadVideo": {
-    "description": "Button to load embedded video"
-  },
-  "settingsTitle": "Настройки",
-  "@settingsTitle": {
-    "description": "Title of settings screen"
-  },
-  "goAdFree": "Без рекламы",
-  "@goAdFree": {
-    "description": "Premium card title"
-  },
-  "goAdFreeSubtitle": "Всего $1/мес. Поддержите независимого разработчика.",
-  "@goAdFreeSubtitle": {
-    "description": "Premium card subtitle"
-  },
-  "pricePerMonth": "$1/мес",
-  "@pricePerMonth": {
-    "description": "Price label"
-  },
-  "premiumTitle": "Aware Premium",
-  "@premiumTitle": {
-    "description": "Premium dialog title"
-  },
-  "premiumSubscribeDesc": "Подпишитесь за $1/мес и получите:",
-  "@premiumSubscribeDesc": {
-    "description": "Premium dialog description"
-  },
-  "premiumRemoveAds": "Убрать всю рекламу",
-  "@premiumRemoveAds": {
-    "description": "Premium feature: remove ads"
-  },
-  "premiumCloudStorage": "Облачное хранилище для ваших данных",
-  "@premiumCloudStorage": {
-    "description": "Premium feature: cloud storage"
-  },
-  "premiumCloudSubscriptions": "Сохранять подписки в облаке",
-  "@premiumCloudSubscriptions": {
-    "description": "Premium feature: cloud subscriptions"
-  },
-  "premiumSync": "Войти и синхронизировать между устройствами",
-  "@premiumSync": {
-    "description": "Premium feature: sync"
-  },
-  "premiumFolders": "Неограниченная организация папок",
-  "@premiumFolders": {
-    "description": "Premium feature: folders"
-  },
-  "notNow": "Не сейчас",
-  "@notNow": {
-    "description": "Not now button"
-  },
-  "comingSoon": "Скоро",
-  "@comingSoon": {
-    "description": "Coming soon badge label"
-  },
-  "subscribeNow": "Подписаться $1/мес",
-  "@subscribeNow": {
-    "description": "Subscribe button"
-  },
-  "subscriptionComingSoon": "Подписка скоро появится! С вас будет списываться $1/мес.",
-  "@subscriptionComingSoon": {
-    "description": "Snackbar when subscription is coming soon"
-  },
-  "sectionAdvanced": "Расширенные",
-  "@sectionAdvanced": {
-    "description": "Settings section: advanced"
-  },
-  "readTracking": "Отслеживание чтения",
-  "@readTracking": {
-    "description": "Read tracking setting title"
-  },
-  "readTrackingSubtitle": "Автоматически помечать статьи как прочитанные на основе прогресса чтения",
-  "@readTrackingSubtitle": {
-    "description": "Read tracking setting subtitle"
-  },
-  "autoMarkRead": "Автоматическая отметка по прогрессу",
-  "@autoMarkRead": {
-    "description": "Auto-mark read setting title"
-  },
-  "autoMarkReadSubtitle": "Помечает как прочитанное, когда прокрутка или аудио достигает порога",
-  "@autoMarkReadSubtitle": {
-    "description": "Auto-mark read setting subtitle"
-  },
-  "autoMarkThreshold": "Порог автоматической отметки",
-  "@autoMarkThreshold": {
-    "description": "Auto-mark threshold setting title"
-  },
-  "progressNeeded": "Требуется {percent}% прогресса",
-  "@progressNeeded": {
-    "description": "Progress threshold label",
-    "placeholders": {
-      "percent": {}
-    }
-  },
-  "sectionVoice": "Голос и озвучивание",
-  "@sectionVoice": {
-    "description": "Settings section: voice & read aloud"
-  },
-  "narrationSpeed": "Скорость озвучивания по умолчанию",
-  "@narrationSpeed": {
-    "description": "Narration speed setting title"
-  },
-  "speedLabel": "{speed}x (1x = спокойный стандарт)",
-  "@speedLabel": {
-    "description": "Speed slider label",
-    "placeholders": {
-      "speed": {}
-    }
-  },
-  "defaultVoice": "Голос по умолчанию",
-  "@defaultVoice": {
-    "description": "Default voice setting title"
-  },
-  "systemDefault": "Системный",
-  "@systemDefault": {
-    "description": "System default voice option"
-  },
-  "autoPlayNext": "Автовоспроизведение следующей статьи",
-  "@autoPlayNext": {
-    "description": "Auto-play next setting title"
-  },
-  "autoPlayNextSubtitle": "Когда озвучивание заканчивается, перейти к следующему элементу",
-  "@autoPlayNextSubtitle": {
-    "description": "Auto-play next setting subtitle"
-  },
-  "sectionData": "Данные",
-  "@sectionData": {
-    "description": "Settings section: data"
-  },
-  "lowDataMode": "Предзагрузка в экономичном режиме",
-  "@lowDataMode": {
-    "description": "Low data mode setting title"
-  },
-  "lowDataModeSubtitle": "Предзагружать текст статей в фоне и использовать кэшированный контент, когда доступен",
-  "@lowDataModeSubtitle": {
-    "description": "Low data mode setting subtitle"
-  },
-  "sectionAccessibility": "Доступность",
-  "@sectionAccessibility": {
-    "description": "Settings section: accessibility"
-  },
-  "textSize": "Размер текста",
-  "@textSize": {
-    "description": "Text size setting title"
-  },
-  "textSizeSubtitle": "Применяется во всем приложении, включая статьи и навигацию.",
-  "@textSizeSubtitle": {
-    "description": "Text size setting subtitle"
-  },
-  "sampleText": "Съешь ещё этих мягких французских булок, да выпей чаю.",
-  "@sampleText": {
-    "description": "Sample text for text size preview"
-  },
-  "save": "Save",
-  "@save": {
-    "description": "Menu item to save article"
-  },
-  "unsave": "Unsave",
-  "@unsave": {
-    "description": "Menu item to unsave article"
-  },
-  "copyLink": "Copy link",
-  "@copyLink": {
-    "description": "Menu item to copy article URL"
-  },
-  "linkCopied": "Link copied to clipboard",
-  "@linkCopied": {
-    "description": "Snackbar when link is copied"
-  },
-  "sectionSubscriptions": "Подписки",
-  "@sectionSubscriptions": {
-    "description": "Settings section: subscriptions"
-  },
-  "manageSubscriptions": "Управление подписками",
-  "@manageSubscriptions": {
-    "description": "Manage subscriptions setting title"
-  },
-  "manageSubscriptionsSubtitle": "Добавлять или удалять ленты, на которые вы подписаны",
-  "@manageSubscriptionsSubtitle": {
-    "description": "Manage subscriptions setting subtitle"
-  },
-  "manageFolders": "Управление папками",
-  "@manageFolders": {
-    "description": "Manage folders setting title"
-  },
-  "manageFoldersSubtitle": "Организовывать ленты в папки",
-  "@manageFoldersSubtitle": {
-    "description": "Manage folders setting subtitle"
-  },
-  "importSubscriptions": "Импорт подписок",
-  "@importSubscriptions": {
-    "description": "Import subscriptions setting title"
-  },
-  "importSubscriptionsSubtitle": "Импорт через OPML-файл",
-  "@importSubscriptionsSubtitle": {
-    "description": "Import subscriptions setting subtitle"
-  },
-  "exportSubscriptions": "Экспорт подписок",
-  "@exportSubscriptions": {
-    "description": "Export subscriptions setting title"
-  },
-  "exportSubscriptionsSubtitle": "Экспортировать ленты в OPML",
-  "@exportSubscriptionsSubtitle": {
-    "description": "Export subscriptions setting subtitle"
-  },
-  "sectionThemes": "Темы",
-  "@sectionThemes": {
-    "description": "Settings section: themes"
-  },
-  "themes": "Темы",
-  "@themes": {
-    "description": "Themes setting title"
-  },
-  "themesSubtitle": "Светлая / Тёмная / Системная",
-  "@themesSubtitle": {
-    "description": "Themes setting subtitle"
-  },
-  "selectTheme": "Выбрать тему",
-  "@selectTheme": {
-    "description": "Theme selection dialog title"
-  },
-  "system": "Системная",
-  "@system": {
-    "description": "System theme option"
-  },
-  "light": "Светлая",
-  "@light": {
-    "description": "Light theme option"
-  },
-  "dark": "Тёмная",
-  "@dark": {
-    "description": "Dark theme option"
-  },
-  "sectionLanguage": "Язык",
-  "@sectionLanguage": {
-    "description": "Settings section: language"
-  },
-  "language": "Язык",
-  "@language": {
-    "description": "Language setting title"
-  },
-  "languageSubtitle": "Русский",
-  "@languageSubtitle": {
-    "description": "Language setting subtitle - currently selected language"
-  },
-  "selectLanguage": "Выбрать язык",
-  "@selectLanguage": {
-    "description": "Language selection dialog title"
-  },
-  "languageEnglish": "Английский",
-  "@languageEnglish": {
-    "description": "English language option"
-  },
-  "languageChinese": "Китайский",
-  "@languageChinese": {
-    "description": "Chinese language option"
-  },
-  "languageSpanish": "Испанский",
-  "@languageSpanish": {
-    "description": "Spanish language option"
-  },
-  "languageHindi": "Хинди",
-  "@languageHindi": {
-    "description": "Hindi language option"
-  },
-  "languageArabic": "Арабский",
-  "@languageArabic": {
-    "description": "Arabic language option"
-  },
-  "languageFrench": "Французский",
-  "@languageFrench": {
-    "description": "French language option"
-  },
-  "languagePortuguese": "Португальский",
-  "@languagePortuguese": {
-    "description": "Portuguese language option"
-  },
-  "languageRussian": "Русский",
-  "@languageRussian": {
-    "description": "Russian language option"
-  },
-  "languageJapanese": "Японский",
-  "@languageJapanese": {
-    "description": "Japanese language option"
-  },
-  "languageGerman": "Немецкий",
-  "@languageGerman": {
-    "description": "German language option"
-  },
-  "languageKorean": "Корейский",
-  "@languageKorean": {
-    "description": "Korean language option"
-  },
-  "languageItalian": "Итальянский",
-  "@languageItalian": {
-    "description": "Italian language option"
-  },
-  "sectionLegal": "Правовая информация",
-  "@sectionLegal": {
-    "description": "Settings section: legal"
-  },
-  "privacyPolicy": "Политика конфиденциальности",
-  "@privacyPolicy": {
-    "description": "Privacy policy setting title"
-  },
-  "openSourceLicenses": "Лицензии с открытым кодом",
-  "@openSourceLicenses": {
-    "description": "Open source licenses setting title"
-  },
-  "noFeedsFoundOpml": "Ленты в OPML не найдены",
-  "@noFeedsFoundOpml": {
-    "description": "Snackbar when no feeds found in OPML"
-  },
-  "importedCount": "Импортировано {count} лент{count, plural, one {а} few {ы} many {} other {}}",
-  "@importedCount": {
-    "description": "Snackbar when import succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "allFeedsAlreadyAdded": "Все ленты уже были добавлены",
-  "@allFeedsAlreadyAdded": {
-    "description": "Snackbar when all feeds already exist"
-  },
-  "importFailed": "Ошибка импорта: {error}",
-  "@importFailed": {
-    "description": "Snackbar when import fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "noSubscriptionsToExport": "Нет подписок для экспорта",
-  "@noSubscriptionsToExport": {
-    "description": "Snackbar when no subscriptions to export"
-  },
-  "exportedCount": "Экспортировано {count} лент(ы)",
-  "@exportedCount": {
-    "description": "Snackbar when export succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "exportFailed": "Ошибка экспорта: {error}",
-  "@exportFailed": {
-    "description": "Snackbar when export fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "exportShareText": "Экспорт подписок Aware",
-  "@exportShareText": {
-    "description": "Share text for OPML export"
-  },
-  "exportShareSubject": "Экспорт подписок Aware",
-  "@exportShareSubject": {
-    "description": "Share subject for OPML export"
-  },
-  "savedArticlesTitle": "Сохраненные статьи",
-  "@savedArticlesTitle": {
-    "description": "Title of saved articles screen"
-  },
-  "noSavedArticlesYet": "Сохраненных статей пока нет.",
-  "@noSavedArticlesYet": {
-    "description": "Empty state for saved articles"
-  },
-  "error": "Ошибка: {error}",
-  "@error": {
-    "description": "Error message format",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "privacyPolicyTitle": "Политика конфиденциальности",
-  "@privacyPolicyTitle": {
-    "description": "Privacy policy screen title"
-  },
-  "privacyPolicyLastUpdated": "Последнее обновление: 20 июня 2026 г.",
-  "@privacyPolicyLastUpdated": {
-    "description": "Privacy policy last updated date"
-  },
-  "privacyInfoWeCollect": "Информация, которую мы собираем",
-  "@privacyInfoWeCollect": {
-    "description": "Privacy section: information we collect"
-  },
-  "privacyInfoWeCollectBody": "Aware не собирает, не хранит и не передает личные данные. Все данные приложения (ленты, статьи, прогресс чтения, настройки и предпочтения) хранятся локально на вашем устройстве и никогда не отправляются на сервер.",
-  "@privacyInfoWeCollectBody": {
-    "description": "Privacy section body: information we collect"
-  },
-  "privacyThirdParty": "Сторонние сервисы",
-  "@privacyThirdParty": {
-    "description": "Privacy section: third-party services"
-  },
-  "privacyThirdPartyBody": "Aware использует Google AdMob для показа рекламы. AdMob может собирать обезличенные данные об использовании и идентификаторы устройства для показа релевантной рекламы. Реклама показывается только с неперсонализированными запросами. Никакие данные пользователя не передаются рекламодателям.\n\nПолитика конфиденциальности Google применяется к данным, собираемым AdMob:\n",
-  "@privacyThirdPartyBody": {
-    "description": "Privacy section body: third-party services"
-  },
-  "privacyDataStorage": "Хранение данных",
-  "@privacyDataStorage": {
-    "description": "Privacy section: data storage"
-  },
-  "privacyDataStorageBody": "Все подписки на ленты, статьи, прогресс чтения и настройки приложения хранятся локально в базе данных SQLite на вашем устройстве. Вы можете экспортировать свои данные в любое время через функцию экспорта OPML в Настройках.\n\nЧтобы удалить все данные, удалите приложение или очистите данные приложения в настройках устройства.",
-  "@privacyDataStorageBody": {
-    "description": "Privacy section body: data storage"
-  },
-  "privacyContact": "Контакты",
-  "@privacyContact": {
-    "description": "Privacy section: contact"
-  },
-  "privacyContactBody": "Если у вас есть вопросы по этой политике конфиденциальности, свяжитесь с нами через каналы поддержки приложения.",
-  "@privacyContactBody": {
-    "description": "Privacy section body: contact"
-  }
+    "@@locale":  "ru",
+    "appName":  "aware",
+    "@appName":  {
+                     "description":  "The name of the application"
+                 },
+    "appTitle":  "Aware",
+    "@appTitle":  {
+                      "description":  "Application title shown in settings/about"
+                  },
+    "appVersion":  "1.0.0",
+    "@appVersion":  {
+                        "description":  "Application version number"
+                    },
+    "splashTagline":  "Будьте в курсе без усилий",
+    "@splashTagline":  {
+                           "description":  "Tagline shown on splash screen"
+                       },
+    "onboardingLanguageTitle":  "Выберите язык",
+    "@onboardingLanguageTitle":  {
+                                     "description":  "Title for onboarding language selection page"
+                                 },
+    "onboardingLanguageDesc":  "Выберите предпочитаемый язык интерфейса приложения.",
+    "@onboardingLanguageDesc":  {
+                                    "description":  "Description for onboarding language selection page"
+                                },
+    "onboardingWelcomeTitle":  "Добро пожаловать в aware",
+    "@onboardingWelcomeTitle":  {
+                                    "description":  "Title for first onboarding page"
+                                },
+    "onboardingWelcomeDesc":  "Ваш персональный RSS-ридер. Будьте в курсе того, что важно, все в одном месте.",
+    "@onboardingWelcomeDesc":  {
+                                   "description":  "Description for first onboarding page"
+                               },
+    "onboardingOfflineTitle":  "Чтение офлайн",
+    "@onboardingOfflineTitle":  {
+                                    "description":  "Title for second onboarding page"
+                                },
+    "onboardingOfflineDesc":  "Ленты загружаются, чтобы вы могли читать в любое время и в любом месте. Слушайте с помощью синтеза речи.",
+    "@onboardingOfflineDesc":  {
+                                   "description":  "Description for second onboarding page"
+                               },
+    "onboardingNotifyTitle":  "Не пропускайте публикации",
+    "@onboardingNotifyTitle":  {
+                                   "description":  "Title for third onboarding page"
+                               },
+    "onboardingNotifyDesc":  "Получайте уведомления о новых статьях. Добавьте свою первую ленту, чтобы начать.",
+    "@onboardingNotifyDesc":  {
+                                  "description":  "Description for third onboarding page"
+                              },
+    "next":  "Далее",
+    "@next":  {
+                  "description":  "Next button"
+              },
+    "getStarted":  "Начать",
+    "@getStarted":  {
+                        "description":  "Get Started button on last onboarding page"
+                    },
+    "skip":  "Пропустить",
+    "@skip":  {
+                  "description":  "Skip button on onboarding"
+              },
+    "tabFeeds":  "Ленты",
+    "@tabFeeds":  {
+                      "description":  "Bottom navigation tab for feeds"
+                  },
+    "tabMarketplace":  "Маркет",
+    "@tabMarketplace":  {
+                            "description":  "Bottom navigation tab for marketplace"
+                        },
+    "tabSettings":  "Настройки",
+    "@tabSettings":  {
+                         "description":  "Bottom navigation tab for settings"
+                     },
+    "addFeedTitle":  "Добавить RSS-ленту",
+    "@addFeedTitle":  {
+                          "description":  "Title of the add feed dialog"
+                      },
+    "addFeedUrlLabel":  "URL ленты",
+    "@addFeedUrlLabel":  {
+                             "description":  "Label for feed URL input"
+                         },
+    "addFeedUrlHint":  "https://пример.com/feed.xml",
+    "@addFeedUrlHint":  {
+                            "description":  "Hint text for feed URL input"
+                        },
+    "cancel":  "Отмена",
+    "@cancel":  {
+                    "description":  "Cancel button text"
+                },
+    "add":  "Добавить",
+    "@add":  {
+                 "description":  "Add button text"
+             },
+    "feedAdded":  "Лента добавлена",
+    "@feedAdded":  {
+                       "description":  "Snackbar message when feed is added"
+                   },
+    "failedToAddFeed":  "Не удалось добавить ленту: {error}",
+    "@failedToAddFeed":  {
+                             "description":  "Snackbar message when adding a feed fails",
+                             "placeholders":  {
+                                                  "error":  {
+
+                                                            }
+                                              }
+                         },
+    "feedUrlRequired":  "Требуется URL ленты",
+    "@feedUrlRequired":  {
+                             "description":  "Validation message when feed URL is empty"
+                         },
+    "marketplaceTitle":  "Маркет",
+    "@marketplaceTitle":  {
+                              "description":  "Title of marketplace screen"
+                          },
+    "marketplaceSubtitle":  "Подборки RSS-ссылок по категориям",
+    "@marketplaceSubtitle":  {
+                                 "description":  "Subtitle of marketplace screen"
+                             },
+    "marketplaceHeroTitle":  "Открывайте качественные ленты быстро",
+    "@marketplaceHeroTitle":  {
+                                  "description":  "Hero section title on marketplace"
+                              },
+    "marketplaceHeroDesc":  "Просматривайте проверенные источники по темам. Нажмите «Подписаться», чтобы мгновенно добавить их в свою ленту.",
+    "@marketplaceHeroDesc":  {
+                                 "description":  "Hero section description on marketplace"
+                             },
+    "marketplaceCategoriesCount":  "{count} категорий",
+    "@marketplaceCategoriesCount":  {
+                                        "description":  "Category count stat",
+                                        "placeholders":  {
+                                                             "count":  {
+
+                                                                       }
+                                                         }
+                                    },
+    "marketplaceFeedsCount":  "{count} лент",
+    "@marketplaceFeedsCount":  {
+                                   "description":  "Feed count stat",
+                                   "placeholders":  {
+                                                        "count":  {
+
+                                                                  }
+                                                    }
+                               },
+    "marketplaceSearchHint":  "Поиск лент...",
+    "@marketplaceSearchHint":  {
+                                   "description":  "Search field placeholder"
+                               },
+    "marketplaceUntitledFeed":  "Лента без названия",
+    "@marketplaceUntitledFeed":  {
+                                     "description":  "Fallback title for unnamed feed"
+                                 },
+    "marketplaceSubscribed":  "Подписано",
+    "@marketplaceSubscribed":  {
+                                   "description":  "Tooltip when feed is subscribed"
+                               },
+    "marketplaceFollow":  "Подписаться",
+    "@marketplaceFollow":  {
+                               "description":  "Follow button tooltip"
+                           },
+    "marketplaceSubscribedTo":  "Подписано на {title}",
+    "@marketplaceSubscribedTo":  {
+                                     "description":  "Snackbar when subscribing to a feed",
+                                     "placeholders":  {
+                                                          "title":  {
+
+                                                                    }
+                                                      }
+                                 },
+    "marketplaceInvalidUrl":  "Неверный URL ленты",
+    "@marketplaceInvalidUrl":  {
+                                   "description":  "Error when feed URL is invalid"
+                               },
+    "marketplaceUnreachable":  "Не удалось подписаться: лента недоступна",
+    "@marketplaceUnreachable":  {
+                                    "description":  "Error when feed subscription fails"
+                                },
+    "marketplaceCuratedSources":  "{count} проверенных источников",
+    "@marketplaceCuratedSources":  {
+                                       "description":  "Subtitle showing curated source count",
+                                       "placeholders":  {
+                                                            "count":  {
+
+                                                                      }
+                                                        }
+                                   },
+    "signIn":  "Войти",
+    "@signIn":  {
+                    "description":  "Sign in button / title"
+                },
+    "emailLabel":  "Эл. почта",
+    "@emailLabel":  {
+                        "description":  "Email field label"
+                    },
+    "passwordLabel":  "Пароль",
+    "@passwordLabel":  {
+                           "description":  "Password field label"
+                       },
+    "emailRequired":  "Введите адрес эл. почты",
+    "@emailRequired":  {
+                           "description":  "Validation for empty email"
+                       },
+    "passwordRequired":  "Введите пароль",
+    "@passwordRequired":  {
+                              "description":  "Validation for empty password"
+                          },
+    "subscriptionsTitle":  "Подписки",
+    "@subscriptionsTitle":  {
+                                "description":  "Title of subscriptions screen"
+                            },
+    "subscriptionsEmpty":  "Подписок пока нет. Добавьте ленты из Маркета!",
+    "@subscriptionsEmpty":  {
+                                "description":  "Empty state message"
+                            },
+    "untitledFeed":  "Лента без названия",
+    "@untitledFeed":  {
+                          "description":  "Fallback title for unnamed feed"
+                      },
+    "paused":  "Приостановлено",
+    "@paused":  {
+                    "description":  "Paused feed label"
+                },
+    "resume":  "Возобновить",
+    "@resume":  {
+                    "description":  "Resume feed action"
+                },
+    "pause":  "Пауза",
+    "@pause":  {
+                   "description":  "Pause feed action"
+               },
+    "unsubscribe":  "Отписаться",
+    "@unsubscribe":  {
+                         "description":  "Unsubscribe action"
+                     },
+    "unsubscribeTitle":  "Отписаться",
+    "@unsubscribeTitle":  {
+                              "description":  "Unsubscribe dialog title"
+                          },
+    "unsubscribeConfirm":  "Отписаться от {title}?",
+    "@unsubscribeConfirm":  {
+                                "description":  "Unsubscribe confirmation message",
+                                "placeholders":  {
+                                                     "title":  {
+
+                                                               }
+                                                 }
+                            },
+    "create":  "Создать",
+    "@create":  {
+                    "description":  "Create button"
+                },
+    "rename":  "Переименовать",
+    "@rename":  {
+                    "description":  "Rename button"
+                },
+    "delete":  "Удалить",
+    "@delete":  {
+                    "description":  "Delete button"
+                },
+    "feedCount":  "{count} лент{count, plural, one {а} few {ы} many {} other {}}",
+    "@feedCount":  {
+                       "description":  "Feed count with pluralization",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "filters":  "Фильтры",
+    "@filters":  {
+                     "description":  "Filters button"
+                 },
+    "unread":  "Непрочитанные",
+    "@unread":  {
+                    "description":  "Unread filter chip"
+                },
+    "liked":  "Понравившиеся",
+    "@liked":  {
+                   "description":  "Liked filter chip"
+               },
+    "saved":  "Сохраненные",
+    "@saved":  {
+                   "description":  "Saved filter chip"
+               },
+    "last24h":  "Посл. 24 ч",
+    "@last24h":  {
+                     "description":  "Time filter: last 24 hours"
+                 },
+    "last7d":  "Посл. 7 д",
+    "@last7d":  {
+                    "description":  "Time filter: last 7 days"
+                },
+    "last30d":  "Посл. 30 д",
+    "@last30d":  {
+                     "description":  "Time filter: last 30 days"
+                 },
+    "engagement":  "Вовлеченность",
+    "@engagement":  {
+                        "description":  "Filter section: engagement"
+                    },
+    "unreadOnly":  "Только непрочитанные",
+    "@unreadOnly":  {
+                        "description":  "Unread only filter option"
+                    },
+    "lengthPreview":  "Длина / предпросмотр",
+    "@lengthPreview":  {
+                           "description":  "Filter section: length/preview"
+                       },
+    "any":  "Любая",
+    "@any":  {
+                 "description":  "Any length filter"
+             },
+    "short":  "Короткие \u003c100 сл",
+    "@short":  {
+                   "description":  "Short article filter"
+               },
+    "medium":  "Средние 100–300",
+    "@medium":  {
+                    "description":  "Medium article filter"
+                },
+    "long":  "Длинные \u003e300",
+    "@long":  {
+                  "description":  "Long article filter"
+              },
+    "multiParagraph":  "2+ абзаца",
+    "@multiParagraph":  {
+                            "description":  "Multi-paragraph filter"
+                        },
+    "timeWindow":  "Временной промежуток",
+    "@timeWindow":  {
+                        "description":  "Filter section: time window"
+                    },
+    "all":  "Все",
+    "@all":  {
+                 "description":  "All filter option"
+             },
+    "sources":  "Источники",
+    "@sources":  {
+                     "description":  "Filter section: sources"
+                 },
+    "allSources":  "Все источники",
+    "@allSources":  {
+                        "description":  "All sources filter option"
+                    },
+    "keyword":  "Ключевое слово",
+    "@keyword":  {
+                     "description":  "Filter section: keyword"
+                 },
+    "keywordHint":  "Название, краткое содержание или текст",
+    "@keywordHint":  {
+                         "description":  "Keyword search hint"
+                     },
+    "reset":  "Сбросить",
+    "@reset":  {
+                   "description":  "Reset filters button"
+               },
+    "done":  "Готово",
+    "@done":  {
+                  "description":  "Done button"
+              },
+    "searchArticlesHint":  "Поиск статей...",
+    "@searchArticlesHint":  {
+                                "description":  "Search field placeholder in article list"
+                            },
+    "retry":  "Повторить",
+    "@retry":  {
+                   "description":  "Retry button"
+               },
+    "noArticlesYet":  "Статей пока нет. Потяните для обновления.",
+    "@noArticlesYet":  {
+                           "description":  "Empty state for article list"
+                       },
+    "noArticlesMatch":  "Статьи по текущим фильтрам не найдены.",
+    "@noArticlesMatch":  {
+                             "description":  "Empty state when filters match nothing"
+                         },
+    "untitled":  "Без названия",
+    "@untitled":  {
+                      "description":  "Fallback article title"
+                  },
+    "removedLike":  "Оценка «Нравится» убрана",
+    "@removedLike":  {
+                         "description":  "Snackbar when removing a like"
+                     },
+    "likedArticle":  "Статья понравилась",
+    "@likedArticle":  {
+                          "description":  "Snackbar when liking an article"
+                      },
+    "removedFromSaved":  "Удалено из сохраненных",
+    "@removedFromSaved":  {
+                              "description":  "Snackbar when removing from saved"
+                          },
+    "savedForLater":  "Сохранено на потом",
+    "@savedForLater":  {
+                           "description":  "Snackbar when saving for later"
+                       },
+    "markedUnread":  "Помечено как непрочитанное",
+    "@markedUnread":  {
+                          "description":  "Snackbar when marking unread"
+                      },
+    "markedRead":  "Помечено как прочитанное",
+    "@markedRead":  {
+                        "description":  "Snackbar when marking read"
+                    },
+    "undo":  "Отменить",
+    "@undo":  {
+                  "description":  "Undo action label"
+              },
+    "publishDateUnknown":  "Дата публикации неизвестна",
+    "@publishDateUnknown":  {
+                                "description":  "Fallback when publish date is unknown"
+                            },
+    "justNow":  "Только что",
+    "@justNow":  {
+                     "description":  "Time label: just now"
+                 },
+    "minutesAgo":  "{count} мин. назад",
+    "@minutesAgo":  {
+                        "description":  "Time label: minutes ago",
+                        "placeholders":  {
+                                             "count":  {
+
+                                                       }
+                                         }
+                    },
+    "hoursAgo":  "{count} ч назад",
+    "@hoursAgo":  {
+                      "description":  "Time label: hours ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "daysAgo":  "{count} д. назад",
+    "@daysAgo":  {
+                     "description":  "Time label: days ago",
+                     "placeholders":  {
+                                          "count":  {
+
+                                                    }
+                                      }
+                 },
+    "weeksAgo":  "{count} нед. назад",
+    "@weeksAgo":  {
+                      "description":  "Time label: weeks ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "monthsAgo":  "{count} мес. назад",
+    "@monthsAgo":  {
+                       "description":  "Time label: months ago",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "yearsAgo":  "{count} г. назад",
+    "@yearsAgo":  {
+                      "description":  "Time label: years ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "fetched":  "получено",
+    "@fetched":  {
+                     "description":  "Indicator that timestamp is fallback fetched time"
+                 },
+    "continueReading":  "Продолжить чтение",
+    "@continueReading":  {
+                             "description":  "FAB label for continue reading"
+                         },
+    "readerSavedForLater":  "Сохранено на потом",
+    "@readerSavedForLater":  {
+                                 "description":  "Snackbar when saving in reader"
+                             },
+    "readerRemovedFromSaved":  "Удалено из сохраненных",
+    "@readerRemovedFromSaved":  {
+                                    "description":  "Snackbar when removing save in reader"
+                                },
+    "resumingLastRead":  "Возобновление последней прочитанной статьи",
+    "@resumingLastRead":  {
+                              "description":  "Snackbar when resuming playback"
+                          },
+    "startingPlayback":  "Запуск воспроизведения для непрочитанной статьи",
+    "@startingPlayback":  {
+                              "description":  "Snackbar when auto-playing"
+                          },
+    "showReader":  "Показать ридер",
+    "@showReader":  {
+                        "description":  "Tooltip to show reader view"
+                    },
+    "showWebView":  "Показать веб-вид",
+    "@showWebView":  {
+                         "description":  "Tooltip to show web view"
+                     },
+    "webviewUnsupported":  "Встроенный WebView поддерживается только на Android/iOS.\nВместо него отображается текстовый вид.",
+    "@webviewUnsupported":  {
+                                "description":  "Message when WebView is unsupported on platform"
+                            },
+    "byAuthor":  "Автор: {author}",
+    "@byAuthor":  {
+                      "description":  "Article author attribution",
+                      "placeholders":  {
+                                           "author":  {
+
+                                                      }
+                                       }
+                  },
+    "markedReadSkipped":  "Помечено как прочитанное и переход к следующей",
+    "@markedReadSkipped":  {
+                               "description":  "Snackbar when marking read and skipping"
+                           },
+    "markUnread":  "Пометить как непрочитанное",
+    "@markUnread":  {
+                        "description":  "Tooltip to mark as unread"
+                    },
+    "markReadPlay":  "Пометить как прочитанное и воспроизвести следующее",
+    "@markReadPlay":  {
+                          "description":  "Tooltip to mark read and play next"
+                      },
+    "previousArticle":  "Предыдущая статья",
+    "@previousArticle":  {
+                             "description":  "Tooltip for previous article button"
+                         },
+    "nextArticle":  "Следующая статья",
+    "@nextArticle":  {
+                         "description":  "Tooltip for next article button"
+                     },
+    "playingSection":  "Воспроизведение раздела {current}/{total}",
+    "@playingSection":  {
+                            "description":  "Audio playback progress text",
+                            "placeholders":  {
+                                                 "current":  {
+
+                                                             },
+                                                 "total":  {
+
+                                                           }
+                                             }
+                        },
+    "readAloudNotAvailable":  "Озвучивание недоступно для этой статьи.",
+    "@readAloudNotAvailable":  {
+                                   "description":  "Message when TTS is not available"
+                               },
+    "unreadCount":  "Непрочитанных: {count}",
+    "@unreadCount":  {
+                         "description":  "Unread article count badge",
+                         "placeholders":  {
+                                              "count":  {
+
+                                                        }
+                                          }
+                     },
+    "embeddedVideoUnsupported":  "Встроенное видео поддерживается только на Android/iOS.",
+    "@embeddedVideoUnsupported":  {
+                                      "description":  "Message when embedded video is unsupported"
+                                  },
+    "loadVideo":  "Загрузить видео",
+    "@loadVideo":  {
+                       "description":  "Button to load embedded video"
+                   },
+    "settingsTitle":  "Настройки",
+    "@settingsTitle":  {
+                           "description":  "Title of settings screen"
+                       },
+    "goAdFree":  "Без рекламы",
+    "@goAdFree":  {
+                      "description":  "Premium card title"
+                  },
+    "goAdFreeSubtitle":  "Всего $1/мес. Поддержите независимого разработчика.",
+    "@goAdFreeSubtitle":  {
+                              "description":  "Premium card subtitle"
+                          },
+    "pricePerMonth":  "$1/мес",
+    "@pricePerMonth":  {
+                           "description":  "Price label"
+                       },
+    "premiumTitle":  "Aware Premium",
+    "@premiumTitle":  {
+                          "description":  "Premium dialog title"
+                      },
+    "premiumSubscribeDesc":  "Подпишитесь за $1/мес и получите:",
+    "@premiumSubscribeDesc":  {
+                                  "description":  "Premium dialog description"
+                              },
+    "premiumRemoveAds":  "Убрать всю рекламу",
+    "@premiumRemoveAds":  {
+                              "description":  "Premium feature: remove ads"
+                          },
+    "premiumCloudStorage":  "Облачное хранилище для ваших данных",
+    "@premiumCloudStorage":  {
+                                 "description":  "Premium feature: cloud storage"
+                             },
+    "premiumCloudSubscriptions":  "Сохранять подписки в облаке",
+    "@premiumCloudSubscriptions":  {
+                                       "description":  "Premium feature: cloud subscriptions"
+                                   },
+    "premiumSync":  "Войти и синхронизировать между устройствами",
+    "@premiumSync":  {
+                         "description":  "Premium feature: sync"
+                     },
+    "notNow":  "Не сейчас",
+    "@notNow":  {
+                    "description":  "Not now button"
+                },
+    "comingSoon":  "Скоро",
+    "@comingSoon":  {
+                        "description":  "Coming soon badge label"
+                    },
+    "subscribeNow":  "Подписаться $1/мес",
+    "@subscribeNow":  {
+                          "description":  "Subscribe button"
+                      },
+    "subscriptionComingSoon":  "Подписка скоро появится! С вас будет списываться $1/мес.",
+    "@subscriptionComingSoon":  {
+                                    "description":  "Snackbar when subscription is coming soon"
+                                },
+    "sectionAdvanced":  "Расширенные",
+    "@sectionAdvanced":  {
+                             "description":  "Settings section: advanced"
+                         },
+    "readTracking":  "Отслеживание чтения",
+    "@readTracking":  {
+                          "description":  "Read tracking setting title"
+                      },
+    "readTrackingSubtitle":  "Автоматически помечать статьи как прочитанные на основе прогресса чтения",
+    "@readTrackingSubtitle":  {
+                                  "description":  "Read tracking setting subtitle"
+                              },
+    "autoMarkRead":  "Автоматическая отметка по прогрессу",
+    "@autoMarkRead":  {
+                          "description":  "Auto-mark read setting title"
+                      },
+    "autoMarkReadSubtitle":  "Помечает как прочитанное, когда прокрутка или аудио достигает порога",
+    "@autoMarkReadSubtitle":  {
+                                  "description":  "Auto-mark read setting subtitle"
+                              },
+    "autoMarkThreshold":  "Порог автоматической отметки",
+    "@autoMarkThreshold":  {
+                               "description":  "Auto-mark threshold setting title"
+                           },
+    "progressNeeded":  "Требуется {percent}% прогресса",
+    "@progressNeeded":  {
+                            "description":  "Progress threshold label",
+                            "placeholders":  {
+                                                 "percent":  {
+
+                                                             }
+                                             }
+                        },
+    "sectionVoice":  "Голос и озвучивание",
+    "@sectionVoice":  {
+                          "description":  "Settings section: voice \u0026 read aloud"
+                      },
+    "narrationSpeed":  "Скорость озвучивания по умолчанию",
+    "@narrationSpeed":  {
+                            "description":  "Narration speed setting title"
+                        },
+    "speedLabel":  "{speed}x (1x = спокойный стандарт)",
+    "@speedLabel":  {
+                        "description":  "Speed slider label",
+                        "placeholders":  {
+                                             "speed":  {
+
+                                                       }
+                                         }
+                    },
+    "defaultVoice":  "Голос по умолчанию",
+    "@defaultVoice":  {
+                          "description":  "Default voice setting title"
+                      },
+    "systemDefault":  "Системный",
+    "@systemDefault":  {
+                           "description":  "System default voice option"
+                       },
+    "autoPlayNext":  "Автовоспроизведение следующей статьи",
+    "@autoPlayNext":  {
+                          "description":  "Auto-play next setting title"
+                      },
+    "autoPlayNextSubtitle":  "Когда озвучивание заканчивается, перейти к следующему элементу",
+    "@autoPlayNextSubtitle":  {
+                                  "description":  "Auto-play next setting subtitle"
+                              },
+    "sectionAccessibility":  "Доступность",
+    "@sectionAccessibility":  {
+                                  "description":  "Settings section: accessibility"
+                              },
+    "textSize":  "Размер текста",
+    "@textSize":  {
+                      "description":  "Text size setting title"
+                  },
+    "textSizeSubtitle":  "Применяется во всем приложении, включая статьи и навигацию.",
+    "@textSizeSubtitle":  {
+                              "description":  "Text size setting subtitle"
+                          },
+    "sampleText":  "Съешь ещё этих мягких французских булок, да выпей чаю.",
+    "@sampleText":  {
+                        "description":  "Sample text for text size preview"
+                    },
+    "save":  "Save",
+    "@save":  {
+                  "description":  "Menu item to save article"
+              },
+    "unsave":  "Unsave",
+    "@unsave":  {
+                    "description":  "Menu item to unsave article"
+                },
+    "copyLink":  "Copy link",
+    "@copyLink":  {
+                      "description":  "Menu item to copy article URL"
+                  },
+    "linkCopied":  "Link copied to clipboard",
+    "@linkCopied":  {
+                        "description":  "Snackbar when link is copied"
+                    },
+    "sectionSubscriptions":  "Подписки",
+    "@sectionSubscriptions":  {
+                                  "description":  "Settings section: subscriptions"
+                              },
+    "manageSubscriptions":  "Управление подписками",
+    "@manageSubscriptions":  {
+                                 "description":  "Manage subscriptions setting title"
+                             },
+    "manageSubscriptionsSubtitle":  "Добавлять или удалять ленты, на которые вы подписаны",
+    "@manageSubscriptionsSubtitle":  {
+                                         "description":  "Manage subscriptions setting subtitle"
+                                     },
+    "importSubscriptions":  "Импорт подписок",
+    "@importSubscriptions":  {
+                                 "description":  "Import subscriptions setting title"
+                             },
+    "importSubscriptionsSubtitle":  "Импорт через OPML-файл",
+    "@importSubscriptionsSubtitle":  {
+                                         "description":  "Import subscriptions setting subtitle"
+                                     },
+    "exportSubscriptions":  "Экспорт подписок",
+    "@exportSubscriptions":  {
+                                 "description":  "Export subscriptions setting title"
+                             },
+    "exportSubscriptionsSubtitle":  "Экспортировать ленты в OPML",
+    "@exportSubscriptionsSubtitle":  {
+                                         "description":  "Export subscriptions setting subtitle"
+                                     },
+    "sectionThemes":  "Темы",
+    "@sectionThemes":  {
+                           "description":  "Settings section: themes"
+                       },
+    "themes":  "Темы",
+    "@themes":  {
+                    "description":  "Themes setting title"
+                },
+    "themesSubtitle":  "Светлая / Тёмная / Системная",
+    "@themesSubtitle":  {
+                            "description":  "Themes setting subtitle"
+                        },
+    "selectTheme":  "Выбрать тему",
+    "@selectTheme":  {
+                         "description":  "Theme selection dialog title"
+                     },
+    "system":  "Системная",
+    "@system":  {
+                    "description":  "System theme option"
+                },
+    "light":  "Светлая",
+    "@light":  {
+                   "description":  "Light theme option"
+               },
+    "dark":  "Тёмная",
+    "@dark":  {
+                  "description":  "Dark theme option"
+              },
+    "sectionLanguage":  "Язык",
+    "@sectionLanguage":  {
+                             "description":  "Settings section: language"
+                         },
+    "language":  "Язык",
+    "@language":  {
+                      "description":  "Language setting title"
+                  },
+    "languageSubtitle":  "Русский",
+    "@languageSubtitle":  {
+                              "description":  "Language setting subtitle - currently selected language"
+                          },
+    "selectLanguage":  "Выбрать язык",
+    "@selectLanguage":  {
+                            "description":  "Language selection dialog title"
+                        },
+    "sectionLegal":  "Правовая информация",
+    "@sectionLegal":  {
+                          "description":  "Settings section: legal"
+                      },
+    "privacyPolicy":  "Политика конфиденциальности",
+    "@privacyPolicy":  {
+                           "description":  "Privacy policy setting title"
+                       },
+    "openSourceLicenses":  "Лицензии с открытым кодом",
+    "@openSourceLicenses":  {
+                                "description":  "Open source licenses setting title"
+                            },
+    "noFeedsFoundOpml":  "Ленты в OPML не найдены",
+    "@noFeedsFoundOpml":  {
+                              "description":  "Snackbar when no feeds found in OPML"
+                          },
+    "importedCount":  "Импортировано {count} лент{count, plural, one {а} few {ы} many {} other {}}",
+    "@importedCount":  {
+                           "description":  "Snackbar when import succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "allFeedsAlreadyAdded":  "Все ленты уже были добавлены",
+    "@allFeedsAlreadyAdded":  {
+                                  "description":  "Snackbar when all feeds already exist"
+                              },
+    "importFailed":  "Ошибка импорта: {error}",
+    "@importFailed":  {
+                          "description":  "Snackbar when import fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "noSubscriptionsToExport":  "Нет подписок для экспорта",
+    "@noSubscriptionsToExport":  {
+                                     "description":  "Snackbar when no subscriptions to export"
+                                 },
+    "exportedCount":  "Экспортировано {count} лент(ы)",
+    "@exportedCount":  {
+                           "description":  "Snackbar when export succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "exportFailed":  "Ошибка экспорта: {error}",
+    "@exportFailed":  {
+                          "description":  "Snackbar when export fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "exportShareText":  "Экспорт подписок Aware",
+    "@exportShareText":  {
+                             "description":  "Share text for OPML export"
+                         },
+    "exportShareSubject":  "Экспорт подписок Aware",
+    "@exportShareSubject":  {
+                                "description":  "Share subject for OPML export"
+                            },
+    "savedArticlesTitle":  "Сохраненные статьи",
+    "@savedArticlesTitle":  {
+                                "description":  "Title of saved articles screen"
+                            },
+    "noSavedArticlesYet":  "Сохраненных статей пока нет.",
+    "@noSavedArticlesYet":  {
+                                "description":  "Empty state for saved articles"
+                            },
+    "error":  "Ошибка: {error}",
+    "@error":  {
+                   "description":  "Error message format",
+                   "placeholders":  {
+                                        "error":  {
+
+                                                  }
+                                    }
+               },
+    "privacyPolicyTitle":  "Политика конфиденциальности",
+    "@privacyPolicyTitle":  {
+                                "description":  "Privacy policy screen title"
+                            },
+    "privacyPolicyLastUpdated":  "Последнее обновление: 20 июня 2026 г.",
+    "@privacyPolicyLastUpdated":  {
+                                      "description":  "Privacy policy last updated date"
+                                  },
+    "privacyInfoWeCollect":  "Информация, которую мы собираем",
+    "@privacyInfoWeCollect":  {
+                                  "description":  "Privacy section: information we collect"
+                              },
+    "privacyInfoWeCollectBody":  "Aware не собирает, не хранит и не передает личные данные. Все данные приложения (ленты, статьи, прогресс чтения, настройки и предпочтения) хранятся локально на вашем устройстве и никогда не отправляются на сервер.",
+    "@privacyInfoWeCollectBody":  {
+                                      "description":  "Privacy section body: information we collect"
+                                  },
+    "privacyThirdParty":  "Сторонние сервисы",
+    "@privacyThirdParty":  {
+                               "description":  "Privacy section: third-party services"
+                           },
+    "privacyThirdPartyBody":  "Aware использует Google AdMob для показа рекламы. AdMob может собирать обезличенные данные об использовании и идентификаторы устройства для показа релевантной рекламы. Реклама показывается только с неперсонализированными запросами. Никакие данные пользователя не передаются рекламодателям.\n\nПолитика конфиденциальности Google применяется к данным, собираемым AdMob:\n",
+    "@privacyThirdPartyBody":  {
+                                   "description":  "Privacy section body: third-party services"
+                               },
+    "privacyDataStorage":  "Хранение данных",
+    "@privacyDataStorage":  {
+                                "description":  "Privacy section: data storage"
+                            },
+    "privacyDataStorageBody":  "Все подписки на ленты, статьи, прогресс чтения и настройки приложения хранятся локально в базе данных SQLite на вашем устройстве. Вы можете экспортировать свои данные в любое время через функцию экспорта OPML в Настройках.\n\nЧтобы удалить все данные, удалите приложение или очистите данные приложения в настройках устройства.",
+    "@privacyDataStorageBody":  {
+                                    "description":  "Privacy section body: data storage"
+                                },
+    "privacyContact":  "Контакты",
+    "@privacyContact":  {
+                            "description":  "Privacy section: contact"
+                        },
+    "privacyContactBody":  "Если у вас есть вопросы по этой политике конфиденциальности, свяжитесь с нами через каналы поддержки приложения.",
+    "@privacyContactBody":  {
+                                "description":  "Privacy section body: contact"
+                            }
 }

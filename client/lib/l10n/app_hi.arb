@@ -1,984 +1,921 @@
 {
-  "@@locale": "hi",
-  "appName": "aware",
-  "@appName": {
-    "description": "The name of the application"
-  },
-  "appTitle": "Aware",
-  "@appTitle": {
-    "description": "Application title shown in settings/about"
-  },
-  "appVersion": "1.0.0",
-  "@appVersion": {
-    "description": "Application version number"
-  },
-  "splashTagline": "आसानी से सूचित रहें",
-  "@splashTagline": {
-    "description": "Tagline shown on splash screen"
-  },
-  "onboardingLanguageTitle": "अपनी भाषा चुनें",
-  "@onboardingLanguageTitle": {
-    "description": "Title for onboarding language selection page"
-  },
-  "onboardingLanguageDesc": "ऐप इंटरफ़ेस के लिए अपनी पसंदीदा भाषा चुनें।",
-  "@onboardingLanguageDesc": {
-    "description": "Description for onboarding language selection page"
-  },
-  "onboardingWelcomeTitle": "aware में आपका स्वागत है",
-  "@onboardingWelcomeTitle": {
-    "description": "Title for first onboarding page"
-  },
-  "onboardingWelcomeDesc": "आपका व्यक्तिगत फ़ीड रीडर। एक ही जगह पर, जो मायने रखता है उसके बारे में सूचित रहें।",
-  "@onboardingWelcomeDesc": {
-    "description": "Description for first onboarding page"
-  },
-  "onboardingOfflineTitle": "ऑफ़लाइन पढ़ें",
-  "@onboardingOfflineTitle": {
-    "description": "Title for second onboarding page"
-  },
-  "onboardingOfflineDesc": "फ़ीड डाउनलोड हो जाते हैं ताकि आप कभी भी, कहीं भी पढ़ सकें। टेक्स्ट-टू-स्पीच से सुनें।",
-  "@onboardingOfflineDesc": {
-    "description": "Description for second onboarding page"
-  },
-  "onboardingNotifyTitle": "कोई पोस्ट मिस न करें",
-  "@onboardingNotifyTitle": {
-    "description": "Title for third onboarding page"
-  },
-  "onboardingNotifyDesc": "नए लेख आने पर सूचनाएं प्राप्त करें। शुरू करने के लिए अपना पहला फ़ीड जोड़ें।",
-  "@onboardingNotifyDesc": {
-    "description": "Description for third onboarding page"
-  },
-  "next": "अगला",
-  "@next": {
-    "description": "Next button"
-  },
-  "getStarted": "शुरू करें",
-  "@getStarted": {
-    "description": "Get Started button on last onboarding page"
-  },
-  "skip": "छोड़ें",
-  "@skip": {
-    "description": "Skip button on onboarding"
-  },
-  "tabFeeds": "फ़ीड",
-  "@tabFeeds": {
-    "description": "Bottom navigation tab for feeds"
-  },
-  "tabMarketplace": "बाज़ार",
-  "@tabMarketplace": {
-    "description": "Bottom navigation tab for marketplace"
-  },
-  "tabSettings": "सेटिंग्स",
-  "@tabSettings": {
-    "description": "Bottom navigation tab for settings"
-  },
-  "addFeedTitle": "RSS फ़ीड जोड़ें",
-  "@addFeedTitle": {
-    "description": "Title of the add feed dialog"
-  },
-  "addFeedUrlLabel": "फ़ीड URL",
-  "@addFeedUrlLabel": {
-    "description": "Label for feed URL input"
-  },
-  "addFeedUrlHint": "https://उदाहरण.com/feed.xml",
-  "@addFeedUrlHint": {
-    "description": "Hint text for feed URL input"
-  },
-  "cancel": "रद्द करें",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "add": "जोड़ें",
-  "@add": {
-    "description": "Add button text"
-  },
-  "feedAdded": "फ़ीड जोड़ा गया",
-  "@feedAdded": {
-    "description": "Snackbar message when feed is added"
-  },
-  "failedToAddFeed": "फ़ीड जोड़ने में विफल: {error}",
-  "@failedToAddFeed": {
-    "description": "Snackbar message when adding a feed fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "feedUrlRequired": "फ़ीड URL आवश्यक है",
-  "@feedUrlRequired": {
-    "description": "Validation message when feed URL is empty"
-  },
-  "marketplaceTitle": "बाज़ार",
-  "@marketplaceTitle": {
-    "description": "Title of marketplace screen"
-  },
-  "marketplaceSubtitle": "श्रेणी के अनुसार क्यूरेटेड RSS लिंक",
-  "@marketplaceSubtitle": {
-    "description": "Subtitle of marketplace screen"
-  },
-  "marketplaceHeroTitle": "तेज़ी से गुणवत्तापूर्ण फ़ीड खोजें",
-  "@marketplaceHeroTitle": {
-    "description": "Hero section title on marketplace"
-  },
-  "marketplaceHeroDesc": "विषय के अनुसार विश्वसनीय स्रोत ब्राउज़ करें। अपने होम फ़ीड में तुरंत जोड़ने के लिए फ़ॉलो करें पर टैप करें।",
-  "@marketplaceHeroDesc": {
-    "description": "Hero section description on marketplace"
-  },
-  "marketplaceCategoriesCount": "{count} श्रेणियाँ",
-  "@marketplaceCategoriesCount": {
-    "description": "Category count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceFeedsCount": "{count} फ़ीड",
-  "@marketplaceFeedsCount": {
-    "description": "Feed count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceSearchHint": "फ़ीड खोजें...",
-  "@marketplaceSearchHint": {
-    "description": "Search field placeholder"
-  },
-  "marketplaceUntitledFeed": "शीर्षकहीन फ़ीड",
-  "@marketplaceUntitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "marketplaceSubscribed": "सब्सक्राइब किया",
-  "@marketplaceSubscribed": {
-    "description": "Tooltip when feed is subscribed"
-  },
-  "marketplaceFollow": "फ़ॉलो करें",
-  "@marketplaceFollow": {
-    "description": "Follow button tooltip"
-  },
-  "marketplaceSubscribedTo": "{title} में सब्सक्राइब किया",
-  "@marketplaceSubscribedTo": {
-    "description": "Snackbar when subscribing to a feed",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "marketplaceInvalidUrl": "अमान्य फ़ीड URL",
-  "@marketplaceInvalidUrl": {
-    "description": "Error when feed URL is invalid"
-  },
-  "marketplaceUnreachable": "सब्सक्राइब करने में विफल: फ़ीड शायद पहुंच से बाहर है",
-  "@marketplaceUnreachable": {
-    "description": "Error when feed subscription fails"
-  },
-  "marketplaceCuratedSources": "{count} क्यूरेटेड स्रोत",
-  "@marketplaceCuratedSources": {
-    "description": "Subtitle showing curated source count",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "signIn": "साइन इन करें",
-  "@signIn": {
-    "description": "Sign in button / title"
-  },
-  "emailLabel": "ईमेल",
-  "@emailLabel": {
-    "description": "Email field label"
-  },
-  "passwordLabel": "पासवर्ड",
-  "@passwordLabel": {
-    "description": "Password field label"
-  },
-  "emailRequired": "अपना ईमेल दर्ज करें",
-  "@emailRequired": {
-    "description": "Validation for empty email"
-  },
-  "passwordRequired": "अपना पासवर्ड दर्ज करें",
-  "@passwordRequired": {
-    "description": "Validation for empty password"
-  },
-  "subscriptionsTitle": "सब्सक्रिप्शन",
-  "@subscriptionsTitle": {
-    "description": "Title of subscriptions screen"
-  },
-  "subscriptionsEmpty": "अभी तक कोई सब्सक्रिप्शन नहीं। बाज़ार से फ़ीड जोड़ें!",
-  "@subscriptionsEmpty": {
-    "description": "Empty state message"
-  },
-  "untitledFeed": "शीर्षकहीन फ़ीड",
-  "@untitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "paused": "रोका गया",
-  "@paused": {
-    "description": "Paused feed label"
-  },
-  "resume": "जारी रखें",
-  "@resume": {
-    "description": "Resume feed action"
-  },
-  "pause": "रोकें",
-  "@pause": {
-    "description": "Pause feed action"
-  },
-  "unsubscribe": "सब्सक्राइब हटाएं",
-  "@unsubscribe": {
-    "description": "Unsubscribe action"
-  },
-  "unsubscribeTitle": "सब्सक्राइब हटाएं",
-  "@unsubscribeTitle": {
-    "description": "Unsubscribe dialog title"
-  },
-  "unsubscribeConfirm": "{title} से सब्सक्राइब हटाएं?",
-  "@unsubscribeConfirm": {
-    "description": "Unsubscribe confirmation message",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "foldersTitle": "फ़ोल्डर",
-  "@foldersTitle": {
-    "description": "Title of folders screen"
-  },
-  "createFolderTitle": "नया फ़ोल्डर",
-  "@createFolderTitle": {
-    "description": "Create folder dialog title"
-  },
-  "folderNameHint": "फ़ोल्डर का नाम",
-  "@folderNameHint": {
-    "description": "Folder name input hint"
-  },
-  "create": "बनाएं",
-  "@create": {
-    "description": "Create button"
-  },
-  "rename": "नाम बदलें",
-  "@rename": {
-    "description": "Rename button"
-  },
-  "renameFolderTitle": "फ़ोल्डर का नाम बदलें",
-  "@renameFolderTitle": {
-    "description": "Rename folder dialog title"
-  },
-  "delete": "हटाएं",
-  "@delete": {
-    "description": "Delete button"
-  },
-  "deleteFolderTitle": "फ़ोल्डर हटाएं",
-  "@deleteFolderTitle": {
-    "description": "Delete folder dialog title"
-  },
-  "deleteFolderConfirm": "\"{name}\" हटाएं और इसके फ़ीड को अनग्रुप करें?",
-  "@deleteFolderConfirm": {
-    "description": "Delete folder confirmation",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "createFolderTooltip": "फ़ोल्डर बनाएं",
-  "@createFolderTooltip": {
-    "description": "Tooltip for create folder button"
-  },
-  "noFoldersYet": "अभी तक कोई फ़ोल्डर नहीं",
-  "@noFoldersYet": {
-    "description": "Empty state for folders"
-  },
-  "createFirstFolder": "अपना पहला फ़ोल्डर बनाएं",
-  "@createFirstFolder": {
-    "description": "Button to create first folder"
-  },
-  "feedCount": "{count} फ़ीड{count, plural, one {} other {s}}",
-  "@feedCount": {
-    "description": "Feed count with pluralization",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "filters": "फ़िल्टर",
-  "@filters": {
-    "description": "Filters button"
-  },
-  "unread": "न पढ़ा गया",
-  "@unread": {
-    "description": "Unread filter chip"
-  },
-  "liked": "पसंद किया",
-  "@liked": {
-    "description": "Liked filter chip"
-  },
-  "saved": "सहेजा गया",
-  "@saved": {
-    "description": "Saved filter chip"
-  },
-  "last24h": "पिछले 24 घंटे",
-  "@last24h": {
-    "description": "Time filter: last 24 hours"
-  },
-  "last7d": "पिछले 7 दिन",
-  "@last7d": {
-    "description": "Time filter: last 7 days"
-  },
-  "last30d": "पिछले 30 दिन",
-  "@last30d": {
-    "description": "Time filter: last 30 days"
-  },
-  "engagement": "सहभागिता",
-  "@engagement": {
-    "description": "Filter section: engagement"
-  },
-  "unreadOnly": "केवल न पढ़ा गया",
-  "@unreadOnly": {
-    "description": "Unread only filter option"
-  },
-  "lengthPreview": "लंबाई / पूर्वावलोकन",
-  "@lengthPreview": {
-    "description": "Filter section: length/preview"
-  },
-  "any": "कोई भी",
-  "@any": {
-    "description": "Any length filter"
-  },
-  "short": "छोटा <100 शब्द",
-  "@short": {
-    "description": "Short article filter"
-  },
-  "medium": "मध्यम 100-300",
-  "@medium": {
-    "description": "Medium article filter"
-  },
-  "long": "लंबा >300",
-  "@long": {
-    "description": "Long article filter"
-  },
-  "multiParagraph": "2+ पैराग्राफ",
-  "@multiParagraph": {
-    "description": "Multi-paragraph filter"
-  },
-  "timeWindow": "समय सीमा",
-  "@timeWindow": {
-    "description": "Filter section: time window"
-  },
-  "all": "सभी",
-  "@all": {
-    "description": "All filter option"
-  },
-  "sources": "स्रोत",
-  "@sources": {
-    "description": "Filter section: sources"
-  },
-  "allSources": "सभी स्रोत",
-  "@allSources": {
-    "description": "All sources filter option"
-  },
-  "keyword": "कीवर्ड",
-  "@keyword": {
-    "description": "Filter section: keyword"
-  },
-  "keywordHint": "शीर्षक, सारांश, या सामग्री",
-  "@keywordHint": {
-    "description": "Keyword search hint"
-  },
-  "reset": "रीसेट करें",
-  "@reset": {
-    "description": "Reset filters button"
-  },
-  "done": "हो गया",
-  "@done": {
-    "description": "Done button"
-  },
-  "searchArticlesHint": "लेख खोजें...",
-  "@searchArticlesHint": {
-    "description": "Search field placeholder in article list"
-  },
-  "retry": "पुनः प्रयास करें",
-  "@retry": {
-    "description": "Retry button"
-  },
-  "noArticlesYet": "अभी तक कोई लेख नहीं। रिफ्रेश करने के लिए खींचें।",
-  "@noArticlesYet": {
-    "description": "Empty state for article list"
-  },
-  "noArticlesMatch": "कोई लेख वर्तमान फ़िल्टर से मेल नहीं खाता।",
-  "@noArticlesMatch": {
-    "description": "Empty state when filters match nothing"
-  },
-  "untitled": "शीर्षकहीन",
-  "@untitled": {
-    "description": "Fallback article title"
-  },
-  "removedLike": "पसंद हटा दी गई",
-  "@removedLike": {
-    "description": "Snackbar when removing a like"
-  },
-  "likedArticle": "लेख पसंद किया",
-  "@likedArticle": {
-    "description": "Snackbar when liking an article"
-  },
-  "removedFromSaved": "सहेजे गए से हटा दिया गया",
-  "@removedFromSaved": {
-    "description": "Snackbar when removing from saved"
-  },
-  "savedForLater": "बाद के लिए सहेजा गया",
-  "@savedForLater": {
-    "description": "Snackbar when saving for later"
-  },
-  "markedUnread": "न पढ़ा गया चिह्नित",
-  "@markedUnread": {
-    "description": "Snackbar when marking unread"
-  },
-  "markedRead": "पढ़ा गया चिह्नित",
-  "@markedRead": {
-    "description": "Snackbar when marking read"
-  },
-  "undo": "पूर्ववत करें",
-  "@undo": {
-    "description": "Undo action label"
-  },
-  "publishDateUnknown": "प्रकाशन तिथि अज्ञात",
-  "@publishDateUnknown": {
-    "description": "Fallback when publish date is unknown"
-  },
-  "justNow": "अभी",
-  "@justNow": {
-    "description": "Time label: just now"
-  },
-  "minutesAgo": "{count} मिनट पहले",
-  "@minutesAgo": {
-    "description": "Time label: minutes ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "hoursAgo": "{count} घंटे पहले",
-  "@hoursAgo": {
-    "description": "Time label: hours ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "daysAgo": "{count} दिन पहले",
-  "@daysAgo": {
-    "description": "Time label: days ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "weeksAgo": "{count} सप्ताह पहले",
-  "@weeksAgo": {
-    "description": "Time label: weeks ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "monthsAgo": "{count} महीने पहले",
-  "@monthsAgo": {
-    "description": "Time label: months ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "yearsAgo": "{count} साल पहले",
-  "@yearsAgo": {
-    "description": "Time label: years ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "fetched": "लाया गया",
-  "@fetched": {
-    "description": "Indicator that timestamp is fallback fetched time"
-  },
-  "continueReading": "पढ़ना जारी रखें",
-  "@continueReading": {
-    "description": "FAB label for continue reading"
-  },
-  "readerSavedForLater": "बाद के लिए सहेजा गया",
-  "@readerSavedForLater": {
-    "description": "Snackbar when saving in reader"
-  },
-  "readerRemovedFromSaved": "सहेजे गए से हटा दिया गया",
-  "@readerRemovedFromSaved": {
-    "description": "Snackbar when removing save in reader"
-  },
-  "resumingLastRead": "अंतिम पढ़ा गया लेख फिर से शुरू कर रहा है",
-  "@resumingLastRead": {
-    "description": "Snackbar when resuming playback"
-  },
-  "startingPlayback": "न पढ़े गए लेख के लिए प्लेबैक शुरू हो रहा है",
-  "@startingPlayback": {
-    "description": "Snackbar when auto-playing"
-  },
-  "showReader": "रीडर दिखाएं",
-  "@showReader": {
-    "description": "Tooltip to show reader view"
-  },
-  "showWebView": "वेब व्यू दिखाएं",
-  "@showWebView": {
-    "description": "Tooltip to show web view"
-  },
-  "webviewUnsupported": "इन-ऐप WebView केवल Android/iOS पर समर्थित है।\nइसके बजाय टेक्स्ट व्यू दिखाया जा रहा है।",
-  "@webviewUnsupported": {
-    "description": "Message when WebView is unsupported on platform"
-  },
-  "byAuthor": "{author} द्वारा",
-  "@byAuthor": {
-    "description": "Article author attribution",
-    "placeholders": {
-      "author": {}
-    }
-  },
-  "markedReadSkipped": "पढ़ा गया चिह्नित किया और अगले पर जाएं",
-  "@markedReadSkipped": {
-    "description": "Snackbar when marking read and skipping"
-  },
-  "markUnread": "न पढ़ा गया चिह्नित करें",
-  "@markUnread": {
-    "description": "Tooltip to mark as unread"
-  },
-  "markReadPlay": "पढ़ा गया चिह्नित करें और अगला चलाएं",
-  "@markReadPlay": {
-    "description": "Tooltip to mark read and play next"
-  },
-  "previousArticle": "पिछला लेख",
-  "@previousArticle": {
-    "description": "Tooltip for previous article button"
-  },
-  "nextArticle": "अगला लेख",
-  "@nextArticle": {
-    "description": "Tooltip for next article button"
-  },
-  "playingSection": "अनुभाग चल रहा है {current}/{total}",
-  "@playingSection": {
-    "description": "Audio playback progress text",
-    "placeholders": {
-      "current": {},
-      "total": {}
-    }
-  },
-  "readAloudNotAvailable": "इस लेख के लिए जोर से पढ़ना उपलब्ध नहीं है।",
-  "@readAloudNotAvailable": {
-    "description": "Message when TTS is not available"
-  },
-  "unreadCount": "न पढ़ा गया: {count}",
-  "@unreadCount": {
-    "description": "Unread article count badge",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "embeddedVideoUnsupported": "एम्बेडेड वीडियो केवल Android/iOS पर समर्थित है।",
-  "@embeddedVideoUnsupported": {
-    "description": "Message when embedded video is unsupported"
-  },
-  "loadVideo": "वीडियो लोड करें",
-  "@loadVideo": {
-    "description": "Button to load embedded video"
-  },
-  "settingsTitle": "सेटिंग्स",
-  "@settingsTitle": {
-    "description": "Title of settings screen"
-  },
-  "goAdFree": "विज्ञापन-मुक्त बनें",
-  "@goAdFree": {
-    "description": "Premium card title"
-  },
-  "goAdFreeSubtitle": "केवल $1/माह। इंडी डेवलपर का समर्थन करें।",
-  "@goAdFreeSubtitle": {
-    "description": "Premium card subtitle"
-  },
-  "pricePerMonth": "$1/माह",
-  "@pricePerMonth": {
-    "description": "Price label"
-  },
-  "premiumTitle": "Aware प्रीमियम",
-  "@premiumTitle": {
-    "description": "Premium dialog title"
-  },
-  "premiumSubscribeDesc": "$1/माह में सब्सक्राइब करें और पाएं:",
-  "@premiumSubscribeDesc": {
-    "description": "Premium dialog description"
-  },
-  "premiumRemoveAds": "सभी विज्ञापन हटाएं",
-  "@premiumRemoveAds": {
-    "description": "Premium feature: remove ads"
-  },
-  "premiumCloudStorage": "आपके डेटा के लिए क्लाउड स्टोरेज",
-  "@premiumCloudStorage": {
-    "description": "Premium feature: cloud storage"
-  },
-  "premiumCloudSubscriptions": "क्लाउड में सब्सक्रिप्शन सहेजें",
-  "@premiumCloudSubscriptions": {
-    "description": "Premium feature: cloud subscriptions"
-  },
-  "premiumSync": "साइन इन करें और डिवाइसों पर सिंक करें",
-  "@premiumSync": {
-    "description": "Premium feature: sync"
-  },
-  "premiumFolders": "असीमित फ़ोल्डर संगठन",
-  "@premiumFolders": {
-    "description": "Premium feature: folders"
-  },
-  "notNow": "अब नहीं",
-  "@notNow": {
-    "description": "Not now button"
-  },
-  "comingSoon": "जल्द आ रहा है",
-  "@comingSoon": {
-    "description": "Coming soon badge label"
-  },
-  "subscribeNow": "सब्सक्राइब करें $1/माह",
-  "@subscribeNow": {
-    "description": "Subscribe button"
-  },
-  "subscriptionComingSoon": "सब्सक्रिप्शन जल्द आ रहा है! आपसे $1/माह लिया जाएगा।",
-  "@subscriptionComingSoon": {
-    "description": "Snackbar when subscription is coming soon"
-  },
-  "sectionAdvanced": "उन्नत",
-  "@sectionAdvanced": {
-    "description": "Settings section: advanced"
-  },
-  "readTracking": "पढ़ने का ट्रैकिंग",
-  "@readTracking": {
-    "description": "Read tracking setting title"
-  },
-  "readTrackingSubtitle": "पढ़ने की प्रगति के आधार पर लेखों को स्वचालित रूप से पढ़ा गया चिह्नित करें",
-  "@readTrackingSubtitle": {
-    "description": "Read tracking setting subtitle"
-  },
-  "autoMarkRead": "प्रगति द्वारा स्वतः पढ़ा गया चिह्नित करें",
-  "@autoMarkRead": {
-    "description": "Auto-mark read setting title"
-  },
-  "autoMarkReadSubtitle": "जब स्क्रॉल या ऑडियो आपकी सीमा तक पहुंचे तो पढ़ा गया चिह्नित करता है",
-  "@autoMarkReadSubtitle": {
-    "description": "Auto-mark read setting subtitle"
-  },
-  "autoMarkThreshold": "स्वतः चिह्नित सीमा",
-  "@autoMarkThreshold": {
-    "description": "Auto-mark threshold setting title"
-  },
-  "progressNeeded": "{percent}% प्रगति आवश्यक",
-  "@progressNeeded": {
-    "description": "Progress threshold label",
-    "placeholders": {
-      "percent": {}
-    }
-  },
-  "sectionVoice": "आवाज़ और जोर से पढ़ना",
-  "@sectionVoice": {
-    "description": "Settings section: voice & read aloud"
-  },
-  "narrationSpeed": "डिफ़ॉल्ट कथन गति",
-  "@narrationSpeed": {
-    "description": "Narration speed setting title"
-  },
-  "speedLabel": "{speed}x (1x = शांत डिफ़ॉल्ट)",
-  "@speedLabel": {
-    "description": "Speed slider label",
-    "placeholders": {
-      "speed": {}
-    }
-  },
-  "defaultVoice": "डिफ़ॉल्ट आवाज़",
-  "@defaultVoice": {
-    "description": "Default voice setting title"
-  },
-  "systemDefault": "सिस्टम डिफ़ॉल्ट",
-  "@systemDefault": {
-    "description": "System default voice option"
-  },
-  "autoPlayNext": "अगला लेख स्वचालित रूप से चलाएं",
-  "@autoPlayNext": {
-    "description": "Auto-play next setting title"
-  },
-  "autoPlayNextSubtitle": "जब कथन समाप्त हो, अगले आइटम पर जाएं",
-  "@autoPlayNextSubtitle": {
-    "description": "Auto-play next setting subtitle"
-  },
-  "sectionData": "डेटा",
-  "@sectionData": {
-    "description": "Settings section: data"
-  },
-  "lowDataMode": "कम-डेटा मोड प्रीफ़ेच",
-  "@lowDataMode": {
-    "description": "Low data mode setting title"
-  },
-  "lowDataModeSubtitle": "पृष्ठभूमि में लेख टेक्स्ट प्रीफ़ेच करें और उपलब्ध होने पर कैश की गई सामग्री पसंद करें",
-  "@lowDataModeSubtitle": {
-    "description": "Low data mode setting subtitle"
-  },
-  "sectionAccessibility": "अभिगम्यता",
-  "@sectionAccessibility": {
-    "description": "Settings section: accessibility"
-  },
-  "textSize": "टेक्स्ट आकार",
-  "@textSize": {
-    "description": "Text size setting title"
-  },
-  "textSizeSubtitle": "लेख और नेविगेशन सहित पूरे ऐप पर लागू होता है।",
-  "@textSizeSubtitle": {
-    "description": "Text size setting subtitle"
-  },
-  "sampleText": "नमूना टेक्स्ट आकार पूर्वावलोकन के लिए पाठ।",
-  "@sampleText": {
-    "description": "Sample text for text size preview"
-  },
-  "save": "Save",
-  "@save": {
-    "description": "Menu item to save article"
-  },
-  "unsave": "Unsave",
-  "@unsave": {
-    "description": "Menu item to unsave article"
-  },
-  "copyLink": "Copy link",
-  "@copyLink": {
-    "description": "Menu item to copy article URL"
-  },
-  "linkCopied": "Link copied to clipboard",
-  "@linkCopied": {
-    "description": "Snackbar when link is copied"
-  },
-  "sectionSubscriptions": "सब्सक्रिप्शन",
-  "@sectionSubscriptions": {
-    "description": "Settings section: subscriptions"
-  },
-  "manageSubscriptions": "सब्सक्रिप्शन प्रबंधित करें",
-  "@manageSubscriptions": {
-    "description": "Manage subscriptions setting title"
-  },
-  "manageSubscriptionsSubtitle": "आपके द्वारा फ़ॉलो किए जाने वाले फ़ीड जोड़ें या हटाएं",
-  "@manageSubscriptionsSubtitle": {
-    "description": "Manage subscriptions setting subtitle"
-  },
-  "manageFolders": "फ़ोल्डर प्रबंधित करें",
-  "@manageFolders": {
-    "description": "Manage folders setting title"
-  },
-  "manageFoldersSubtitle": "फ़ीड को फ़ोल्डरों में व्यवस्थित करें",
-  "@manageFoldersSubtitle": {
-    "description": "Manage folders setting subtitle"
-  },
-  "importSubscriptions": "सब्सक्रिप्शन आयात करें",
-  "@importSubscriptions": {
-    "description": "Import subscriptions setting title"
-  },
-  "importSubscriptionsSubtitle": "OPML फ़ाइल के माध्यम से आयात करें",
-  "@importSubscriptionsSubtitle": {
-    "description": "Import subscriptions setting subtitle"
-  },
-  "exportSubscriptions": "सब्सक्रिप्शन निर्यात करें",
-  "@exportSubscriptions": {
-    "description": "Export subscriptions setting title"
-  },
-  "exportSubscriptionsSubtitle": "अपने फ़ीड को OPML में निर्यात करें",
-  "@exportSubscriptionsSubtitle": {
-    "description": "Export subscriptions setting subtitle"
-  },
-  "sectionThemes": "थीम",
-  "@sectionThemes": {
-    "description": "Settings section: themes"
-  },
-  "themes": "थीम",
-  "@themes": {
-    "description": "Themes setting title"
-  },
-  "themesSubtitle": "हल्का / गहरा / सिस्टम",
-  "@themesSubtitle": {
-    "description": "Themes setting subtitle"
-  },
-  "selectTheme": "थीम चुनें",
-  "@selectTheme": {
-    "description": "Theme selection dialog title"
-  },
-  "system": "सिस्टम",
-  "@system": {
-    "description": "System theme option"
-  },
-  "light": "हल्का",
-  "@light": {
-    "description": "Light theme option"
-  },
-  "dark": "गहरा",
-  "@dark": {
-    "description": "Dark theme option"
-  },
-  "sectionLanguage": "भाषा",
-  "@sectionLanguage": {
-    "description": "Settings section: language"
-  },
-  "language": "भाषा",
-  "@language": {
-    "description": "Language setting title"
-  },
-  "languageSubtitle": "हिन्दी",
-  "@languageSubtitle": {
-    "description": "Language setting subtitle - currently selected language"
-  },
-  "selectLanguage": "भाषा चुनें",
-  "@selectLanguage": {
-    "description": "Language selection dialog title"
-  },
-  "languageEnglish": "अंग्रेज़ी",
-  "@languageEnglish": {
-    "description": "English language option"
-  },
-  "languageChinese": "चीनी",
-  "@languageChinese": {
-    "description": "Chinese language option"
-  },
-  "languageSpanish": "स्पैनिश",
-  "@languageSpanish": {
-    "description": "Spanish language option"
-  },
-  "languageHindi": "हिन्दी",
-  "@languageHindi": {
-    "description": "Hindi language option"
-  },
-  "languageArabic": "अरबी",
-  "@languageArabic": {
-    "description": "Arabic language option"
-  },
-  "languageFrench": "फ़्रेंच",
-  "@languageFrench": {
-    "description": "French language option"
-  },
-  "languagePortuguese": "पुर्तगाली",
-  "@languagePortuguese": {
-    "description": "Portuguese language option"
-  },
-  "languageRussian": "रूसी",
-  "@languageRussian": {
-    "description": "Russian language option"
-  },
-  "languageJapanese": "जापानी",
-  "@languageJapanese": {
-    "description": "Japanese language option"
-  },
-  "languageGerman": "जर्मन",
-  "@languageGerman": {
-    "description": "German language option"
-  },
-  "languageKorean": "कोरियाई",
-  "@languageKorean": {
-    "description": "Korean language option"
-  },
-  "languageItalian": "इतालवी",
-  "@languageItalian": {
-    "description": "Italian language option"
-  },
-  "sectionLegal": "कानूनी",
-  "@sectionLegal": {
-    "description": "Settings section: legal"
-  },
-  "privacyPolicy": "गोपनीयता नीति",
-  "@privacyPolicy": {
-    "description": "Privacy policy setting title"
-  },
-  "openSourceLicenses": "ओपन सोर्स लाइसेंस",
-  "@openSourceLicenses": {
-    "description": "Open source licenses setting title"
-  },
-  "noFeedsFoundOpml": "OPML में कोई फ़ीड नहीं मिला",
-  "@noFeedsFoundOpml": {
-    "description": "Snackbar when no feeds found in OPML"
-  },
-  "importedCount": "{count} फ़ीड{count, plural, one {} other {s}} आयात किए गए",
-  "@importedCount": {
-    "description": "Snackbar when import succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "allFeedsAlreadyAdded": "सभी फ़ीड पहले ही जोड़े जा चुके हैं",
-  "@allFeedsAlreadyAdded": {
-    "description": "Snackbar when all feeds already exist"
-  },
-  "importFailed": "आयात विफल: {error}",
-  "@importFailed": {
-    "description": "Snackbar when import fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "noSubscriptionsToExport": "निर्यात करने के लिए कोई सब्सक्रिप्शन नहीं",
-  "@noSubscriptionsToExport": {
-    "description": "Snackbar when no subscriptions to export"
-  },
-  "exportedCount": "{count} फ़ीड निर्यात किए गए",
-  "@exportedCount": {
-    "description": "Snackbar when export succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "exportFailed": "निर्यात विफल: {error}",
-  "@exportFailed": {
-    "description": "Snackbar when export fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "exportShareText": "Aware सब्सक्रिप्शन निर्यात",
-  "@exportShareText": {
-    "description": "Share text for OPML export"
-  },
-  "exportShareSubject": "Aware सब्सक्रिप्शन निर्यात",
-  "@exportShareSubject": {
-    "description": "Share subject for OPML export"
-  },
-  "savedArticlesTitle": "सहेजे गए लेख",
-  "@savedArticlesTitle": {
-    "description": "Title of saved articles screen"
-  },
-  "noSavedArticlesYet": "अभी तक कोई सहेजा गया लेख नहीं।",
-  "@noSavedArticlesYet": {
-    "description": "Empty state for saved articles"
-  },
-  "error": "त्रुटि: {error}",
-  "@error": {
-    "description": "Error message format",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "privacyPolicyTitle": "गोपनीयता नीति",
-  "@privacyPolicyTitle": {
-    "description": "Privacy policy screen title"
-  },
-  "privacyPolicyLastUpdated": "अंतिम अपडेट: 20 जून, 2026",
-  "@privacyPolicyLastUpdated": {
-    "description": "Privacy policy last updated date"
-  },
-  "privacyInfoWeCollect": "हम कौन सी जानकारी एकत्र करते हैं",
-  "@privacyInfoWeCollect": {
-    "description": "Privacy section: information we collect"
-  },
-  "privacyInfoWeCollectBody": "Aware कोई व्यक्तिगत डेटा एकत्र, संग्रहीत या प्रसारित नहीं करता है। सभी ऐप डेटा (फ़ीड, लेख, पढ़ने की प्रगति, प्राथमिकताएं और सेटिंग्स) आपके डिवाइस पर स्थानीय रूप से संग्रहीत होते हैं और कभी भी किसी सर्वर को नहीं भेजे जाते हैं।",
-  "@privacyInfoWeCollectBody": {
-    "description": "Privacy section body: information we collect"
-  },
-  "privacyThirdParty": "तृतीय-पक्ष सेवाएं",
-  "@privacyThirdParty": {
-    "description": "Privacy section: third-party services"
-  },
-  "privacyThirdPartyBody": "Aware विज्ञापन प्रदर्शित करने के लिए Google AdMob का उपयोग करता है। AdMob प्रासंगिक विज्ञापन देने के लिए गैर-व्यक्तिगत उपयोग डेटा और डिवाइस पहचानकर्ता एकत्र कर सकता है। विज्ञापन केवल गैर-व्यक्तिगत विज्ञापन अनुरोधों के साथ दिए जाते हैं। विज्ञापनदाताओं के साथ कोई उपयोगकर्ता डेटा साझा नहीं किया जाता है।\n\nGoogle की गोपनीयता नीति AdMob द्वारा एकत्र किए गए डेटा पर लागू होती है:\n",
-  "@privacyThirdPartyBody": {
-    "description": "Privacy section body: third-party services"
-  },
-  "privacyDataStorage": "डेटा संग्रहण",
-  "@privacyDataStorage": {
-    "description": "Privacy section: data storage"
-  },
-  "privacyDataStorageBody": "सभी फ़ीड सब्सक्रिप्शन, लेख, पढ़ने की प्रगति और ऐप प्राथमिकताएं आपके डिवाइस पर SQLite डेटाबेस में स्थानीय रूप से संग्रहीत होती हैं। आप सेटिंग्स में OPML निर्यात सुविधा के माध्यम से किसी भी समय अपना डेटा निर्यात कर सकते हैं।\n\nसभी डेटा हटाने के लिए, ऐप को अनइंस्टॉल करें या अपने डिवाइस सेटिंग्स से ऐप डेटा साफ़ करें।",
-  "@privacyDataStorageBody": {
-    "description": "Privacy section body: data storage"
-  },
-  "privacyContact": "संपर्क",
-  "@privacyContact": {
-    "description": "Privacy section: contact"
-  },
-  "privacyContactBody": "यदि आपके पास इस गोपनीयता नीति के बारे में प्रश्न हैं, तो कृपया ऐप के सहायता चैनलों के माध्यम से हमसे संपर्क करें।",
-  "@privacyContactBody": {
-    "description": "Privacy section body: contact"
-  }
+    "@@locale":  "hi",
+    "appName":  "aware",
+    "@appName":  {
+                     "description":  "The name of the application"
+                 },
+    "appTitle":  "Aware",
+    "@appTitle":  {
+                      "description":  "Application title shown in settings/about"
+                  },
+    "appVersion":  "1.0.0",
+    "@appVersion":  {
+                        "description":  "Application version number"
+                    },
+    "splashTagline":  "आसानी से सूचित रहें",
+    "@splashTagline":  {
+                           "description":  "Tagline shown on splash screen"
+                       },
+    "onboardingLanguageTitle":  "अपनी भाषा चुनें",
+    "@onboardingLanguageTitle":  {
+                                     "description":  "Title for onboarding language selection page"
+                                 },
+    "onboardingLanguageDesc":  "ऐप इंटरफ़ेस के लिए अपनी पसंदीदा भाषा चुनें।",
+    "@onboardingLanguageDesc":  {
+                                    "description":  "Description for onboarding language selection page"
+                                },
+    "onboardingWelcomeTitle":  "aware में आपका स्वागत है",
+    "@onboardingWelcomeTitle":  {
+                                    "description":  "Title for first onboarding page"
+                                },
+    "onboardingWelcomeDesc":  "आपका व्यक्तिगत फ़ीड रीडर। एक ही जगह पर, जो मायने रखता है उसके बारे में सूचित रहें।",
+    "@onboardingWelcomeDesc":  {
+                                   "description":  "Description for first onboarding page"
+                               },
+    "onboardingOfflineTitle":  "ऑफ़लाइन पढ़ें",
+    "@onboardingOfflineTitle":  {
+                                    "description":  "Title for second onboarding page"
+                                },
+    "onboardingOfflineDesc":  "फ़ीड डाउनलोड हो जाते हैं ताकि आप कभी भी, कहीं भी पढ़ सकें। टेक्स्ट-टू-स्पीच से सुनें।",
+    "@onboardingOfflineDesc":  {
+                                   "description":  "Description for second onboarding page"
+                               },
+    "onboardingNotifyTitle":  "कोई पोस्ट मिस न करें",
+    "@onboardingNotifyTitle":  {
+                                   "description":  "Title for third onboarding page"
+                               },
+    "onboardingNotifyDesc":  "नए लेख आने पर सूचनाएं प्राप्त करें। शुरू करने के लिए अपना पहला फ़ीड जोड़ें।",
+    "@onboardingNotifyDesc":  {
+                                  "description":  "Description for third onboarding page"
+                              },
+    "next":  "अगला",
+    "@next":  {
+                  "description":  "Next button"
+              },
+    "getStarted":  "शुरू करें",
+    "@getStarted":  {
+                        "description":  "Get Started button on last onboarding page"
+                    },
+    "skip":  "छोड़ें",
+    "@skip":  {
+                  "description":  "Skip button on onboarding"
+              },
+    "tabFeeds":  "फ़ीड",
+    "@tabFeeds":  {
+                      "description":  "Bottom navigation tab for feeds"
+                  },
+    "tabMarketplace":  "बाज़ार",
+    "@tabMarketplace":  {
+                            "description":  "Bottom navigation tab for marketplace"
+                        },
+    "tabSettings":  "सेटिंग्स",
+    "@tabSettings":  {
+                         "description":  "Bottom navigation tab for settings"
+                     },
+    "addFeedTitle":  "RSS फ़ीड जोड़ें",
+    "@addFeedTitle":  {
+                          "description":  "Title of the add feed dialog"
+                      },
+    "addFeedUrlLabel":  "फ़ीड URL",
+    "@addFeedUrlLabel":  {
+                             "description":  "Label for feed URL input"
+                         },
+    "addFeedUrlHint":  "https://उदाहरण.com/feed.xml",
+    "@addFeedUrlHint":  {
+                            "description":  "Hint text for feed URL input"
+                        },
+    "cancel":  "रद्द करें",
+    "@cancel":  {
+                    "description":  "Cancel button text"
+                },
+    "add":  "जोड़ें",
+    "@add":  {
+                 "description":  "Add button text"
+             },
+    "feedAdded":  "फ़ीड जोड़ा गया",
+    "@feedAdded":  {
+                       "description":  "Snackbar message when feed is added"
+                   },
+    "failedToAddFeed":  "फ़ीड जोड़ने में विफल: {error}",
+    "@failedToAddFeed":  {
+                             "description":  "Snackbar message when adding a feed fails",
+                             "placeholders":  {
+                                                  "error":  {
+
+                                                            }
+                                              }
+                         },
+    "feedUrlRequired":  "फ़ीड URL आवश्यक है",
+    "@feedUrlRequired":  {
+                             "description":  "Validation message when feed URL is empty"
+                         },
+    "marketplaceTitle":  "बाज़ार",
+    "@marketplaceTitle":  {
+                              "description":  "Title of marketplace screen"
+                          },
+    "marketplaceSubtitle":  "श्रेणी के अनुसार क्यूरेटेड RSS लिंक",
+    "@marketplaceSubtitle":  {
+                                 "description":  "Subtitle of marketplace screen"
+                             },
+    "marketplaceHeroTitle":  "तेज़ी से गुणवत्तापूर्ण फ़ीड खोजें",
+    "@marketplaceHeroTitle":  {
+                                  "description":  "Hero section title on marketplace"
+                              },
+    "marketplaceHeroDesc":  "विषय के अनुसार विश्वसनीय स्रोत ब्राउज़ करें। अपने होम फ़ीड में तुरंत जोड़ने के लिए फ़ॉलो करें पर टैप करें।",
+    "@marketplaceHeroDesc":  {
+                                 "description":  "Hero section description on marketplace"
+                             },
+    "marketplaceCategoriesCount":  "{count} श्रेणियाँ",
+    "@marketplaceCategoriesCount":  {
+                                        "description":  "Category count stat",
+                                        "placeholders":  {
+                                                             "count":  {
+
+                                                                       }
+                                                         }
+                                    },
+    "marketplaceFeedsCount":  "{count} फ़ीड",
+    "@marketplaceFeedsCount":  {
+                                   "description":  "Feed count stat",
+                                   "placeholders":  {
+                                                        "count":  {
+
+                                                                  }
+                                                    }
+                               },
+    "marketplaceSearchHint":  "फ़ीड खोजें...",
+    "@marketplaceSearchHint":  {
+                                   "description":  "Search field placeholder"
+                               },
+    "marketplaceUntitledFeed":  "शीर्षकहीन फ़ीड",
+    "@marketplaceUntitledFeed":  {
+                                     "description":  "Fallback title for unnamed feed"
+                                 },
+    "marketplaceSubscribed":  "सब्सक्राइब किया",
+    "@marketplaceSubscribed":  {
+                                   "description":  "Tooltip when feed is subscribed"
+                               },
+    "marketplaceFollow":  "फ़ॉलो करें",
+    "@marketplaceFollow":  {
+                               "description":  "Follow button tooltip"
+                           },
+    "marketplaceSubscribedTo":  "{title} में सब्सक्राइब किया",
+    "@marketplaceSubscribedTo":  {
+                                     "description":  "Snackbar when subscribing to a feed",
+                                     "placeholders":  {
+                                                          "title":  {
+
+                                                                    }
+                                                      }
+                                 },
+    "marketplaceInvalidUrl":  "अमान्य फ़ीड URL",
+    "@marketplaceInvalidUrl":  {
+                                   "description":  "Error when feed URL is invalid"
+                               },
+    "marketplaceUnreachable":  "सब्सक्राइब करने में विफल: फ़ीड शायद पहुंच से बाहर है",
+    "@marketplaceUnreachable":  {
+                                    "description":  "Error when feed subscription fails"
+                                },
+    "marketplaceCuratedSources":  "{count} क्यूरेटेड स्रोत",
+    "@marketplaceCuratedSources":  {
+                                       "description":  "Subtitle showing curated source count",
+                                       "placeholders":  {
+                                                            "count":  {
+
+                                                                      }
+                                                        }
+                                   },
+    "signIn":  "साइन इन करें",
+    "@signIn":  {
+                    "description":  "Sign in button / title"
+                },
+    "emailLabel":  "ईमेल",
+    "@emailLabel":  {
+                        "description":  "Email field label"
+                    },
+    "passwordLabel":  "पासवर्ड",
+    "@passwordLabel":  {
+                           "description":  "Password field label"
+                       },
+    "emailRequired":  "अपना ईमेल दर्ज करें",
+    "@emailRequired":  {
+                           "description":  "Validation for empty email"
+                       },
+    "passwordRequired":  "अपना पासवर्ड दर्ज करें",
+    "@passwordRequired":  {
+                              "description":  "Validation for empty password"
+                          },
+    "subscriptionsTitle":  "सब्सक्रिप्शन",
+    "@subscriptionsTitle":  {
+                                "description":  "Title of subscriptions screen"
+                            },
+    "subscriptionsEmpty":  "अभी तक कोई सब्सक्रिप्शन नहीं। बाज़ार से फ़ीड जोड़ें!",
+    "@subscriptionsEmpty":  {
+                                "description":  "Empty state message"
+                            },
+    "untitledFeed":  "शीर्षकहीन फ़ीड",
+    "@untitledFeed":  {
+                          "description":  "Fallback title for unnamed feed"
+                      },
+    "paused":  "रोका गया",
+    "@paused":  {
+                    "description":  "Paused feed label"
+                },
+    "resume":  "जारी रखें",
+    "@resume":  {
+                    "description":  "Resume feed action"
+                },
+    "pause":  "रोकें",
+    "@pause":  {
+                   "description":  "Pause feed action"
+               },
+    "unsubscribe":  "सब्सक्राइब हटाएं",
+    "@unsubscribe":  {
+                         "description":  "Unsubscribe action"
+                     },
+    "unsubscribeTitle":  "सब्सक्राइब हटाएं",
+    "@unsubscribeTitle":  {
+                              "description":  "Unsubscribe dialog title"
+                          },
+    "unsubscribeConfirm":  "{title} से सब्सक्राइब हटाएं?",
+    "@unsubscribeConfirm":  {
+                                "description":  "Unsubscribe confirmation message",
+                                "placeholders":  {
+                                                     "title":  {
+
+                                                               }
+                                                 }
+                            },
+    "create":  "बनाएं",
+    "@create":  {
+                    "description":  "Create button"
+                },
+    "rename":  "नाम बदलें",
+    "@rename":  {
+                    "description":  "Rename button"
+                },
+    "delete":  "हटाएं",
+    "@delete":  {
+                    "description":  "Delete button"
+                },
+    "feedCount":  "{count} फ़ीड{count, plural, one {} other {s}}",
+    "@feedCount":  {
+                       "description":  "Feed count with pluralization",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "filters":  "फ़िल्टर",
+    "@filters":  {
+                     "description":  "Filters button"
+                 },
+    "unread":  "न पढ़ा गया",
+    "@unread":  {
+                    "description":  "Unread filter chip"
+                },
+    "liked":  "पसंद किया",
+    "@liked":  {
+                   "description":  "Liked filter chip"
+               },
+    "saved":  "सहेजा गया",
+    "@saved":  {
+                   "description":  "Saved filter chip"
+               },
+    "last24h":  "पिछले 24 घंटे",
+    "@last24h":  {
+                     "description":  "Time filter: last 24 hours"
+                 },
+    "last7d":  "पिछले 7 दिन",
+    "@last7d":  {
+                    "description":  "Time filter: last 7 days"
+                },
+    "last30d":  "पिछले 30 दिन",
+    "@last30d":  {
+                     "description":  "Time filter: last 30 days"
+                 },
+    "engagement":  "सहभागिता",
+    "@engagement":  {
+                        "description":  "Filter section: engagement"
+                    },
+    "unreadOnly":  "केवल न पढ़ा गया",
+    "@unreadOnly":  {
+                        "description":  "Unread only filter option"
+                    },
+    "lengthPreview":  "लंबाई / पूर्वावलोकन",
+    "@lengthPreview":  {
+                           "description":  "Filter section: length/preview"
+                       },
+    "any":  "कोई भी",
+    "@any":  {
+                 "description":  "Any length filter"
+             },
+    "short":  "छोटा \u003c100 शब्द",
+    "@short":  {
+                   "description":  "Short article filter"
+               },
+    "medium":  "मध्यम 100-300",
+    "@medium":  {
+                    "description":  "Medium article filter"
+                },
+    "long":  "लंबा \u003e300",
+    "@long":  {
+                  "description":  "Long article filter"
+              },
+    "multiParagraph":  "2+ पैराग्राफ",
+    "@multiParagraph":  {
+                            "description":  "Multi-paragraph filter"
+                        },
+    "timeWindow":  "समय सीमा",
+    "@timeWindow":  {
+                        "description":  "Filter section: time window"
+                    },
+    "all":  "सभी",
+    "@all":  {
+                 "description":  "All filter option"
+             },
+    "sources":  "स्रोत",
+    "@sources":  {
+                     "description":  "Filter section: sources"
+                 },
+    "allSources":  "सभी स्रोत",
+    "@allSources":  {
+                        "description":  "All sources filter option"
+                    },
+    "keyword":  "कीवर्ड",
+    "@keyword":  {
+                     "description":  "Filter section: keyword"
+                 },
+    "keywordHint":  "शीर्षक, सारांश, या सामग्री",
+    "@keywordHint":  {
+                         "description":  "Keyword search hint"
+                     },
+    "reset":  "रीसेट करें",
+    "@reset":  {
+                   "description":  "Reset filters button"
+               },
+    "done":  "हो गया",
+    "@done":  {
+                  "description":  "Done button"
+              },
+    "searchArticlesHint":  "लेख खोजें...",
+    "@searchArticlesHint":  {
+                                "description":  "Search field placeholder in article list"
+                            },
+    "retry":  "पुनः प्रयास करें",
+    "@retry":  {
+                   "description":  "Retry button"
+               },
+    "noArticlesYet":  "अभी तक कोई लेख नहीं। रिफ्रेश करने के लिए खींचें।",
+    "@noArticlesYet":  {
+                           "description":  "Empty state for article list"
+                       },
+    "noArticlesMatch":  "कोई लेख वर्तमान फ़िल्टर से मेल नहीं खाता।",
+    "@noArticlesMatch":  {
+                             "description":  "Empty state when filters match nothing"
+                         },
+    "untitled":  "शीर्षकहीन",
+    "@untitled":  {
+                      "description":  "Fallback article title"
+                  },
+    "removedLike":  "पसंद हटा दी गई",
+    "@removedLike":  {
+                         "description":  "Snackbar when removing a like"
+                     },
+    "likedArticle":  "लेख पसंद किया",
+    "@likedArticle":  {
+                          "description":  "Snackbar when liking an article"
+                      },
+    "removedFromSaved":  "सहेजे गए से हटा दिया गया",
+    "@removedFromSaved":  {
+                              "description":  "Snackbar when removing from saved"
+                          },
+    "savedForLater":  "बाद के लिए सहेजा गया",
+    "@savedForLater":  {
+                           "description":  "Snackbar when saving for later"
+                       },
+    "markedUnread":  "न पढ़ा गया चिह्नित",
+    "@markedUnread":  {
+                          "description":  "Snackbar when marking unread"
+                      },
+    "markedRead":  "पढ़ा गया चिह्नित",
+    "@markedRead":  {
+                        "description":  "Snackbar when marking read"
+                    },
+    "undo":  "पूर्ववत करें",
+    "@undo":  {
+                  "description":  "Undo action label"
+              },
+    "publishDateUnknown":  "प्रकाशन तिथि अज्ञात",
+    "@publishDateUnknown":  {
+                                "description":  "Fallback when publish date is unknown"
+                            },
+    "justNow":  "अभी",
+    "@justNow":  {
+                     "description":  "Time label: just now"
+                 },
+    "minutesAgo":  "{count} मिनट पहले",
+    "@minutesAgo":  {
+                        "description":  "Time label: minutes ago",
+                        "placeholders":  {
+                                             "count":  {
+
+                                                       }
+                                         }
+                    },
+    "hoursAgo":  "{count} घंटे पहले",
+    "@hoursAgo":  {
+                      "description":  "Time label: hours ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "daysAgo":  "{count} दिन पहले",
+    "@daysAgo":  {
+                     "description":  "Time label: days ago",
+                     "placeholders":  {
+                                          "count":  {
+
+                                                    }
+                                      }
+                 },
+    "weeksAgo":  "{count} सप्ताह पहले",
+    "@weeksAgo":  {
+                      "description":  "Time label: weeks ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "monthsAgo":  "{count} महीने पहले",
+    "@monthsAgo":  {
+                       "description":  "Time label: months ago",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "yearsAgo":  "{count} साल पहले",
+    "@yearsAgo":  {
+                      "description":  "Time label: years ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "fetched":  "लाया गया",
+    "@fetched":  {
+                     "description":  "Indicator that timestamp is fallback fetched time"
+                 },
+    "continueReading":  "पढ़ना जारी रखें",
+    "@continueReading":  {
+                             "description":  "FAB label for continue reading"
+                         },
+    "readerSavedForLater":  "बाद के लिए सहेजा गया",
+    "@readerSavedForLater":  {
+                                 "description":  "Snackbar when saving in reader"
+                             },
+    "readerRemovedFromSaved":  "सहेजे गए से हटा दिया गया",
+    "@readerRemovedFromSaved":  {
+                                    "description":  "Snackbar when removing save in reader"
+                                },
+    "resumingLastRead":  "अंतिम पढ़ा गया लेख फिर से शुरू कर रहा है",
+    "@resumingLastRead":  {
+                              "description":  "Snackbar when resuming playback"
+                          },
+    "startingPlayback":  "न पढ़े गए लेख के लिए प्लेबैक शुरू हो रहा है",
+    "@startingPlayback":  {
+                              "description":  "Snackbar when auto-playing"
+                          },
+    "showReader":  "रीडर दिखाएं",
+    "@showReader":  {
+                        "description":  "Tooltip to show reader view"
+                    },
+    "showWebView":  "वेब व्यू दिखाएं",
+    "@showWebView":  {
+                         "description":  "Tooltip to show web view"
+                     },
+    "webviewUnsupported":  "इन-ऐप WebView केवल Android/iOS पर समर्थित है।\nइसके बजाय टेक्स्ट व्यू दिखाया जा रहा है।",
+    "@webviewUnsupported":  {
+                                "description":  "Message when WebView is unsupported on platform"
+                            },
+    "byAuthor":  "{author} द्वारा",
+    "@byAuthor":  {
+                      "description":  "Article author attribution",
+                      "placeholders":  {
+                                           "author":  {
+
+                                                      }
+                                       }
+                  },
+    "markedReadSkipped":  "पढ़ा गया चिह्नित किया और अगले पर जाएं",
+    "@markedReadSkipped":  {
+                               "description":  "Snackbar when marking read and skipping"
+                           },
+    "markUnread":  "न पढ़ा गया चिह्नित करें",
+    "@markUnread":  {
+                        "description":  "Tooltip to mark as unread"
+                    },
+    "markReadPlay":  "पढ़ा गया चिह्नित करें और अगला चलाएं",
+    "@markReadPlay":  {
+                          "description":  "Tooltip to mark read and play next"
+                      },
+    "previousArticle":  "पिछला लेख",
+    "@previousArticle":  {
+                             "description":  "Tooltip for previous article button"
+                         },
+    "nextArticle":  "अगला लेख",
+    "@nextArticle":  {
+                         "description":  "Tooltip for next article button"
+                     },
+    "playingSection":  "अनुभाग चल रहा है {current}/{total}",
+    "@playingSection":  {
+                            "description":  "Audio playback progress text",
+                            "placeholders":  {
+                                                 "current":  {
+
+                                                             },
+                                                 "total":  {
+
+                                                           }
+                                             }
+                        },
+    "readAloudNotAvailable":  "इस लेख के लिए जोर से पढ़ना उपलब्ध नहीं है।",
+    "@readAloudNotAvailable":  {
+                                   "description":  "Message when TTS is not available"
+                               },
+    "unreadCount":  "न पढ़ा गया: {count}",
+    "@unreadCount":  {
+                         "description":  "Unread article count badge",
+                         "placeholders":  {
+                                              "count":  {
+
+                                                        }
+                                          }
+                     },
+    "embeddedVideoUnsupported":  "एम्बेडेड वीडियो केवल Android/iOS पर समर्थित है।",
+    "@embeddedVideoUnsupported":  {
+                                      "description":  "Message when embedded video is unsupported"
+                                  },
+    "loadVideo":  "वीडियो लोड करें",
+    "@loadVideo":  {
+                       "description":  "Button to load embedded video"
+                   },
+    "settingsTitle":  "सेटिंग्स",
+    "@settingsTitle":  {
+                           "description":  "Title of settings screen"
+                       },
+    "goAdFree":  "विज्ञापन-मुक्त बनें",
+    "@goAdFree":  {
+                      "description":  "Premium card title"
+                  },
+    "goAdFreeSubtitle":  "केवल $1/माह। इंडी डेवलपर का समर्थन करें।",
+    "@goAdFreeSubtitle":  {
+                              "description":  "Premium card subtitle"
+                          },
+    "pricePerMonth":  "$1/माह",
+    "@pricePerMonth":  {
+                           "description":  "Price label"
+                       },
+    "premiumTitle":  "Aware प्रीमियम",
+    "@premiumTitle":  {
+                          "description":  "Premium dialog title"
+                      },
+    "premiumSubscribeDesc":  "$1/माह में सब्सक्राइब करें और पाएं:",
+    "@premiumSubscribeDesc":  {
+                                  "description":  "Premium dialog description"
+                              },
+    "premiumRemoveAds":  "सभी विज्ञापन हटाएं",
+    "@premiumRemoveAds":  {
+                              "description":  "Premium feature: remove ads"
+                          },
+    "premiumCloudStorage":  "आपके डेटा के लिए क्लाउड स्टोरेज",
+    "@premiumCloudStorage":  {
+                                 "description":  "Premium feature: cloud storage"
+                             },
+    "premiumCloudSubscriptions":  "क्लाउड में सब्सक्रिप्शन सहेजें",
+    "@premiumCloudSubscriptions":  {
+                                       "description":  "Premium feature: cloud subscriptions"
+                                   },
+    "premiumSync":  "साइन इन करें और डिवाइसों पर सिंक करें",
+    "@premiumSync":  {
+                         "description":  "Premium feature: sync"
+                     },
+    "notNow":  "अब नहीं",
+    "@notNow":  {
+                    "description":  "Not now button"
+                },
+    "comingSoon":  "जल्द आ रहा है",
+    "@comingSoon":  {
+                        "description":  "Coming soon badge label"
+                    },
+    "subscribeNow":  "सब्सक्राइब करें $1/माह",
+    "@subscribeNow":  {
+                          "description":  "Subscribe button"
+                      },
+    "subscriptionComingSoon":  "सब्सक्रिप्शन जल्द आ रहा है! आपसे $1/माह लिया जाएगा।",
+    "@subscriptionComingSoon":  {
+                                    "description":  "Snackbar when subscription is coming soon"
+                                },
+    "sectionAdvanced":  "उन्नत",
+    "@sectionAdvanced":  {
+                             "description":  "Settings section: advanced"
+                         },
+    "readTracking":  "पढ़ने का ट्रैकिंग",
+    "@readTracking":  {
+                          "description":  "Read tracking setting title"
+                      },
+    "readTrackingSubtitle":  "पढ़ने की प्रगति के आधार पर लेखों को स्वचालित रूप से पढ़ा गया चिह्नित करें",
+    "@readTrackingSubtitle":  {
+                                  "description":  "Read tracking setting subtitle"
+                              },
+    "autoMarkRead":  "प्रगति द्वारा स्वतः पढ़ा गया चिह्नित करें",
+    "@autoMarkRead":  {
+                          "description":  "Auto-mark read setting title"
+                      },
+    "autoMarkReadSubtitle":  "जब स्क्रॉल या ऑडियो आपकी सीमा तक पहुंचे तो पढ़ा गया चिह्नित करता है",
+    "@autoMarkReadSubtitle":  {
+                                  "description":  "Auto-mark read setting subtitle"
+                              },
+    "autoMarkThreshold":  "स्वतः चिह्नित सीमा",
+    "@autoMarkThreshold":  {
+                               "description":  "Auto-mark threshold setting title"
+                           },
+    "progressNeeded":  "{percent}% प्रगति आवश्यक",
+    "@progressNeeded":  {
+                            "description":  "Progress threshold label",
+                            "placeholders":  {
+                                                 "percent":  {
+
+                                                             }
+                                             }
+                        },
+    "sectionVoice":  "आवाज़ और जोर से पढ़ना",
+    "@sectionVoice":  {
+                          "description":  "Settings section: voice \u0026 read aloud"
+                      },
+    "narrationSpeed":  "डिफ़ॉल्ट कथन गति",
+    "@narrationSpeed":  {
+                            "description":  "Narration speed setting title"
+                        },
+    "speedLabel":  "{speed}x (1x = शांत डिफ़ॉल्ट)",
+    "@speedLabel":  {
+                        "description":  "Speed slider label",
+                        "placeholders":  {
+                                             "speed":  {
+
+                                                       }
+                                         }
+                    },
+    "defaultVoice":  "डिफ़ॉल्ट आवाज़",
+    "@defaultVoice":  {
+                          "description":  "Default voice setting title"
+                      },
+    "systemDefault":  "सिस्टम डिफ़ॉल्ट",
+    "@systemDefault":  {
+                           "description":  "System default voice option"
+                       },
+    "autoPlayNext":  "अगला लेख स्वचालित रूप से चलाएं",
+    "@autoPlayNext":  {
+                          "description":  "Auto-play next setting title"
+                      },
+    "autoPlayNextSubtitle":  "जब कथन समाप्त हो, अगले आइटम पर जाएं",
+    "@autoPlayNextSubtitle":  {
+                                  "description":  "Auto-play next setting subtitle"
+                              },
+    "sectionAccessibility":  "अभिगम्यता",
+    "@sectionAccessibility":  {
+                                  "description":  "Settings section: accessibility"
+                              },
+    "textSize":  "टेक्स्ट आकार",
+    "@textSize":  {
+                      "description":  "Text size setting title"
+                  },
+    "textSizeSubtitle":  "लेख और नेविगेशन सहित पूरे ऐप पर लागू होता है।",
+    "@textSizeSubtitle":  {
+                              "description":  "Text size setting subtitle"
+                          },
+    "sampleText":  "नमूना टेक्स्ट आकार पूर्वावलोकन के लिए पाठ।",
+    "@sampleText":  {
+                        "description":  "Sample text for text size preview"
+                    },
+    "save":  "Save",
+    "@save":  {
+                  "description":  "Menu item to save article"
+              },
+    "unsave":  "Unsave",
+    "@unsave":  {
+                    "description":  "Menu item to unsave article"
+                },
+    "copyLink":  "Copy link",
+    "@copyLink":  {
+                      "description":  "Menu item to copy article URL"
+                  },
+    "linkCopied":  "Link copied to clipboard",
+    "@linkCopied":  {
+                        "description":  "Snackbar when link is copied"
+                    },
+    "sectionSubscriptions":  "सब्सक्रिप्शन",
+    "@sectionSubscriptions":  {
+                                  "description":  "Settings section: subscriptions"
+                              },
+    "manageSubscriptions":  "सब्सक्रिप्शन प्रबंधित करें",
+    "@manageSubscriptions":  {
+                                 "description":  "Manage subscriptions setting title"
+                             },
+    "manageSubscriptionsSubtitle":  "आपके द्वारा फ़ॉलो किए जाने वाले फ़ीड जोड़ें या हटाएं",
+    "@manageSubscriptionsSubtitle":  {
+                                         "description":  "Manage subscriptions setting subtitle"
+                                     },
+    "importSubscriptions":  "सब्सक्रिप्शन आयात करें",
+    "@importSubscriptions":  {
+                                 "description":  "Import subscriptions setting title"
+                             },
+    "importSubscriptionsSubtitle":  "OPML फ़ाइल के माध्यम से आयात करें",
+    "@importSubscriptionsSubtitle":  {
+                                         "description":  "Import subscriptions setting subtitle"
+                                     },
+    "exportSubscriptions":  "सब्सक्रिप्शन निर्यात करें",
+    "@exportSubscriptions":  {
+                                 "description":  "Export subscriptions setting title"
+                             },
+    "exportSubscriptionsSubtitle":  "अपने फ़ीड को OPML में निर्यात करें",
+    "@exportSubscriptionsSubtitle":  {
+                                         "description":  "Export subscriptions setting subtitle"
+                                     },
+    "sectionThemes":  "थीम",
+    "@sectionThemes":  {
+                           "description":  "Settings section: themes"
+                       },
+    "themes":  "थीम",
+    "@themes":  {
+                    "description":  "Themes setting title"
+                },
+    "themesSubtitle":  "हल्का / गहरा / सिस्टम",
+    "@themesSubtitle":  {
+                            "description":  "Themes setting subtitle"
+                        },
+    "selectTheme":  "थीम चुनें",
+    "@selectTheme":  {
+                         "description":  "Theme selection dialog title"
+                     },
+    "system":  "सिस्टम",
+    "@system":  {
+                    "description":  "System theme option"
+                },
+    "light":  "हल्का",
+    "@light":  {
+                   "description":  "Light theme option"
+               },
+    "dark":  "गहरा",
+    "@dark":  {
+                  "description":  "Dark theme option"
+              },
+    "sectionLanguage":  "भाषा",
+    "@sectionLanguage":  {
+                             "description":  "Settings section: language"
+                         },
+    "language":  "भाषा",
+    "@language":  {
+                      "description":  "Language setting title"
+                  },
+    "languageSubtitle":  "हिन्दी",
+    "@languageSubtitle":  {
+                              "description":  "Language setting subtitle - currently selected language"
+                          },
+    "selectLanguage":  "भाषा चुनें",
+    "@selectLanguage":  {
+                            "description":  "Language selection dialog title"
+                        },
+    "sectionLegal":  "कानूनी",
+    "@sectionLegal":  {
+                          "description":  "Settings section: legal"
+                      },
+    "privacyPolicy":  "गोपनीयता नीति",
+    "@privacyPolicy":  {
+                           "description":  "Privacy policy setting title"
+                       },
+    "openSourceLicenses":  "ओपन सोर्स लाइसेंस",
+    "@openSourceLicenses":  {
+                                "description":  "Open source licenses setting title"
+                            },
+    "noFeedsFoundOpml":  "OPML में कोई फ़ीड नहीं मिला",
+    "@noFeedsFoundOpml":  {
+                              "description":  "Snackbar when no feeds found in OPML"
+                          },
+    "importedCount":  "{count} फ़ीड{count, plural, one {} other {s}} आयात किए गए",
+    "@importedCount":  {
+                           "description":  "Snackbar when import succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "allFeedsAlreadyAdded":  "सभी फ़ीड पहले ही जोड़े जा चुके हैं",
+    "@allFeedsAlreadyAdded":  {
+                                  "description":  "Snackbar when all feeds already exist"
+                              },
+    "importFailed":  "आयात विफल: {error}",
+    "@importFailed":  {
+                          "description":  "Snackbar when import fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "noSubscriptionsToExport":  "निर्यात करने के लिए कोई सब्सक्रिप्शन नहीं",
+    "@noSubscriptionsToExport":  {
+                                     "description":  "Snackbar when no subscriptions to export"
+                                 },
+    "exportedCount":  "{count} फ़ीड निर्यात किए गए",
+    "@exportedCount":  {
+                           "description":  "Snackbar when export succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "exportFailed":  "निर्यात विफल: {error}",
+    "@exportFailed":  {
+                          "description":  "Snackbar when export fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "exportShareText":  "Aware सब्सक्रिप्शन निर्यात",
+    "@exportShareText":  {
+                             "description":  "Share text for OPML export"
+                         },
+    "exportShareSubject":  "Aware सब्सक्रिप्शन निर्यात",
+    "@exportShareSubject":  {
+                                "description":  "Share subject for OPML export"
+                            },
+    "savedArticlesTitle":  "सहेजे गए लेख",
+    "@savedArticlesTitle":  {
+                                "description":  "Title of saved articles screen"
+                            },
+    "noSavedArticlesYet":  "अभी तक कोई सहेजा गया लेख नहीं।",
+    "@noSavedArticlesYet":  {
+                                "description":  "Empty state for saved articles"
+                            },
+    "error":  "त्रुटि: {error}",
+    "@error":  {
+                   "description":  "Error message format",
+                   "placeholders":  {
+                                        "error":  {
+
+                                                  }
+                                    }
+               },
+    "privacyPolicyTitle":  "गोपनीयता नीति",
+    "@privacyPolicyTitle":  {
+                                "description":  "Privacy policy screen title"
+                            },
+    "privacyPolicyLastUpdated":  "अंतिम अपडेट: 20 जून, 2026",
+    "@privacyPolicyLastUpdated":  {
+                                      "description":  "Privacy policy last updated date"
+                                  },
+    "privacyInfoWeCollect":  "हम कौन सी जानकारी एकत्र करते हैं",
+    "@privacyInfoWeCollect":  {
+                                  "description":  "Privacy section: information we collect"
+                              },
+    "privacyInfoWeCollectBody":  "Aware कोई व्यक्तिगत डेटा एकत्र, संग्रहीत या प्रसारित नहीं करता है। सभी ऐप डेटा (फ़ीड, लेख, पढ़ने की प्रगति, प्राथमिकताएं और सेटिंग्स) आपके डिवाइस पर स्थानीय रूप से संग्रहीत होते हैं और कभी भी किसी सर्वर को नहीं भेजे जाते हैं।",
+    "@privacyInfoWeCollectBody":  {
+                                      "description":  "Privacy section body: information we collect"
+                                  },
+    "privacyThirdParty":  "तृतीय-पक्ष सेवाएं",
+    "@privacyThirdParty":  {
+                               "description":  "Privacy section: third-party services"
+                           },
+    "privacyThirdPartyBody":  "Aware विज्ञापन प्रदर्शित करने के लिए Google AdMob का उपयोग करता है। AdMob प्रासंगिक विज्ञापन देने के लिए गैर-व्यक्तिगत उपयोग डेटा और डिवाइस पहचानकर्ता एकत्र कर सकता है। विज्ञापन केवल गैर-व्यक्तिगत विज्ञापन अनुरोधों के साथ दिए जाते हैं। विज्ञापनदाताओं के साथ कोई उपयोगकर्ता डेटा साझा नहीं किया जाता है।\n\nGoogle की गोपनीयता नीति AdMob द्वारा एकत्र किए गए डेटा पर लागू होती है:\n",
+    "@privacyThirdPartyBody":  {
+                                   "description":  "Privacy section body: third-party services"
+                               },
+    "privacyDataStorage":  "डेटा संग्रहण",
+    "@privacyDataStorage":  {
+                                "description":  "Privacy section: data storage"
+                            },
+    "privacyDataStorageBody":  "सभी फ़ीड सब्सक्रिप्शन, लेख, पढ़ने की प्रगति और ऐप प्राथमिकताएं आपके डिवाइस पर SQLite डेटाबेस में स्थानीय रूप से संग्रहीत होती हैं। आप सेटिंग्स में OPML निर्यात सुविधा के माध्यम से किसी भी समय अपना डेटा निर्यात कर सकते हैं।\n\nसभी डेटा हटाने के लिए, ऐप को अनइंस्टॉल करें या अपने डिवाइस सेटिंग्स से ऐप डेटा साफ़ करें।",
+    "@privacyDataStorageBody":  {
+                                    "description":  "Privacy section body: data storage"
+                                },
+    "privacyContact":  "संपर्क",
+    "@privacyContact":  {
+                            "description":  "Privacy section: contact"
+                        },
+    "privacyContactBody":  "यदि आपके पास इस गोपनीयता नीति के बारे में प्रश्न हैं, तो कृपया ऐप के सहायता चैनलों के माध्यम से हमसे संपर्क करें।",
+    "@privacyContactBody":  {
+                                "description":  "Privacy section body: contact"
+                            }
 }

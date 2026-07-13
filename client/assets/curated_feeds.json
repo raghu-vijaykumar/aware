@@ -1,4 +1,4 @@
-﻿{
+{
   "feeds": [
     {
       "title": "OkKotlin",
@@ -9,7 +9,6 @@
     {
       "title": "Jake Wharton",
       "url": "https://jakewharton.com/atom.xml",
-      "description": "",
       "category": "android-development"
     },
     {
@@ -21,7 +20,6 @@
     {
       "title": "Android Developers",
       "url": "https://www.youtube.com/feeds/videos.xml?user=androiddevelopers",
-      "description": "",
       "category": "android-development"
     },
     {
@@ -93,7 +91,6 @@
     {
       "title": "Kotlin",
       "url": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLQ176FUIyIUa6SChjajjVc-LMzxWiz6dy",
-      "description": "",
       "category": "android-development"
     },
     {
@@ -105,7 +102,6 @@
     {
       "title": "droidcon SF",
       "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCKubKoe1CBw_-n_GXetEQbg",
-      "description": "",
       "category": "android-development"
     },
     {
@@ -129,13 +125,11 @@
     {
       "title": "Android Authority",
       "url": "https://www.youtube.com/feeds/videos.xml?user=AndroidAuthority",
-      "description": "",
       "category": "android"
     },
     {
       "title": "Apple",
       "url": "https://www.youtube.com/feeds/videos.xml?user=Apple",
-      "description": "",
       "category": "apple"
     },
     {
@@ -153,13 +147,11 @@
     {
       "title": "Apple Newsroom",
       "url": "https://www.apple.com/newsroom/rss-feed.rss",
-      "description": "",
       "category": "apple"
     },
     {
       "title": "Android Central - Android Forums, News, Reviews, Help and Android Wallpapers",
       "url": "http://feeds.androidcentral.com/androidcentral",
-      "description": "",
       "category": "android"
     },
     {
@@ -243,7 +235,6 @@
     {
       "title": "MacRumors",
       "url": "https://www.youtube.com/feeds/videos.xml?user=macrumors",
-      "description": "",
       "category": "apple"
     },
     {
@@ -267,7 +258,6 @@
     {
       "title": "Living Big In A Tiny House",
       "url": "https://www.youtube.com/feeds/videos.xml?user=livingbigtinyhouse",
-      "description": "",
       "category": "architecture"
     },
     {
@@ -291,7 +281,6 @@
     {
       "title": "Architectural Digest",
       "url": "https://www.youtube.com/feeds/videos.xml?user=ArchitecturalDigest",
-      "description": "",
       "category": "architecture"
     },
     {
@@ -315,7 +304,6 @@
     {
       "title": "Beauty - ELLE",
       "url": "https://www.elle.com/rss/beauty.xml/",
-      "description": "",
       "category": "beauty"
     },
     {
@@ -357,13 +345,11 @@
     {
       "title": "All News",
       "url": "https://www.investing.com/rss/news.rss",
-      "description": "",
       "category": "business-economy"
     },
     {
       "title": "Bloomberg Quicktake",
       "url": "https://www.youtube.com/feeds/videos.xml?user=Bloomberg",
-      "description": "",
       "category": "business-economy"
     },
     {
@@ -405,7 +391,6 @@
     {
       "title": "Business Insider",
       "url": "https://www.youtube.com/feeds/videos.xml?user=businessinsider",
-      "description": "",
       "category": "business-economy"
     },
     {
@@ -495,7 +480,6 @@
     {
       "title": "Latest Content - Car and Driver",
       "url": "https://www.caranddriver.com/rss/all.xml/",
-      "description": "",
       "category": "cars"
     },
     {
@@ -519,7 +503,6 @@
     {
       "title": "Cricbuzz",
       "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCSRQXk5yErn4e14vN76upOw",
-      "description": "",
       "category": "cricket"
     },
     {
@@ -633,7 +616,6 @@
     {
       "title": "Pakistan Cricket",
       "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCiWrjBhlICf_L_RK5y6Vrxw",
-      "description": "",
       "category": "cricket"
     },
     {
@@ -645,7 +627,6 @@
     {
       "title": "Sri Lanka Cricket",
       "url": "https://www.youtube.com/feeds/videos.xml?user=TheOfficialSLC",
-      "description": "",
       "category": "cricket"
     },
     {
@@ -657,7 +638,6 @@
     {
       "title": "England & Wales Cricket Board",
       "url": "https://www.youtube.com/feeds/videos.xml?user=ecbcricket",
-      "description": "",
       "category": "cricket"
     },
     {
@@ -675,7 +655,6 @@
     {
       "title": "Fashion - ELLE",
       "url": "https://www.elle.com/rss/fashion.xml/",
-      "description": "",
       "category": "fashion"
     },
     {
@@ -699,7 +678,6 @@
     {
       "title": "cricket.com.au",
       "url": "https://www.youtube.com/feeds/videos.xml?user=cricketaustraliatv",
-      "description": "",
       "category": "cricket"
     },
     {
@@ -735,7 +713,6 @@
     {
       "title": "Babish Culinary Universe",
       "url": "https://www.youtube.com/feeds/videos.xml?user=bgfilms",
-      "description": "",
       "category": "food"
     },
     {
@@ -771,7 +748,6 @@
     {
       "title": "Joy the Baker",
       "url": "http://joythebaker.com/feed/",
-      "description": "",
       "category": "food"
     },
     {
@@ -801,13 +777,11 @@
     {
       "title": "Serious Eats",
       "url": "https://www.youtube.com/feeds/videos.xml?user=SeriousEats",
-      "description": "",
       "category": "food"
     },
     {
       "title": "Bon Appétit",
       "url": "https://www.youtube.com/feeds/videos.xml?user=BonAppetitDotCom",
-      "description": "",
       "category": "food"
     },
     {
@@ -819,13 +793,11 @@
     {
       "title": "Sprouted Kitchen",
       "url": "https://www.sproutedkitchen.com/home?format=rss",
-      "description": "",
       "category": "food"
     },
     {
       "title": "Laura in the Kitchen",
       "url": "https://www.youtube.com/feeds/videos.xml?user=LauraVitalesKitchen",
-      "description": "",
       "category": "food"
     },
     {
@@ -849,7 +821,6 @@
     {
       "title": "PostSecret",
       "url": "https://postsecret.com/feed/?alt=rss",
-      "description": "",
       "category": "funny"
     },
     {
@@ -1009,12 +980,6 @@
       "category": "gaming"
     },
     {
-      "title": "Indie Games Plus",
-      "url": "https://indiegamesplus.com/feed",
-      "description": "Creative, Personal, Passionate Digital Experiences",
-      "category": "gaming"
-    },
-    {
       "title": "Throughline",
       "url": "https://feeds.npr.org/510333/podcast.xml",
       "description": "The past is never past. Every headline has a history. Join us every week as we go back in time to understand the present. These are stories you can feel and sounds you can see from the moments that shaped our world.",
@@ -1053,7 +1018,6 @@
     {
       "title": "Ideal Home",
       "url": "https://www.idealhome.co.uk/feed",
-      "description": "",
       "category": "interior-design"
     },
     {
@@ -1089,7 +1053,6 @@
     {
       "title": "Yatzer RSS Feed",
       "url": "https://www.yatzer.com/rss.xml",
-      "description": "",
       "category": "interior-design"
     },
     {
@@ -1143,13 +1106,11 @@
     {
       "title": "Polygon - All",
       "url": "https://www.polygon.com/rss/index.xml",
-      "description": "",
       "category": "gaming"
     },
     {
       "title": "News - Apple Developer",
       "url": "https://developer.apple.com/news/rss/news.rss",
-      "description": "",
       "category": "ios-development"
     },
     {
@@ -1257,7 +1218,6 @@
     {
       "title": "tyler.io",
       "url": "https://tyler.io/feed/",
-      "description": "",
       "category": "ios-development"
     },
     {
@@ -1287,7 +1247,6 @@
     {
       "title": "Ole Begemann",
       "url": "https://oleb.net/blog/atom.xml",
-      "description": "",
       "category": "ios-development"
     },
     {
@@ -1377,7 +1336,6 @@
     {
       "title": "Liz Marie Blog",
       "url": "https://www.lizmarieblog.com/feed/",
-      "description": "",
       "category": "interior-design"
     },
     {
@@ -1389,7 +1347,6 @@
     {
       "title": "Budgets Are Sexy",
       "url": "https://feeds2.feedburner.com/budgetsaresexy",
-      "description": "",
       "category": "personal-finance"
     },
     {
@@ -1455,7 +1412,6 @@
     {
       "title": "500px",
       "url": "https://iso.500px.com/feed/",
-      "description": "",
       "category": "photography"
     },
     {
@@ -1473,7 +1429,6 @@
     {
       "title": "Variety",
       "url": "https://variety.com/feed/",
-      "description": "",
       "category": "movies"
     },
     {
@@ -1557,13 +1512,11 @@
     {
       "title": "GitLab",
       "url": "https://about.gitlab.com/atom.xml",
-      "description": "",
       "category": "programming"
     },
     {
       "title": "Google TechTalks",
       "url": "https://www.youtube.com/feeds/videos.xml?user=GoogleTechTalks",
-      "description": "",
       "category": "programming"
     },
     {
@@ -1599,7 +1552,6 @@
     {
       "title": "Joel on Software",
       "url": "https://www.joelonsoftware.com/feed/",
-      "description": "",
       "category": "programming"
     },
     {
@@ -1611,7 +1563,6 @@
     {
       "title": "Well Kept Wallet",
       "url": "https://wellkeptwallet.com/feed/",
-      "description": "",
       "category": "personal-finance"
     },
     {
@@ -1677,7 +1628,6 @@
     {
       "title": "Slack Engineering",
       "url": "https://slack.engineering/feed",
-      "description": "",
       "category": "programming"
     },
     {
@@ -1803,7 +1753,6 @@
     {
       "title": "Podcast – Software Engineering Daily",
       "url": "https://softwareengineeringdaily.com/category/podcast/feed",
-      "description": "",
       "category": "programming"
     },
     {
@@ -1887,7 +1836,6 @@
     {
       "title": "Latest Science News -- ScienceDaily",
       "url": "https://www.sciencedaily.com/rss/all.xml",
-      "description": "",
       "category": "science"
     },
     {
@@ -1935,13 +1883,11 @@
     {
       "title": "SpaceX",
       "url": "https://www.youtube.com/feeds/videos.xml?user=spacexchannel",
-      "description": "",
       "category": "space"
     },
     {
       "title": "Feld Thoughts",
       "url": "https://feld.com/feed",
-      "description": "",
       "category": "startups"
     },
     {
@@ -1953,19 +1899,16 @@
     {
       "title": "GaryVee",
       "url": "https://www.youtube.com/feeds/videos.xml?user=GaryVaynerchuk",
-      "description": "",
       "category": "startups"
     },
     {
       "title": "Marie Forleo",
       "url": "https://www.youtube.com/feeds/videos.xml?user=marieforleo",
-      "description": "",
       "category": "startups"
     },
     {
       "title": "Product Hunt — The best new products, every day",
       "url": "https://www.producthunt.com/feed",
-      "description": "",
       "category": "startups"
     },
     {
@@ -2025,7 +1968,6 @@
     {
       "title": "blog – Feld Thoughts",
       "url": "https://feld.com/archives/tag/blog/feed",
-      "description": "",
       "category": "startups"
     },
     {
@@ -2037,7 +1979,6 @@
     {
       "title": "CNET",
       "url": "https://www.youtube.com/feeds/videos.xml?user=CNETTV",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2085,7 +2026,6 @@
     {
       "title": "Marques Brownlee",
       "url": "https://www.youtube.com/feeds/videos.xml?user=marquesbrownlee",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2103,7 +2043,6 @@
     {
       "title": "Linus Tech Tips",
       "url": "https://www.youtube.com/feeds/videos.xml?user=LinusTechTips",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2133,7 +2072,6 @@
     {
       "title": "Reply All",
       "url": "https://feeds.megaphone.fm/replyall",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2151,7 +2089,6 @@
     {
       "title": "The Verge - All Posts",
       "url": "https://www.theverge.com/rss/index.xml",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2187,7 +2124,6 @@
     {
       "title": "Unbox Therapy",
       "url": "https://www.youtube.com/feeds/videos.xml?user=unboxtherapy",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2211,7 +2147,6 @@
     {
       "title": "The Verge",
       "url": "https://www.youtube.com/feeds/videos.xml?user=TheVerge",
-      "description": "",
       "category": "tech"
     },
     {
@@ -2337,7 +2272,6 @@
     {
       "title": "UX Movement",
       "url": "https://uxmovement.com/feed/",
-      "description": "",
       "category": "ui---ux"
     },
     {
@@ -2349,7 +2283,6 @@
     {
       "title": "ABC News",
       "url": "https://www.abc.net.au/news/feed/1948/rss.xml",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2391,7 +2324,6 @@
     {
       "title": "TV Fanatic",
       "url": "https://www.tvfanatic.com/rss.xml",
-      "description": "",
       "category": "television"
     },
     {
@@ -2451,13 +2383,11 @@
     {
       "title": "globalnews.ca",
       "url": "https://globalnews.ca/feed/",
-      "description": "",
       "category": "local-news"
     },
     {
       "title": "france24.com",
       "url": "https://www.france24.com/en/rss",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2475,7 +2405,6 @@
     {
       "title": "প্রথম আলো",
       "url": "https://www.prothomalo.com/feed/",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2487,13 +2416,11 @@
     {
       "title": "Paris Star",
       "url": "https://www.parisstaronline.com/feed",
-      "description": "",
       "category": "local-news"
     },
     {
       "title": "LaPresse.ca - Actualités",
       "url": "https://www.lapresse.ca/actualites/rss",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2535,7 +2462,6 @@
     {
       "title": "Toronto Sun - RSS Feed",
       "url": "https://torontosun.com/category/news/feed",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2571,7 +2497,6 @@
     {
       "title": "Brasil Wire",
       "url": "http://www.brasilwire.com/feed/",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2709,13 +2634,11 @@
     {
       "title": "Swarajya",
       "url": "https://prod-qt-images.s3.amazonaws.com/production/swarajya/feed.xml",
-      "description": "",
       "category": "local-news"
     },
     {
       "title": "Republika Online RSS Feed",
       "url": "https://www.republika.co.id/rss/",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2919,7 +2842,6 @@
     {
       "title": "Mexico News Daily",
       "url": "https://mexiconewsdaily.com/feed/",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -2937,7 +2859,6 @@
     {
       "title": "Daily Post Nigeria",
       "url": "https://dailypost.ng/feed",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3039,7 +2960,6 @@
     {
       "title": "The Nation - Top Stories",
       "url": "https://nation.com.pk/rss/top-stories",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3075,7 +2995,6 @@
     {
       "title": "Dziennik.pl Dziennik - dziennik.pl",
       "url": "http://rss.dziennik.pl/Dziennik-PL/",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3087,7 +3006,6 @@
     {
       "title": "GazetaPrawna.pl - biznes, podatki, prawo, finanse, wiadomości, praca",
       "url": "http://rss.gazetaprawna.pl/GazetaPrawna",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3099,7 +3017,6 @@
     {
       "title": "Russia Insider Daily Headlines",
       "url": "https://russia-insider.com/en/all-content/rss",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3141,7 +3058,6 @@
     {
       "title": "https://www.rp.pl",
       "url": "https://www.rp.pl/rss/1019",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3237,7 +3153,6 @@
     {
       "title": "huffingtonpost.es",
       "url": "https://www.huffingtonpost.es/feeds/index.xml",
-      "description": "",
       "category": "local-news"
     },
     {
@@ -3383,6 +3298,1688 @@
       "url": "https://tonite.abante.com.ph/feed/",
       "description": "Mabilis sa Balita",
       "category": "local-news"
+    },
+    {
+      "title": "Dan Lew Codes",
+      "url": "https://blog.danlew.net/rss/",
+      "description": "Thoughts on life, the universe and the mystery of it all; but actually mostly just code.",
+      "category": "android-development"
+    },
+    {
+      "title": "Saket Narayan",
+      "url": "https://saket.me/feed/",
+      "description": "A wild developer appears. He works at <a href=\"https://square.com/\">Square</a>. Find him on <a rel=\"me\" href=\"https://twitter.com/saketme\">Twitter</a> and <a rel=\"me\" href=\"https://bsky.app/profile/saket.me\">Bluesky</a>.",
+      "category": "android-development"
+    },
+    {
+      "title": "Zac Sweers",
+      "url": "https://www.zacsweers.dev/rss/",
+      "description": "Musings on Kotlin, mobile, open source, and building good things.",
+      "category": "android-development"
+    },
+    {
+      "title": "Android",
+      "url": "https://www.reddit.com/r/android/.rss",
+      "description": "Android news, reviews, tips, and discussions about rooting, tutorials, and apps. General discussion about devices is welcome. Please direct technical support, upgrade questions, buy/sell, app recommendations, and carrier-related issues to other subreddits.",
+      "category": "android"
+    },
+    {
+      "title": "Blind Android Users Podcast",
+      "url": "https://anchor.fm/s/4495abac/podcast/rss",
+      "description": "At Blind Android Users, we strive to make using Android as easy as possible for every blind person who's starting the Android journey.We bridge the dividing gap that stands between blind people, both new to Android and those familiar with the platform, on the use of the platform and revealing what makes the OS the platform to be on!The Blind Android Users Podcast believes that, no blind person should be struggling with their Android device, thus, we have determine to embark on a mission of understanding Android from a blindness perspective as easy as a child's play!<hr><p style='color:grey; font-size:0.75em;'> Hosted on Acast. See <a style='color:grey;' target='_blank' rel='noopener noreferrer' href='https://acast.com/privacy'>acast.com/privacy</a> for more information.</p>",
+      "category": "android"
+    },
+    {
+      "title": "Active Wild",
+      "url": "https://www.activewild.com/feed/",
+      "description": "Animals, Science & Nature – Facts, News, Information & Pictures",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "Focusing on Wildlife",
+      "url": "https://focusingonwildlife.com/news/feed/",
+      "description": "Celebrating the biodiversity of Planet Earth",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "Love Nature",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCRZPkuHwaoKwTP3CYPdVldg",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "Real Wild",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCbq-4OJxnziD3awH-aTezeA",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "The Wildlife India",
+      "url": "https://www.thewildlifeindia.com/feeds/posts/default",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "Wildlife Photography: Gear, Photos & Discussion",
+      "url": "https://www.reddit.com/r/wildlifephotography/.rss",
+      "description": "A subreddit for those interested in shooting wildlife...with a camera.",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "Wildlife | The Guardian",
+      "url": "https://www.theguardian.com/environment/wildlife/rss",
+      "description": "Latest news and features from theguardian.com, the world's leading liberal voice",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "🔥 Nature Is Fucking Lit",
+      "url": "https://www.reddit.com/r/NatureIsFuckingLit/.rss",
+      "description": "We are here to appreciate the awesome majesty and incredibly cool aspects of nature. 🔥 Banner done by u/esoterix_luke",
+      "category": "animal-wildlife"
+    },
+    {
+      "title": "r/Apple: Unofficial Apple Community",
+      "url": "https://www.reddit.com/r/apple/.rss",
+      "description": "An unofficial community about Apple and all of its devices and software.",
+      "category": "apple"
+    },
+    {
+      "title": "r/iPhone",
+      "url": "https://www.reddit.com/r/iphone/.rss",
+      "description": "Reddit’s little corner for iPhone lovers (and some people who just mildly enjoy it…)",
+      "category": "apple"
+    },
+    {
+      "title": "Architecture",
+      "url": "https://www.reddit.com/r/architecture/.rss",
+      "description": "A community for students, professionals, and lovers of architecture.",
+      "category": "architecture"
+    },
+    {
+      "title": "Harry Potter and the Sacred Text",
+      "url": "https://rss.acast.com/harrypottersacredtext",
+      "description": "<p>It’s the English class you didn't know you missed and the meaningful conversations you didn't know you craved. Join Vanessa Zoltan and Matt Potts as they bring thought, reflection and laughter to Harry Potter; not just as novels, but as instructive and inspirational texts that will teach us about our own lives. Relive the magic of Harry Potter chapter by chapter as Matt and Vanessa explore themes such as commitment, revenge and forgiveness. This podcast creates time in your week to think about life’s big questions. Because reading fiction doesn’t just help us escape the world, it helps us live in it.</p><br><p>Harry Potter and the Sacred Text is produced by Not Sorry Productions, a feminist organization that produces podcasts, educational content, live shows, and immersive experiences with the explicit goal of addressing the spiritual needs of its participants. Through community, rigor, and ritual, we treat traditionally secular things as if they were sacred. To learn more about what we do, visit <a href=\"https://notsorryworks.com/\" rel=\"noopener noreferrer\" target=\"_blank\">https://notsorryworks.com/</a>.</p><hr><p style='color:grey; font-size:0.75em;'> Hosted on Acast. See <a style='color:grey;' target='_blank' rel='noopener noreferrer' href='https://acast.com/privacy'>acast.com/privacy</a> for more information.</p>",
+      "category": "books"
+    },
+    {
+      "title": "Kirkus Reviews",
+      "url": "https://www.kirkusreviews.com/feeds/rss/",
+      "description": "Latest book reviews from Kirkus Reviews.",
+      "category": "books"
+    },
+    {
+      "title": "So many books, so little time",
+      "url": "https://reddit.com/r/books/.rss",
+      "description": "This is a moderated subreddit. It is our intent and purpose to foster and encourage in-depth discussion about all things related to books, authors, genres, or publishing in a safe, supportive environment. If you're looking for help with a personal book recommendation, consult our Weekly Recommendation Thread, Suggested Reading page, or ask in r/suggestmeabook.",
+      "category": "books"
+    },
+    {
+      "title": "EconTalk",
+      "url": "https://feeds.simplecast.com/wgl4xEgL",
+      "description": "EconTalk: Conversations for the Curious is an award-winning weekly podcast hosted by Russ Roberts of Shalem College in Jerusalem and Stanford's Hoover Institution. The eclectic guest list includes authors, doctors, psychologists, historians, philosophers, economists, and more. Learn how the health care system really works, the serenity that comes from humility, the challenge of interpreting data, how potato chips are made, what it's like to run an upscale Manhattan restaurant, what caused the 2008 financial crisis, the nature of consciousness, the conflicts and history of the Middle East, and more. EconTalk has been taking the Monday out of Mondays since 2006. All 1000+ episodes are available in the archive. Go to EconTalk.org for transcripts, related resources, and comments.",
+      "category": "business-economy"
+    },
+    {
+      "title": "How I Built This with Guy Raz",
+      "url": "https://feeds.npr.org/510313/podcast.xml",
+      "description": "<p>Guy Raz interviews the world’s best-known entrepreneurs to learn how they built their iconic brands. In each episode, founders reveal deep, intimate moments of doubt and failure, and share insights on their eventual success.&nbsp;<em>How I Built This&nbsp;</em>is a master-class on innovation, creativity, leadership and how to navigate challenges of all kinds.</p><p>New episodes release on Mondays and Thursdays. </p>",
+      "category": "business-economy"
+    },
+    {
+      "title": "Planet Money",
+      "url": "https://feeds.npr.org/510289/podcast.xml",
+      "description": "Wanna see a trick? Give us any topic and we can tie it back to the economy. At <em>Planet Money</em>, we explore the forces that shape our lives and bring you along for the ride. Don't just understand the economy – understand the world.<br><br><em>Wanna go deeper? <em>Subscribe to </em><em>Planet Money+ and get sponsor-free episodes of Planet Money, The Indicator, and Planet Money Summer School. Plus access to bonus content. It's a new way to support the show you love. Learn more at plus.npr.org/planetmoney</em><br></em>",
+      "category": "business-economy"
+    },
+    {
+      "title": "Formula 1",
+      "url": "https://www.reddit.com/r/formula1/.rss",
+      "description": "Welcome to r/formula1, the largest independent online Formula 1 community!",
+      "category": "cars"
+    },
+    {
+      "title": "Better Chess",
+      "url": "https://betterchess.net/feed/",
+      "description": "A chess blog dedicated to help players improve their play and to promote the great game of chess.",
+      "category": "chess"
+    },
+    {
+      "title": "Chess News",
+      "url": "https://en.chessbase.com/feed",
+      "description": "Chess News",
+      "category": "chess"
+    },
+    {
+      "title": "Chess Talk",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC6HDXr-sNPnWLF_Q-y3KduA",
+      "category": "chess"
+    },
+    {
+      "title": "Chess | The Guardian",
+      "url": "https://www.theguardian.com/sport/chess/rss",
+      "description": "Latest news and features from theguardian.com, the world's leading liberal voice",
+      "category": "chess"
+    },
+    {
+      "title": "Chess.com",
+      "url": "https://www.youtube.com/feeds/videos.xml?user=wwwChesscom",
+      "category": "chess"
+    },
+    {
+      "title": "Chess.com News",
+      "url": "https://www.chess.com/rss/news",
+      "description": "The latest news from Chess.com.",
+      "category": "chess"
+    },
+    {
+      "title": "ChessBase India",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCIsEhwBMPkRHsEgqYAPQHsA",
+      "category": "chess"
+    },
+    {
+      "title": "Chessable Blog",
+      "url": "https://www.chessable.com/blog/feed/",
+      "description": "Chessable uses science to make learning chess better and in this blog we share that journey",
+      "category": "chess"
+    },
+    {
+      "title": "For the budding patzer",
+      "url": "https://www.reddit.com/r/chessbeginners/.rss",
+      "description": "A place for new chess players to hang out, ask questions, discover tactics, get advice from others and learn more about the game: This is the r/chessbeginners subreddit.",
+      "category": "chess"
+    },
+    {
+      "title": "Lichess's Blog",
+      "url": "https://lichess.org/blog.atom",
+      "category": "chess"
+    },
+    {
+      "title": "Perpetual Chess Podcast",
+      "url": "https://feeds.megaphone.fm/BLU4811105299",
+      "description": "Perpetual Chess features weekly conversations with the chess world's best players, trainers and accomplished amateurs about their careers, current projects, best practices and the latest in chess news. Learn more at PerpetualChessPod.com",
+      "category": "chess"
+    },
+    {
+      "title": "The Week in Chess",
+      "url": "https://theweekinchess.com/twic-rss-feed",
+      "description": "Chess News from throughout the World",
+      "category": "chess"
+    },
+    {
+      "title": "agadmator's Chess Channel",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCL5YbN5WLFD8dLIegT5QAbA",
+      "category": "chess"
+    },
+    {
+      "title": "chess24",
+      "url": "https://www.youtube.com/feeds/videos.xml?user=chess24media",
+      "category": "chess"
+    },
+    {
+      "title": "r/Chess",
+      "url": "https://www.reddit.com/r/chess/.rss",
+      "description": "All about the game of chess, including discussions on professional tournaments, game analysis and theory. If you are new to the game, check out /r/chessbeginners and before posting here please read our rules: https://www.reddit.com/r/chess/wiki/index.",
+      "category": "chess"
+    },
+    {
+      "title": "thechesswebsite",
+      "url": "https://www.youtube.com/feeds/videos.xml?user=thechesswebsite",
+      "category": "chess"
+    },
+    {
+      "title": "Cricket",
+      "url": "https://www.reddit.com/r/Cricket/.rss",
+      "description": "News, banter and occasional serious discussion on the great game.",
+      "category": "cricket"
+    },
+    {
+      "title": "Cricket News Today, Latest Cricket Updates, Cricket Live Score, Upcoming Matches | Times of India",
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/54829575.cms",
+      "description": "Latest and Breaking Cricket News: Check live cricket scores, schedule, results, scorecard, upcoming matches list and ball by ball commentary along with player stats, player profiles, team profiles and live cricket commentary on Times of India Cricket.",
+      "category": "cricket"
+    },
+    {
+      "title": "Cricket | The Indian Express",
+      "url": "https://indianexpress.com/section/sports/cricket/feed/",
+      "description": "Latest News Today, Breaking News, India News, Top Headlines",
+      "category": "cricket"
+    },
+    {
+      "title": "Cricket – The Roar",
+      "url": "https://www.theroar.com.au/cricket/feed/",
+      "description": "Australia's Biggest Sporting Debate",
+      "category": "cricket"
+    },
+    {
+      "title": "Bitcoin & Crypto Trading: Ledger Cast",
+      "url": "https://feeds.simplecast.com/j5Cx9jps",
+      "description": "Ledger Cast covers the cryptocurrency industry (Bitcoin, Ethereum, and alt coins), including technical and trading analysis, fundamentals, and anything else crypto and blockchain related. Made by Ledger Status and friends.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Bitcoin - The Currency of the Internet",
+      "url": "https://www.reddit.com/r/Bitcoin/.rss",
+      "description": "Bitcoin is the currency of the Internet: a distributed, worldwide, decentralized digital money. Unlike traditional currencies such as dollars, bitcoins are issued and managed without any central authority whatsoever: there is no government, company, or bank in charge of Bitcoin. As such, it is more resistant to wild inflation and corrupt banks. With Bitcoin, you can be your own bank.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Bitcoin Audible",
+      "url": "https://bitcoinaudible.com/feed/",
+      "description": "The Best in Bitcoin, Ai, & Development - Made Audible",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Bitcoin News",
+      "url": "https://news.bitcoin.com/feed/",
+      "description": "Daily Bitcoin News",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "BuyUcoin Talks - Medium",
+      "url": "https://medium.com/feed/buyucoin-talks",
+      "description": "BuyUcoin (https://www.buyucoin.com/) provides a simple and secure online platform for trading cryptocurrencies and blockchain-based digital assets. Users can profitably trade Bitcoin to INR, Ethereum to INR, and 150+ crypto to INR on a daily basis using EZ/OTC trade.buyucoin.com - Medium",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Cointelegraph.com News",
+      "url": "https://cointelegraph.com/rss",
+      "description": "Cointelegraph covers fintech, blockchain and Bitcoin bringing you the latest crypto news and analyses on the future of money.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "CryptoCurrency – Finance Magnates | Financial and business news",
+      "url": "https://www.financemagnates.com/cryptocurrency/feed/",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "CryptoNinjas",
+      "url": "https://www.cryptoninjas.net/feed/",
+      "description": "Bitcoin, Cryptocurrency and Blockchain Asset Source",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "CryptoPotato",
+      "url": "https://cryptopotato.com/feed/",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Cryptocurrency News & Discussion",
+      "url": "https://www.reddit.com/r/CryptoCurrency/.rss",
+      "description": "The leading community for cryptocurrency news, discussion, and analysis.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "DailyCoin",
+      "url": "https://dailycoin.com/feed/",
+      "description": "Cryptocurrency News",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Epicenter - Learn about Crypto, Blockchain, Ethereum, Bitcoin and Distributed Technologies",
+      "url": "https://feeds.simplecast.com/lKmQDG9R",
+      "description": "Epicenter brings you in-depth conversations about the technical, economic and social implications of cryptocurrencies and blockchain technologies. Every week, we interview business leaders, engineers academics and entrepreneurs, and bring you a diverse spectrum of opinions and points of view. \r\n\r\nEpicenter is hosted by Sebastien Couture, Brian Fabian Crain, Friederike Ernst, Meher Roy and Felix Lutsch. Since 2014, our episodes have been downloaded over 8 million times.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Ethereum",
+      "url": "https://www.reddit.com/r/ethereum/.rss",
+      "description": "Next-generation platform for decentralised applications. Dive in at ethereum.org",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Ethereum Foundation Blog",
+      "url": "https://blog.ethereum.org/feed.xml",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "INCRYPTED",
+      "url": "https://incrypted.net/feed/",
+      "description": "Все о Блокчейн и Криптовалютах",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Interviews",
+      "url": "https://feed.podbean.com/nuggetsnews/feed.xml",
+      "description": "#Investing #Finance #Markets",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Kraken Blog",
+      "url": "https://blog.kraken.com/feed/",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "News - Cryptonews",
+      "url": "https://cryptonews.com/news/feed",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "NewsBTC",
+      "url": "https://www.newsbtc.com/feed/",
+      "description": "Bitcoin & Cryptocurrency News Today",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Stephan Livera Podcast",
+      "url": "https://anchor.fm/s/7d083a4/podcast/rss",
+      "description": "Join Stephan as he interviews the sharpest economic and technical minds in Bitcoin &amp; Austrian Economics to help you understand how money is changing and evolving. Leading names in the world of Bitcoin join the show to share their insights, whether they are developers, CEOs, economists, authors, analysts and more.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "The Bad Crypto Podcast",
+      "url": "https://badcryptopodcast.com/feed/",
+      "description": "The World's Top Bitcoin Podcast covering Blockchain, Cryptocurrency, Ethereum, ICOs, Altcoins, Fintech and Digital Money. Hosted by Internet pioneer Joel Comm and Marketing Technologist Travis Wright, The Bad Crypto Podcast makes crypto easy to understand for newbies and crypto enthusiasts alike!",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "The Bitcoin Knowledge Podcast",
+      "url": "https://www.bitcoin.kn/feed/podcast/",
+      "description": "Interviews with top people in Bitcoin, blockchain and fintech including Adam Back, Caitlin Long, Saifedean Ammous, Paul Chou, Jesse Powell and many more.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "The Bitcoin Podcast",
+      "url": "https://feeds.simplecast.com/xCQr3ykc",
+      "description": "The Bitcoin Podcast is a show that discusses Bitcoin and Crypto topics in a laid back nature. From deep and technical topics, to laid back and philosophical topics...the gang, Demetrick, Corey and Jessie are just 3 guys looking to relax and talk about bitcoin. Established in 2015, one of the oldest crypto shows in the game.",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "The Market's Compass Technical View",
+      "url": "https://themarketscompass.substack.com/feed",
+      "description": "Using Technical Analysis to Navigate the Waters of the Global Financial Markets",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Today in Web 3",
+      "url": "https://feeds.soundcloud.com/users/soundcloud:users:844321453/sounds.rss",
+      "description": "Coming Soon by Matthew Diemer",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "ZebPay",
+      "url": "https://zebpay.com/feed/",
+      "description": "Buy Bitcoin and Cryptocurrency at India’s Leading Exchange",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "cryptocurrency | TechCrunch",
+      "url": "https://techcrunch.com/tag/cryptocurrency/feed",
+      "description": "Startup and Technology News",
+      "category": "cryptocurrency"
+    },
+    {
+      "title": "Blackhat Library: Hacking techniques and research",
+      "url": "https://www.reddit.com/r/blackhat/.rss",
+      "description": "Focused on the ongoing discussion and documentation of vulnerabilities and exploitation techniques. Please read the rules before posting here.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "CyberWire Daily",
+      "url": "https://feeds.megaphone.fm/cyberwire-daily-podcast",
+      "description": "The daily cybersecurity news and analysis industry leaders depend on. Published each weekday, the program also includes interviews with a wide spectrum of experts from industry, academia, and research organizations all over the world.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Darknet Diaries",
+      "url": "https://feeds.megaphone.fm/darknetdiaries",
+      "description": "<p>Explore true stories of the dark side of the Internet with host Jack Rhysider as he takes you on a journey through the chilling world of hacking, data breaches, and cyber crime.</p><p>¿Hablas español? Escucha en español aquí ➔ <a href=\"https://darknetdiaries.com/es/\">https://darknetdiaries.com/es/</a></p>",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Darknet – Hacking Tools, Hacker News & Cyber Security",
+      "url": "http://feeds.feedburner.com/darknethackers",
+      "description": "Darknet is your best source for the latest hacking tools, hacker news, cyber security best practices, ethical hacking & pen-testing.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Google Online Security Blog",
+      "url": "http://googleonlinesecurity.blogspot.com/atom.xml",
+      "description": "The latest news and insights from Google on security and safety on the Internet.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Hacking Humans",
+      "url": "https://feeds.megaphone.fm/hacking-humans",
+      "description": "Deception, influence, and social engineering in the world of cyber crime.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "ISF Podcast",
+      "url": "https://audioboom.com/channels/4991893.rss",
+      "description": "<h1>The ISF Podcast brings you cutting-edge conversation, tailored to CISOs, CTOs, CROs, and other global security pros. In every episode of the ISF Podcast, Chief Executive, Steve Durbin speaks with rule-breakers, collaborators, culture builders, and business creatives who manage their enterprise with vision, transparency, authenticity, and integrity. From the Information Security Forum, the leading authority on cyber, information security, and risk management.</h1>",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Krebs on Security",
+      "url": "http://krebsonsecurity.com/feed/",
+      "description": "In-depth security news and investigation",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Latest news",
+      "url": "https://www.zdnet.com/topic/security/rss.xml",
+      "description": "Most recent news",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Malicious Life",
+      "url": "https://malicious.life/feed/podcast/",
+      "description": "<p>Malicious Life by Cybereason tells the unknown stories of the history of cybersecurity, with comments and reflections by real hackers, security experts, journalists, and politicians.</p>",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Risky Business",
+      "url": "https://risky.biz/feeds/risky-business",
+      "description": "Risky Business is a weekly information security podcast featuring news and in-depth interviews with industry luminaries. Launched in February 2007, Risky Business is a must-listen digest for information security pros. With a running time of approximately 50-60 minutes, Risky Business is pacy; a security podcast without the waffle.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Schneier on Security",
+      "url": "http://www.schneier.com/blog/index.rdf",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Security Affairs",
+      "url": "http://securityaffairs.co/wordpress/feed",
+      "description": "Read, think, share … Security is everyone's responsibility",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Smashing Security",
+      "url": "http://www.smashingsecurity.com/rss",
+      "description": "<p>Stories from the world of hacking, cybersecurity, and rogue AI.</p><p>Smashing Security isn’t your typical tech podcast. Hosted by cybersecurity keynote speaker and industry veteran Graham Cluley, it serves up weekly tales of cybercrime, hacking horror stories, privacy blunders, and tech mishaps - all with sharp insight, a sense of humour, and zero tolerance for tech waffle.</p><p>Winner of the best and most entertaining cybersecurity podcast awards in 2018, 2019, 2022, 2023, and 2024, Smashing Security has had over ten million downloads. Past guests include Garry Kasparov, Mikko Hyppönen, and Jack Rhysider.</p><p>Follow the podcast on Bluesky at <a href=\"https://bsky.app/profile/smashingsecurity.com\" rel=\"nofollow\">@smashingsecurity.com</a>, and subscribe for free in your favourite podcast app.</p><p>New episodes released at 7pm EST every Wednesday (midnight UK).</p>",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Technical Information Security Content & Discussion",
+      "url": "https://www.reddit.com/r/netsec/.rss",
+      "description": "/r/netsec is a community-curated aggregator of technical information security content. Our mission is to extract signal from the noise — to provide value to security practitioners, students, researchers, and hackers everywhere. ‎",
+      "category": "cyber-security"
+    },
+    {
+      "title": "The Hacker News",
+      "url": "http://thehackernews.com/feeds/posts/default",
+      "description": "Most trusted, widely-read independent cybersecurity news source for everyone; supported by hackers and IT professionals — Send TIPs to admin@thehackernews.com",
+      "category": "cyber-security"
+    },
+    {
+      "title": "The Privacy, Security, & OSINT Show",
+      "url": "http://feeds.soundcloud.com/users/soundcloud:users:261098918/sounds.rss",
+      "description": "Show status update: https://inteltechniques.com/blog/2023/11/20/my-irish-exit/",
+      "category": "cyber-security"
+    },
+    {
+      "title": "Threatpost",
+      "url": "http://threatpost.com/feed",
+      "description": "The First Stop For Security News",
+      "category": "cyber-security"
+    },
+    {
+      "title": "cybersecurity",
+      "url": "https://www.reddit.com/r/cybersecurity/.rss",
+      "description": "This subreddit is for discussing cybersecurity topics, research, and emergent threats/findings.",
+      "category": "cyber-security"
+    },
+    {
+      "title": "cybersecurity | TechCrunch",
+      "url": "https://techcrunch.com/tag/cybersecurity/feed/",
+      "description": "Startup and Technology News",
+      "category": "cyber-security"
+    },
+    {
+      "title": "www.theregister.com - Articles",
+      "url": "http://www.theregister.co.uk/security/headlines.atom",
+      "description": "Articles from www.theregister.com",
+      "category": "cyber-security"
+    },
+    {
+      "title": "\"Human Nature\" Blog Feed",
+      "url": "http://feeds.feedburner.com/ConservationInternationalBlog",
+      "description": "RSS feed for news, views and features from the front lines of conservation",
+      "category": "environment"
+    },
+    {
+      "title": "Bionic Planet: Reversing Climate Change by Restoring Nature",
+      "url": "https://bionicplanet.libsyn.com/rss",
+      "description": "We've entered a new epoch: the Anthropocene, and nothing is as it was. Not the trees, not the seas – not the forests, farms, or fields – and not the global economy that depends on all of these. What does this mean for your investments, your family's future, and the future of man? Each week, we dive into these issues to help you Navigate the New Reality.",
+      "category": "environment"
+    },
+    {
+      "title": "Conservation International",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCam5sCp6mzGBcn8ZBB2RBJg",
+      "category": "environment"
+    },
+    {
+      "title": "Environment",
+      "url": "https://www.reddit.com/r/environment/.rss",
+      "description": "Current news, information and issues related to the environment.",
+      "category": "environment"
+    },
+    {
+      "title": "Environment + Energy – The Conversation",
+      "url": "https://theconversation.com/au/environment/articles.atom",
+      "category": "environment"
+    },
+    {
+      "title": "Environment News, Earth News, Global Warming, Wild Life, Carbon Trading, Climate Business, Climate Change & Pollution News",
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/2647163.cms",
+      "description": "World news on global warming, climate change, wildlife, pollution, carbon business and climate politics. News from Indian environment including wildlife like tiger, lion, elephants. Also, news from United Nations.",
+      "category": "environment"
+    },
+    {
+      "title": "Environment | The Guardian",
+      "url": "https://www.theguardian.com/us/environment/rss",
+      "description": "Latest environmental news, opinion and analysis from the Guardian.",
+      "category": "environment"
+    },
+    {
+      "title": "Good Good Good",
+      "url": "https://www.goodgoodgood.co/articles/rss.xml",
+      "description": "At Good Good Good we help you feel more hopeful and do more good.",
+      "category": "environment"
+    },
+    {
+      "title": "NPR Topics: Environment",
+      "url": "https://feeds.npr.org/1025/rss.xml",
+      "description": "Breaking news on the environment, climate change, pollution, and endangered species. Also featuring Climate Connections, a special series on climate change co-produced by NPR and National Geographic.",
+      "category": "environment"
+    },
+    {
+      "title": "NYT > Climate and Environment",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Climate.xml",
+      "category": "environment"
+    },
+    {
+      "title": "Prakati India",
+      "url": "https://www.prakati.in/feed/",
+      "description": "Eco Friendly Natural Organic Sustainable Living",
+      "category": "environment"
+    },
+    {
+      "title": "Vox",
+      "url": "https://www.vox.com/rss/energy-and-environment/index.xml",
+      "description": "Our world has too much noise and too little context. Vox helps you understand what matters.",
+      "category": "environment"
+    },
+    {
+      "title": "NYT > Style",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml",
+      "category": "fashion"
+    },
+    {
+      "title": "Budget Bytes",
+      "url": "http://budgetbytes.blogspot.com/feeds/posts/default",
+      "description": "Delicious Recipes Designed for Small Budgets",
+      "category": "food"
+    },
+    {
+      "title": "Chocolate & Zucchini",
+      "url": "https://cnz.to/feed/",
+      "description": "Simple Recipes from my Paris Kitchen",
+      "category": "food"
+    },
+    {
+      "title": "Dinner: A Love Story",
+      "url": "http://www.dinneralovestory.com/feed/",
+      "description": "It All Begins At the Family Table",
+      "category": "food"
+    },
+    {
+      "title": "Love and Lemons",
+      "url": "http://www.loveandlemons.com/feed/",
+      "description": "Healthy, whole food, vegan and vegetarian recipes",
+      "category": "food"
+    },
+    {
+      "title": "NYT > Food",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/DiningandWine.xml",
+      "category": "food"
+    },
+    {
+      "title": "BBC Sport",
+      "url": "https://feeds.bbci.co.uk/sport/football/rss.xml",
+      "description": "BBC Sport - Football",
+      "category": "football"
+    },
+    {
+      "title": "CNN.com - RSS Channel - Sport - Football",
+      "url": "http://rss.cnn.com/rss/edition_football.rss",
+      "description": "CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more.",
+      "category": "football"
+    },
+    {
+      "title": "EFL Championship",
+      "url": "https://www.reddit.com/r/Championship/.rss?format=xml",
+      "description": "Home of the EFL Championship on Reddit",
+      "category": "football"
+    },
+    {
+      "title": "Football - The People's Sport",
+      "url": "https://www.reddit.com/r/football/.rss?format=xml",
+      "description": "Home of Football. Official Sponsors of Redditch United. News, Rumours, Analysis, gossip and much more.",
+      "category": "football"
+    },
+    {
+      "title": "Football News, Football Scores, Premier League, La Liga, ISL | The Hindu",
+      "url": "https://www.thehindu.com/sport/football/feeder/default.rss",
+      "description": "Get Football News, Updates, Fixtures, Commentary &amp;amp; Live Scores From Top Leagues Like The Premier League, La Liga, ISL &amp;amp; Bundesliga At The Hindu",
+      "category": "football"
+    },
+    {
+      "title": "Football | The Guardian",
+      "url": "https://www.theguardian.com/football/rss",
+      "description": "Latest Football news, comment and analysis from the Guardian, the world's leading liberal voice",
+      "category": "football"
+    },
+    {
+      "title": "NYT > Sports > Soccer",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Soccer.xml",
+      "category": "football"
+    },
+    {
+      "title": "Makeup and Beauty Blog | Makeup Reviews, Swatches and How-To Makeup",
+      "url": "https://www.makeupandbeautyblog.com/feed/",
+      "description": "A beauty blog blooming with fresh makeup reviews, swatches and beauty tips from your friendly neighborhood beauty addict",
+      "category": "gaming"
+    },
+    {
+      "title": "r/gaming",
+      "url": "https://www.reddit.com/r/gaming.rss",
+      "description": "The Number One Gaming forum on the Internet.",
+      "category": "gaming"
+    },
+    {
+      "title": "the memory palace",
+      "url": "http://feeds.thememorypalace.us/thememorypalace",
+      "description": "<p>the memory palace</p>",
+      "category": "history"
+    },
+    {
+      "title": "BLOG - decor8",
+      "url": "https://www.decor8blog.com/blog?format=rss",
+      "category": "interior-design"
+    },
+    {
+      "title": "Interior Design (Interior Architecture)",
+      "url": "https://www.reddit.com/r/InteriorDesign/.rss",
+      "description": "Interior Design is the art and science of understanding people's behavior to create functional spaces within a building. It is a multi-faceted profession in which creative and technical solutions are applied within a structure to achieve a built interior environment.",
+      "category": "interior-design"
+    },
+    {
+      "title": "The Inspired Room",
+      "url": "https://theinspiredroom.net/feed/",
+      "description": "Voted Readers' Favorite Top Decorating Blog Better Homes and Gardens, Decorating Ideas, How to Organize, How to Decorate, HomeBody",
+      "category": "interior-design"
+    },
+    {
+      "title": "/r/Memes the original since 2008",
+      "url": "https://www.reddit.com/r/memes/.rss",
+      "description": "Memes! A way of describing cultural information being shared. An element of a culture or system of behavior that may be considered to be passed from one individual to another by nongenetic means, especially imitation.",
+      "category": "memes"
+    },
+    {
+      "title": "A sub for History Memes",
+      "url": "https://www.reddit.com/r/historymemes/.rss",
+      "description": "A place for history memes about events occurring over 20 years ago.",
+      "category": "memes"
+    },
+    {
+      "title": "Advice Animals",
+      "url": "https://www.reddit.com/r/AdviceAnimals/.rss",
+      "description": "Reddit's Gold Mine",
+      "category": "memes"
+    },
+    {
+      "title": "Indian Meme Templates",
+      "url": "https://indianmemetemplates.com/feed/",
+      "description": "Download Meme Templates, Indian Funny Photos, Movie Dialogues",
+      "category": "memes"
+    },
+    {
+      "title": "Indian Memes",
+      "url": "https://www.reddit.com/r/IndianMeyMeys/.rss",
+      "description": "Only the most normiest of the memes are allowed. tags : India , Indian Memes , Normie.",
+      "category": "memes"
+    },
+    {
+      "title": "Internet for the Spirit",
+      "url": "https://www.reddit.com/r/wholesomememes/.rss",
+      "description": "Welcome to the wholesome side of the internet! This community is for those searching for a way to capture virtue on the internet.",
+      "category": "memes"
+    },
+    {
+      "title": "Know Your Meme Newsfeed",
+      "url": "https://knowyourmeme.com/newsfeed.rss",
+      "description": "New items added to the News Feed",
+      "category": "memes"
+    },
+    {
+      "title": "Memebase",
+      "url": "https://memebase.cheezburger.com/rss",
+      "description": "Funny memes that \"GET IT\" and want you to too. Get the latest funniest memes and keep up what is going on in the meme-o-sphere.",
+      "category": "memes"
+    },
+    {
+      "title": "PrequelMemes - Memes of the Star Wars Prequels",
+      "url": "https://www.reddit.com/r/PrequelMemes/.rss",
+      "description": "Memes of the Star Wars Prequels.",
+      "category": "memes"
+    },
+    {
+      "title": "Rabbit Ramblings",
+      "url": "http://feeds.feedburner.com/blogspot/GlZMR",
+      "category": "memes"
+    },
+    {
+      "title": "YuckSauce",
+      "url": "https://yucksauce.com/feed/",
+      "description": "Curated Dumpster Fire: Meme Maker",
+      "category": "memes"
+    },
+    {
+      "title": "dankmemes",
+      "url": "https://www.reddit.com/r/dankmemes/.rss",
+      "description": "*le dank",
+      "category": "memes"
+    },
+    {
+      "title": "r/IndianDankMemes - India's Largest Meme Subreddit",
+      "url": "https://www.reddit.com/r/IndianDankMemes/.rss",
+      "description": "Meme Banao, Chutiya Nahi.",
+      "category": "memes"
+    },
+    {
+      "title": "selfies of the soul",
+      "url": "https://www.reddit.com/r/me_irl/.rss",
+      "description": "selfies of the soul | human posters only, bots go home | be excellent to each other",
+      "category": "memes"
+    },
+    {
+      "title": "when things get too real for meirl",
+      "url": "https://www.reddit.com/r/2meirl4meirl/.rss",
+      "description": "For relatable posts that are too real for /r/meirl or /r/me_irl. Meaning jokes/posts about mental health issues and self deprecating humour.",
+      "category": "memes"
+    },
+    {
+      "title": "😎HAHA DAE MINIONS!!!😎",
+      "url": "https://www.reddit.com/r/terriblefacebookmemes/.rss",
+      "description": "Community for all those terrible memes your uncle posts on facebook",
+      "category": "memes"
+    },
+    {
+      "title": "Movie News and Discussion",
+      "url": "https://reddit.com/r/movies/.rss",
+      "description": "/r/movies is the world's largest online film community, with over 37,000,000 members. Come on in and talk about movies with us!",
+      "category": "movies"
+    },
+    {
+      "title": "Movies",
+      "url": "https://www.bleedingcool.com/movies/feed/",
+      "description": "Comics, Movies, TV, Games",
+      "category": "movies"
+    },
+    {
+      "title": "Song Exploder",
+      "url": "http://feed.songexploder.net/songexploder",
+      "description": "<p>Song Exploder is a podcast where musicians take apart their songs, and piece by piece, tell the story of how they were made. Each episode features an artist discussing a song of theirs, breaking down the sounds and ideas that went into the writing and recording. Hosted and produced by Hrishikesh Hirway.</p>",
+      "category": "music"
+    },
+    {
+      "title": "BBC Earth",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCwmZiChSryoWQCZMIQezgTg",
+      "category": "nature"
+    },
+    {
+      "title": "BBC Earth Podcast",
+      "url": "https://rss.acast.com/bbcearthpodcast",
+      "description": "<p>Each week the BBC Earth podcast brings you entertainment, humour, an abundance of amazing animal stories and unbelievable unheard sounds. Explore the world of animals with superpowers, deep dive into death, hear from heroes passionately protecting the planet and get expert insights into corners of the natural world you’ve never explored before.</p><br><p>Hosted by zoologists Rutendo Shackleton and Sebastian Echeverri, each episode features special guests including the world’s most respected scientists and naturalists, stars of film and television, nature Instagrammers and more.</p><br><p>Listen, laugh and learn – whether you’re a nature lover, nature curious or haven’t yet realised nature is for you, there’ll be a story here to captivate your ears.</p><hr><p style='color:grey; font-size:0.75em;'> Hosted on Acast. See <a style='color:grey;' target='_blank' rel='noopener noreferrer' href='https://acast.com/privacy'>acast.com/privacy</a> for more information.</p>",
+      "category": "nature"
+    },
+    {
+      "title": "BLOG POSTS – Mark Avery",
+      "url": "https://markavery.info/blog/feed/",
+      "description": "Standing up for Nature",
+      "category": "nature"
+    },
+    {
+      "title": "Blog | Nature | PBS",
+      "url": "https://www.pbs.org/wnet/nature/blog/feed/",
+      "description": "The premiere natural history program on television.",
+      "category": "nature"
+    },
+    {
+      "title": "EarthPorn: Amazing images of light and landscape",
+      "url": "https://www.reddit.com/r/EarthPorn/.rss",
+      "description": "The internet's largest community of landscape photographers and Earth lovers.",
+      "category": "nature"
+    },
+    {
+      "title": "Explore Oceans",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCSyg9cb3Iq-NtlbxqNB9wGw",
+      "category": "nature"
+    },
+    {
+      "title": "National Geographic",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCpVm7bg6pXKo1Pr6k5kxG9A",
+      "category": "nature"
+    },
+    {
+      "title": "Nature",
+      "url": "http://feeds.nature.com/nature/rss/current?x=1",
+      "description": "Nature is the foremost international weekly scientific journal in the world and is the flagship journal for Nature Portfolio. It publishes the finest peer-reviewed research in all fields of science and technology on the basis of its originality, importance, interdisciplinary interest, timeliness, accessibility, elegance and surprising conclusions. Nature publishes landmark papers, award winning news, leading comment and expert opinion on important, topical scientific news and events that enable readers to share the latest discoveries in science and evolve the discussion amongst the global scientific community.",
+      "category": "nature"
+    },
+    {
+      "title": "Nature",
+      "url": "https://www.reddit.com/r/nature/.rss",
+      "description": "* Share your fascinating links about nature * Discuss endangered parts of nature * Contribute news about the wonders of nature * Meet other nature enthusiasts * Enjoy our functional design including * user flair * links to many related subreddits in the header menu * links to reddit specific information in the header menu",
+      "category": "nature"
+    },
+    {
+      "title": "Nature Gifs",
+      "url": "https://www.reddit.com/r/NatureGifs/.rss",
+      "category": "nature"
+    },
+    {
+      "title": "Nature on PBS",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCcBp_9YPyma4c3HTadmRJ3Q",
+      "category": "nature"
+    },
+    {
+      "title": "Reflections of the Natural World",
+      "url": "https://reflectionsofthenaturalworld.com/feed/",
+      "description": "Travel with me as I explore the wild things and wild places of our planet. - Jim Gain",
+      "category": "nature"
+    },
+    {
+      "title": "Stories Archives - Nature Canada",
+      "url": "https://naturecanada.ca/category/news/blog/feed/",
+      "description": "Your voice for nature!",
+      "category": "nature"
+    },
+    {
+      "title": "nature video",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UC7c8mE90qCtu11z47U0KErg",
+      "category": "nature"
+    },
+    {
+      "title": "NYT > World News",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+      "category": "news"
+    },
+    {
+      "title": "World News",
+      "url": "https://www.reddit.com/r/worldnews/.rss",
+      "description": "A place for major news from around the world, excluding US-internal news.",
+      "category": "news"
+    },
+    {
+      "title": "Afford Anything®",
+      "url": "https://feeds.feedburner.com/AffordAnythingFeed",
+      "description": "You Can Afford Anything ... Just Not Everything™. What's It Gonna Be?",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Invest Like the Best with Patrick O'Shaughnessy",
+      "url": "http://investlikethebest.libsyn.com/rss",
+      "description": "Conversations with the best investors and business leaders in the world. We explore their ideas, methods, and stories to help you better invest your time and money. Hear stock market and boardroom insights you can't find anywhere else. If you're a professional investor, CEO, entrepreneur, or business strategist, this is for you. Explore all our episodes and learn more at https://www.colossus.com",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Listen Money Matters - Free your inner financial badass. All the stuff you should know about personal finance.",
+      "url": "https://feeds.megaphone.fm/listen-money-matters",
+      "description": "Honest and uncensored - this is not your father’s boring finance show. This show brings much needed ACTIONABLE advice to a people who hate being lectured about personal finance from the out-of-touch one percent. Andrew and Matt are relatable, funny, and brash. Their down-to-earth discussions about money are entertaining whether you’re a financial whiz or just starting out. To be a part of the show and get your financial questions answered, send an email to listenmoneymatters@gmail.com.",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Money For the Rest of Us",
+      "url": "https://rss.art19.com/money-for-the-rest-of-us",
+      "description": "<p>A personal finance and investing podcast on money, how it works, how to invest it and how to live without worrying about it. J. David Stein is a former Chief Investment Strategist and money manager. For close to two decades, he has been teaching individuals and institutions how to invest and handle their finances in ways that are simple to understand. More info at moneyfortherestofus.com</p>",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Nerd's Eye View | Kitces.com",
+      "url": "http://feeds.feedblitz.com/kitcesnerdseyeview&amp;x=1",
+      "description": "Commentary from Michael Kitces on Financial Planning News & Strategies",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Personal Finance",
+      "url": "https://reddit.com/r/personalfinance/.rss",
+      "description": "Learn about budgeting, saving, getting out of debt, credit, investing, and retirement planning. Join our community, read the PF Wiki, and get on top of your finances!",
+      "category": "personal-finance"
+    },
+    {
+      "title": "SavingAdvice.com Blog",
+      "url": "https://www.savingadvice.com/feed/",
+      "description": "SavingAdvice.com is a trusted personal finance community with expert articles on saving money, budgeting, debt reduction, and investing — plus active forums and tools to guide your financial journey.",
+      "category": "personal-finance"
+    },
+    {
+      "title": "So Money with Farnoosh Torabi",
+      "url": "https://feeds.megaphone.fm/somoney",
+      "description": "*** Named a Best Podcast By The New York Times, Time Magazine, Real Simple and MSNBC *** Host Farnoosh Torabi is an award-winning financial strategist, TV host and bestselling author. With over 40 million downloads and multiple Webby wins, So Money is dedicated to sharing inspiring money strategies and stories straight from today's financial leaders, bestselling authors and entrepreneurs. One day, hear an intimate money conversation with industry greats like Queen Latifah, Barbara Corcoran or Margaret Cho. Another day learn the basics of cryptocurrency and its impact on our wallets. On Fridays, tune in as Farnoosh answers our most pressing financial questions about saving, investing and building wealth. Advice and insights always delivered through a lens of equity, inclusivity and the changing world we live in. Want more? Join the So Money Members Club at SoMoneyMembers.com. <hr><p style='color:grey; font-size:0.75em;'> Hosted on Acast. See <a style='color:grey;' target='_blank' rel='noopener noreferrer' href='https://acast.com/privacy'>acast.com/privacy</a> for more information.</p>",
+      "category": "personal-finance"
+    },
+    {
+      "title": "The Clark Howard Podcast",
+      "url": "https://feeds.megaphone.fm/clarkhoward",
+      "description": "Save more and spend less is more than just a motto for money expert Clark Howard; it’s a way of life. Clark and his crew — Team Clark — are on a mission to empower people to take control of their personal finances by providing money-saving tips, consumer advice, hot deals and economic news to help everyone achieve financial freedom. Clark is a nationally syndicated radio talk show host and a consumer reporter for television stations around the country. His podcast, The Clark Howard Show, receives more than one million downloads each month and is a hub for listeners to get valuable advice on-demand any time. Clark answers questions on the most popular business and consumer topics including; how to buy a cars, financing a home, retirement planning, shopping for insurance and getting the most out of your savings. Join the conversation and submit your question to www.clark.com/askclark . Clark spearheads two free resources — Clark.com and ClarkDeals.com — to encourage consumers to save more, spend less and avoid ripoffs.",
+      "category": "personal-finance"
+    },
+    {
+      "title": "The Ramsey Show",
+      "url": "https://daveramsey.libsyn.com/rss",
+      "description": "The Ramsey Show believes you can build wealth and take control of your life—no matter what stupid mistakes you've made with money. Join as Dave Ramsey and his team of experts answer your questions on the top problems holding you back. Listen now or ask your question live by calling 888.825.5225 weekdays from 2–5 p.m. ET. Learn more at www.ramseysolutions.com",
+      "category": "personal-finance"
+    },
+    {
+      "title": "The Stacking Benjamins Show",
+      "url": "https://feeds.megaphone.fm/stacking-benjamins",
+      "description": "<p>Named Best Personal Finance Podcast by Bankrate.com and Kiplinger — and the only podcast the Plutus Awards retired from competition after winning twice — The Stacking Benjamins Show is personal finance that doesn’t put you to sleep.</p><p>Hosts Joe Saul-Sehy (former 16-year financial advisor, ex-WXYZ-TV “Money Man”) and Josh “OG” Bannerman, CFP (Certified Financial Planner, Bannerman Wealth) sit around the card table in Joe’s mom’s half-finished basement in Texarkana and talk money with the smartest guests in personal finance, investing, and behavioral economics. As Fast Company wrote, the show “strikes a great balance of fun and functional.”</p><p>Every Monday, Wednesday, and Friday: expert guests, real headlines, listener questions, and Doug’s trivia. Topics include investing, retirement planning, budgeting, real estate, behavioral finance, taxes, and financial independence — for anyone who wants to be smarter about money without being talked down to.</p><p>Subscribe to The 201 — the free newsletter that goes deeper than the show — at <a href=\"http://stackingbenjamins.com/201\" rel=\"noopener noreferrer\" target=\"_blank\">stackingbenjamins.com/201</a></p>",
+      "category": "personal-finance"
+    },
+    {
+      "title": "Stuck in Customs",
+      "url": "https://stuckincustoms.com/feed/",
+      "description": "Trey Ratcliff's Travel Photography blog with daily inspiration to motivate you!",
+      "category": "photography"
+    },
+    {
+      "title": "Spotify Engineering",
+      "url": "https://labs.spotify.com/feed/",
+      "description": "Spotify’s official technology blog",
+      "category": "programming"
+    },
+    {
+      "title": "programming",
+      "url": "https://www.reddit.com/r/programming/.rss",
+      "description": "Computer Programming",
+      "category": "programming"
+    },
+    {
+      "title": "Gastropod",
+      "url": "https://www.omnycontent.com/d/playlist/aaea4e69-af51-495e-afc9-a9760146922b/2a195077-f014-41d2-8313-ab190186b4c2/277bcd5c-0a05-4c14-8ba6-ab190186b4d5/podcast.rss",
+      "description": "Food with a side of science and history. Every other week, co-hosts Cynthia Graber and Nicola Twilley serve up a brand new episode exploring the hidden history and surprising science behind a different food- or farming-related topic, from aquaculture to ancient feasts, from cutlery to chile peppers, and from microbes to Malbec. We interview experts, visit labs, fields, and archaeological digs, and generally have lots of fun while discovering new ways to think about and understand the world through food. Find us online at gastropod.com, follow us on Twitter @gastropodcast, and like us on Facebook at facebook.com/gastropodcast.",
+      "category": "science"
+    },
+    {
+      "title": "NYT > Science",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Science.xml",
+      "category": "science"
+    },
+    {
+      "title": "Nature",
+      "url": "https://www.nature.com/nature.rss",
+      "description": "Nature is the foremost international weekly scientific journal in the world and is the flagship journal for Nature Portfolio. It publishes the finest peer-reviewed research in all fields of science and technology on the basis of its originality, importance, interdisciplinary interest, timeliness, accessibility, elegance and surprising conclusions. Nature publishes landmark papers, award winning news, leading comment and expert opinion on important, topical scientific news and events that enable readers to share the latest discoveries in science and evolve the discussion amongst the global scientific community.",
+      "category": "science"
+    },
+    {
+      "title": "Popular Science",
+      "url": "https://www.popsci.com/arcio/rss/",
+      "description": "Awe-inspiring science reporting, technology news, and DIY projects. Skunks to space robots, primates to climates. That&#039;s Popular Science, 150 years strong.",
+      "category": "science"
+    },
+    {
+      "title": "Reddit Science",
+      "url": "https://reddit.com/r/science/.rss",
+      "description": "This community is a place to share and discuss new scientific research. Read about the latest advances in astronomy, biology, medicine, physics, social science, and more. Find and submit new publications and popular science coverage of current research.",
+      "category": "science"
+    },
+    {
+      "title": "/r/space: news, articles and discussion",
+      "url": "https://www.reddit.com/r/space/.rss?format=xml",
+      "description": "Share & discuss informative content on: * Astrophysics * Cosmology * Space Exploration * Planetary Science * Astrobiology",
+      "category": "space"
+    },
+    {
+      "title": "CNN.com - RSS Channel - Sport",
+      "url": "http://rss.cnn.com/rss/edition_sport.rss",
+      "description": "CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more.",
+      "category": "sports"
+    },
+    {
+      "title": "NYT > Sports",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml",
+      "category": "sports"
+    },
+    {
+      "title": "Reddit Sports",
+      "url": "https://www.reddit.com/r/sports.rss",
+      "description": "Sports News and Highlights from the NFL, NBA, NHL, MLB, MLS, NCAA, F1, and other leagues around the world.",
+      "category": "sports"
+    },
+    {
+      "title": "Sport | The Guardian",
+      "url": "https://www.theguardian.com/uk/sport/rss",
+      "description": "Latest Sport news, comment and analysis from the Guardian, the world's leading liberal voice",
+      "category": "sports"
+    },
+    {
+      "title": "Sports News: Cricket Live Scorecard, Latest Cricket News, Football, NBA, NFL, WWE, NHL, MLB News & More",
+      "url": "https://timesofindia.indiatimes.com/rssfeeds/4719148.cms",
+      "description": "Get the latest sports news, live cricket scores and in-depth coverage of Cricket, Football, NBA, NFL, WWE, F1, Tennis, and more on The Times of India. Stay updated with breaking sports stories, player stats, and event highlights.",
+      "category": "sports"
+    },
+    {
+      "title": "Sports | The Indian Express",
+      "url": "https://indianexpress.com/section/sports/feed/",
+      "description": "Latest News Today, Breaking News, India News, Top Headlines",
+      "category": "sports"
+    },
+    {
+      "title": "Masters of Scale",
+      "url": "https://rss.art19.com/masters-of-scale",
+      "description": "<p>On Masters of Scale, iconic business leaders share lessons and strategies that have helped them grow the world's most fascinating companies. Founders, CEOs, and dynamic innovators join candid conversations about their triumphs and challenges with a set of luminary hosts, including founding host Reid Hoffman (LinkedIn co-founder and Greylock partner). From navigating early prototypes to expanding brands globally, Masters of Scale provides priceless insights to help anyone grow their dream enterprise.</p>",
+      "category": "startups"
+    },
+    {
+      "title": "NYT > Technology",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+      "category": "tech"
+    },
+    {
+      "title": "www.theregister.com - Articles",
+      "url": "https://www.theregister.com/headlines.rss",
+      "description": "Articles from www.theregister.com",
+      "category": "tech"
+    },
+    {
+      "title": "TV",
+      "url": "https://www.bleedingcool.com/tv/feed/",
+      "description": "Comics, Movies, TV, Games",
+      "category": "television"
+    },
+    {
+      "title": "📺Television News and Discussion",
+      "url": "https://reddit.com/r/television/.rss",
+      "description": "Subreddit for content primarily about and related to scripted television programming",
+      "category": "television"
+    },
+    {
+      "title": "CNN.com - RSS Channel - Sport - Tennis",
+      "url": "http://rss.cnn.com/rss/edition_tennis.rss",
+      "description": "CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more.",
+      "category": "tennis"
+    },
+    {
+      "title": "Essential Tennis Podcast - Instruction, Lessons, Tips",
+      "url": "https://feed.podbean.com/essentialtennis/feed.xml",
+      "description": "Improve your tennis with the Essential Tennis Podcast, the very first podcast dedicated to tennis lessons and instruction! Tennis professional Ian Westermann answers listener questions about technique, strategy, mental toughness, and much more.",
+      "category": "tennis"
+    },
+    {
+      "title": "NYT > Sports > Tennis",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Tennis.xml",
+      "category": "tennis"
+    },
+    {
+      "title": "Tennis News & Discussion",
+      "url": "https://www.reddit.com/r/tennis/.rss",
+      "description": "Professional tennis discussion. Feel free to visit our sister sub for more information on technique, r/10s.",
+      "category": "tennis"
+    },
+    {
+      "title": "Tennis News, Updates, Tennis Scores, ATP, WTA, Grand Slams | The Hindu",
+      "url": "https://www.thehindu.com/sport/tennis/feeder/default.rss",
+      "description": "Find Tennis Results, Commentary, Highlights, Live Scores, Latest News From The ATP Tour, WTA Tour &amp;amp; All The Grand Slams At The Hindu",
+      "category": "tennis"
+    },
+    {
+      "title": "Tennis | The Guardian",
+      "url": "https://www.theguardian.com/sport/tennis/rss",
+      "description": "Latest news and features from theguardian.com, the world's leading liberal voice",
+      "category": "tennis"
+    },
+    {
+      "title": "Tennis | The Indian Express",
+      "url": "https://indianexpress.com/section/sports/tennis/feed/",
+      "description": "Latest News Today, Breaking News, India News, Top Headlines",
+      "category": "tennis"
+    },
+    {
+      "title": "Adventure.com",
+      "url": "http://adventure.com/feed/",
+      "category": "travel"
+    },
+    {
+      "title": "CNN.com - RSS Channel - App Travel Section",
+      "url": "http://rss.cnn.com/rss/cnn_travel.rss",
+      "description": "CNN.com delivers up-to-the-minute news and information on the latest top stories, weather, entertainment, politics and more.",
+      "category": "travel"
+    },
+    {
+      "title": "Everything Everywhere",
+      "url": "http://feeds2.feedburner.com/EverythingEverywhere/",
+      "description": "Learn Something New Every Day!",
+      "category": "travel"
+    },
+    {
+      "title": "Million Mile Secrets",
+      "url": "http://feeds.feedburner.com/MillionMileSecrets",
+      "category": "travel"
+    },
+    {
+      "title": "NYT > Travel",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/Travel.xml",
+      "category": "travel"
+    },
+    {
+      "title": "TFIL (Traveling to EVERY COUNTRY in A-Z Order)",
+      "url": "https://www.youtube.com/feeds/videos.xml?user=ECastee",
+      "category": "travel"
+    },
+    {
+      "title": "The Points Guy Articles",
+      "url": "http://feeds.feedburner.com/thepointsguy",
+      "description": "The Points Guy Articles Feed",
+      "category": "travel"
+    },
+    {
+      "title": "Travel Dudes",
+      "url": "https://www.traveldudes.com/feed/",
+      "description": "For Travelers, By Travelers!",
+      "category": "travel"
+    },
+    {
+      "title": "NN/g latest articles and announcements",
+      "url": "https://www.nngroup.com/feed/rss/",
+      "description": "The latest articles and announcements from Nielsen Norman Group",
+      "category": "ui---ux"
+    },
+    {
+      "title": "Usability Geek",
+      "url": "https://usabilitygeek.com/feed/",
+      "description": "Usability & User Experience (UX) Blog",
+      "category": "ui---ux"
+    },
+    {
+      "title": "User Experience",
+      "url": "https://www.reddit.com/r/userexperience/.rss",
+      "description": "A community where professionals, enthusiasts, and individuals interested in the field of user experience can share knowledge, ask questions, and engage in discussions about various UX-related topics.",
+      "category": "ui---ux"
+    },
+    {
+      "title": "Alberto De Bortoli",
+      "url": "https://albertodebortoli.com/rss/",
+      "description": "Principal Software Engineer @ Just Eat Takeaway, London.",
+      "category": "ios-development"
+    },
+    {
+      "title": "Latest News and News Headlines | Daily Telegraph",
+      "url": "https://www.dailytelegraph.com.au/news/breaking-news/rss",
+      "description": "We're for Sydney",
+      "category": "australia"
+    },
+    {
+      "title": "Latest News and News Headlines | Herald Sun",
+      "url": "https://www.heraldsun.com.au/news/breaking-news/rss",
+      "description": "Breaking News from Melbourne and Victoria | Herald Sun",
+      "category": "australia"
+    },
+    {
+      "title": "The Courier Mail",
+      "url": "https://www.couriermail.com.au/rss",
+      "description": "Breaking News Headlines for Brisbane and Queensland | Courier Mail",
+      "category": "australia"
+    },
+    {
+      "title": "InDaily",
+      "url": "https://indaily.com.au/feed/",
+      "category": "australia"
+    },
+    {
+      "title": "The Mercury",
+      "url": "https://www.themercury.com.au/rss",
+      "description": "Latest Hobart and Tasmania News | The Mercury",
+      "category": "australia"
+    },
+    {
+      "title": "Michael West",
+      "url": "https://www.michaelwest.com.au/feed/",
+      "description": "Investigative Journalism",
+      "category": "australia"
+    },
+    {
+      "title": "bdnews24.com - Home",
+      "url": "https://bdnews24.com/?widgetName=rssfeed&widgetId=1150&getXmlFeed=true",
+      "description": "The RSS feed of bdnews24.com",
+      "category": "bangladesh"
+    },
+    {
+      "title": "Bangla News",
+      "url": "https://www.banglanews24.com/rss/rss.xml",
+      "description": "banglanews24.com RSS Feed",
+      "category": "bangladesh"
+    },
+    {
+      "title": "JUGANTOR",
+      "url": "https://www.jugantor.com/feed/rss.xml",
+      "description": "RSS feed of latest topics",
+      "category": "bangladesh"
+    },
+    {
+      "title": "kalerkantho Kantho",
+      "url": "https://www.kalerkantho.com/rss.xml",
+      "description": "kalerkantho.com RSS Feed",
+      "category": "bangladesh"
+    },
+    {
+      "title": "Portal EBC - RSS",
+      "url": "http://www.ebc.com.br/rss/feed.xml",
+      "category": "brazil"
+    },
+    {
+      "title": "R7 - Notícias",
+      "url": "https://noticias.r7.com/feed.xml",
+      "category": "brazil"
+    },
+    {
+      "title": "CTVNews.ca - Top Stories - Public RSS",
+      "url": "https://www.ctvnews.ca/rss/ctvnews-ca-top-stories-public-rss-1.822009",
+      "description": "Latest news from CTVNews.ca",
+      "category": "canada"
+    },
+    {
+      "title": "Toronto Star",
+      "url": "https://www.thestar.com/content/thestar/feed.RSSManagerServlet.articles.topstories.rss",
+      "description": "TOPSTORIES",
+      "category": "canada"
+    },
+    {
+      "title": "Ministry for Europe and Foreign Affairs - Actualités",
+      "url": "https://www.diplomatie.gouv.fr/spip.php?page=backend-fd&lang=en",
+      "category": "france"
+    },
+    {
+      "title": "L&#039;essentiel",
+      "url": "https://www.sudouest.fr/essentiel/rss.xml",
+      "description": "Retrouvez l&#039;actualité du Sud Ouest en direct et toutes les informations régionales : politique, économie, sport, photos et vidéos.",
+      "category": "france"
+    },
+    {
+      "title": "FOCUS Online",
+      "url": "https://rss.focus.de/fol/XML/rss_folnews.xml",
+      "description": "FOCUS Online - minutenaktuelle Nachrichten und Service-Informationen.",
+      "category": "germany"
+    },
+    {
+      "title": "The Standard - Latest News",
+      "url": "https://www.thestandard.com.hk/newsfeed/latest/news.xml",
+      "description": "Latest headlines from The Standard",
+      "category": "hong-kong-sar-china"
+    },
+    {
+      "title": "頭條日報 Headline Daily - 頭條網",
+      "url": "https://hd.stheadline.com/rss/news/daily/",
+      "description": "頭條日報 Headline Daily - 頭條網",
+      "category": "hong-kong-sar-china"
+    },
+    {
+      "title": "香港新聞RSS - 香港經濟日報 hket.com",
+      "url": "https://www.hket.com/rss/hongkong",
+      "description": "訂閱新聞RSS，獲取最新香港新聞, 時事 - RSS - 香港經濟日報 hket.com",
+      "category": "hong-kong-sar-china"
+    },
+    {
+      "title": "SEBI RSS Feed",
+      "url": "https://www.sebi.gov.in/sebirss.xml",
+      "description": "SEBI RSS Feed",
+      "category": "india"
+    },
+    {
+      "title": "Front Page | The Indian Express",
+      "url": "http://indianexpress.com/print/front-page/feed/",
+      "description": "Latest News, India News, Covid-19 News, Breaking News, Today's News Headlines Online",
+      "category": "india"
+    },
+    {
+      "title": "India News",
+      "url": "https://www.dnaindia.com/feeds/india.xml",
+      "description": "dnaindia.com delivers news and information on the latest top stories, sport, entertainment, business, technology, Mumbai, India, world and more.",
+      "category": "india"
+    },
+    {
+      "title": "Firstpost India Latest News",
+      "url": "https://www.firstpost.com/rss/india.xml",
+      "description": "Firstpost provides Latest News in India, Live News India, India Breaking News, todays India news, Top headlines of India",
+      "category": "india"
+    },
+    {
+      "title": "Home Page",
+      "url": "https://www.business-standard.com/rss/home_page_top_stories.rss",
+      "description": "Business News: Get latest stock share market news, financial news, economy news, company news, politics news, India news, breaking news, Indian economy news at Business Standard. Catch Nifty Sensex Live updates.",
+      "category": "india"
+    },
+    {
+      "title": "Outlook India",
+      "url": "https://www.outlookindia.com/rss/main/magazine",
+      "description": "outlook India",
+      "category": "india"
+    },
+    {
+      "title": "Deccan Chronicle - Latest India news | Breaking news | Hyderabad News | World news | Business news | Politics | Technology news",
+      "url": "https://www.deccanchronicle.com/rss_feed/",
+      "description": "Deccan Chronicle brings you the latest news, views, analysis and images from India and the world.",
+      "category": "india"
+    },
+    {
+      "title": "Top Stories News - Gujarat Samachar : World's Leading Gujarati Newspaper",
+      "url": "https://www.gujaratsamachar.com/rss/top-stories",
+      "description": "Top Stories News - Gujarat Samachar : World's Leading Gujarati Newspaper",
+      "category": "india"
+    },
+    {
+      "title": "Marathi News: मराठी बातम्या,  Latest News in Marathi, Breaking Marathi News, Marathi News Paper | Maharashtra Times",
+      "url": "https://maharashtratimes.com/rssfeedsdefault.cms",
+      "description": "Get latest Marathi news from Maharashtra, India and World. Maharashtra Times, a Marathi news paper provides news in Marathi, Marathi batmya, today's news headlines from sports, entertainment, politics and more.",
+      "category": "india"
+    },
+    {
+      "title": "Loksattaदेश-विदेश &#8211; Loksatta",
+      "url": "https://www.loksatta.com/desh-videsh/feed/",
+      "description": "Marathi News",
+      "category": "india"
+    },
+    {
+      "title": "Latest News program News18 Lokmat",
+      "url": "https://lokmat.news18.com/rss/program.xml",
+      "description": "Latest news from program Section",
+      "category": "india"
+    },
+    {
+      "title": "ThePrint",
+      "url": "https://theprint.in/feed/",
+      "description": "India’s digital platform for latest news and reports, insightful analyses, opinion on politics, policy, governance, economy, education, defence and culture.",
+      "category": "india"
+    },
+    {
+      "title": "Navbharat Times",
+      "url": "https://navbharattimes.indiatimes.com/rssfeedsdefault.cms",
+      "description": "NavBharat Times a Hindi news portal brings news in Hindi from India and international news headlines, top stories on business, politics, sports and entertainment news",
+      "category": "india"
+    },
+    {
+      "title": "Patrika : India's Leading Hindi News Portal",
+      "url": "http://api.patrika.com/rss/india-news",
+      "description": "Patrika - A Hindi news portal brings latest news, headlines in hindi from India, world, business, politics, sports and entertainment!",
+      "category": "india"
+    },
+    {
+      "title": "JansattaJansatta",
+      "url": "https://www.jansatta.com/feed/",
+      "description": "Hindi News, हिंदी समाचार, Live Hindi News, Latest India News, Hindi News Paper Today, Breaking News Headlines",
+      "category": "india"
+    },
+    {
+      "title": "Tribunnews.com",
+      "url": "https://www.tribunnews.com/rss",
+      "description": "Berita Terkini dari Tribunnews.com",
+      "category": "indonesia"
+    },
+    {
+      "title": "Merdeka.com",
+      "url": "https://www.merdeka.com/feed/",
+      "description": "Merdeka.com RSS 2.0",
+      "category": "indonesia"
+    },
+    {
+      "title": "Suara.com",
+      "url": "https://www.suara.com/rss",
+      "description": "Kumpulan Kabar Berita Terkini Suara.Com",
+      "category": "indonesia"
+    },
+    {
+      "title": "خبرگزاری باشگاه خبرنگاران | آخرین اخبار ایران و جهان | YJC",
+      "url": "https://www.yjc.ir/fa/rss/allnews",
+      "description": "www.Yjc.news",
+      "category": "iran"
+    },
+    {
+      "title": "خبرگزاری مهر | اخبار ایران و جهان | Mehr News Agency",
+      "url": "https://www.mehrnews.com/rss",
+      "description": "خبرگزاری مهر آخرين اخبار ايران جهان سياست ورزش اقتصاد فرهنگ حوزه دانشگاه هنر فيلم عکس مجله مهر و استان ها | mehrnews.com, mehrnews, mehr news agency",
+      "category": "iran"
+    },
+    {
+      "title": "عصر ايران",
+      "url": "https://www.asriran.com/fa/rss/allnews",
+      "description": "اخبار، قیمت طلا و ارز، قیمت خودرو، اخبار کرونا، فیلم و کلیپ های به روز و خواندی های جالب",
+      "category": "iran"
+    },
+    {
+      "title": "Fanpage",
+      "url": "https://www.fanpage.it/feed/",
+      "description": "Indipendente, sociale, partecipativo - segui i nostri live, reportage, inchieste, storie e video da Youmedia, partecipa con noi all'informazione.",
+      "category": "italy"
+    },
+    {
+      "title": "Adnkronos - ultimoratop",
+      "url": "http://rss.adnkronos.com/RSS_PrimaPagina.xml",
+      "description": "www.adnkronos.com mette a disposizione dei lettori le news pubblicate con il sistema Rss. Con Rss è possibile infatti ricevere in tempo reale sul proprio computer le notizie che vengono messe on line dal Gruppo Adnkronos.",
+      "category": "italy"
+    },
+    {
+      "title": "Il Post",
+      "url": "https://www.ilpost.it/feed/",
+      "description": "Gli articoli, le rassegne, i blog, le foto, tutto quello che arriva dal mondo e dalla rete.",
+      "category": "italy"
+    },
+    {
+      "title": "Japan Today",
+      "url": "https://japantoday.com/feed",
+      "description": "Japan News and Discussion",
+      "category": "japan"
+    },
+    {
+      "title": "All - Kyodo News+",
+      "url": "https://english.kyodonews.net/rss/all.xml",
+      "description": "Kyodo News on the Web: Daily international, Japan news, Japan News, national and local news coverage from the newspaper, breaking news updates, technology news, sports, reviews, listings.",
+      "category": "japan"
+    },
+    {
+      "title": "Excélsior - RSS",
+      "url": "https://www.excelsior.com.mx/rss.xml",
+      "description": "El portal de noticias líder en México con toda la información nacional y del mundo. Entérate en tiempo real de la vida pública, política, espectáculos, deportes, videos y más...",
+      "category": "mexico"
+    },
+    {
+      "title": "Tu Periódico Quequi",
+      "url": "https://quequi.com.mx/feed/",
+      "description": "Las noticias más Importantes de Quintana Roo",
+      "category": "mexico"
+    },
+    {
+      "title": "DEBATE",
+      "url": "https://www.debate.com.mx/rss/feed.xml",
+      "description": "Últimas Noticias de México y el Mundo",
+      "category": "mexico"
+    },
+    {
+      "title": "El Diario",
+      "url": "https://diario.mx/jrz/media/sitemaps/rss.xml",
+      "description": "Noticias en tiempo real de Ciudad Juárez, México y el mundo",
+      "category": "mexico"
+    },
+    {
+      "title": "8 Columnas",
+      "url": "https://8columnas.com.mx/feed/",
+      "description": "La nueva era del periodismo",
+      "category": "mexico"
+    },
+    {
+      "url": "https://www.eluniversal.com.mx/seccion/1671/rss.xml",
+      "category": "mexico"
+    },
+    {
+      "title": "Myanmar Gazette News Media Forum Network",
+      "url": "http://myanmargazette.net/feed",
+      "description": "Myanmar, newspaper, news media, Breaking news, Information, Multimedia, Journal, Magazine, Blog, Forums, Myanmar Online, News Portal",
+      "category": "myanmar-burma"
+    },
+    {
+      "title": "DVB Multimedia Group",
+      "url": "http://www.dvb.no/feed",
+      "description": "Latest news, business, comment and features from the leading independent Burmese media outlet",
+      "category": "myanmar-burma"
+    },
+    {
+      "title": "THIT HTOO LWIN (Daily News)",
+      "url": "http://www.thithtoolwin.com/feeds/posts/default",
+      "description": "နေ့စဉ် မြန်မာသတင်း၊ နိုင်ငံတကာသတင်း၊ နိုင်ငံရေး၊ လူမှုရေး၊ စီးပွားရေး၊ အနုပညာ၊ မြန်မာဂျာနယ်၊ ဗီဒီယိုသတင်းနှင့် ကျန်းမာရေး ဆောင်းပါးများကို ဝေဝေဆာဆာတင်ပြနေသည့် ဆိုဒ်ဖြစ်ပါသည်။ http://feeds.feedburner.com/thithtoolwin/yIWV",
+      "category": "myanmar-burma"
+    },
+    {
+      "title": "All Content",
+      "url": "http://saharareporters.com/feeds/latest/feed",
+      "category": "nigeria"
+    },
+    {
+      "title": "Nigeria News Links | Today's Updates - Nigerian Bulletin",
+      "url": "https://www.nigerianbulletin.com/forums/-/index.rss",
+      "description": "Find the best Nigeria News links to trending News and articles from Nigeria, Africa and across the world. Get on Nigerian Bulletin today for top news and more",
+      "category": "nigeria"
+    },
+    {
+      "title": "Latest Nigeria News, Nigerian Newspapers, Politics",
+      "url": "https://thenationonlineng.net/feed/",
+      "description": "A news breaking website. Truth in Defence of Freedom",
+      "category": "nigeria"
+    },
+    {
+      "title": "The Guardian Nigeria News – Nigeria and World News",
+      "url": "https://guardian.ng/feed/",
+      "description": "The Latest news in Nigeria and world news. The Guardian Nigeria Newspaper brings you the latest headlines, opinions, political news, business reports and international news.",
+      "category": "nigeria"
+    },
+    {
+      "title": "Latest News | Philippine Information Agency",
+      "url": "https://pia.gov.ph/news/feed.rss",
+      "description": "Latest news and updates from Philippine Information Agency.",
+      "category": "philippines"
+    },
+    {
+      "title": "- The Manila Times",
+      "url": "https://www.manilatimes.net/rssfeed/",
+      "description": "News | Opinion | Philippines | Asia | World",
+      "category": "philippines"
+    },
+    {
+      "title": "https://www.sunstar.com.ph/",
+      "url": "https://www.sunstar.com.ph/rssFeed/selected",
+      "category": "philippines"
+    },
+    {
+      "title": "Manila Standard",
+      "url": "https://manilastandard.net/feed/all",
+      "description": "Manila Standard | Defining The News",
+      "category": "philippines"
+    },
+    {
+      "title": "Tempo – The Nation's Fastest Growing Newspaper",
+      "url": "http://tempo.com.ph/feed/",
+      "description": "Tempo - News in a Flash",
+      "category": "philippines"
+    },
+    {
+      "title": "BusinessMirror",
+      "url": "https://businessmirror.com.ph/feed/",
+      "description": "A broader look at today’s business",
+      "category": "philippines"
+    },
+    {
+      "title": "Latest News | Philippine News Agency",
+      "url": "https://www.pna.gov.ph/latest.rss",
+      "description": "Latest news in Philippine News Agency.",
+      "category": "philippines"
+    },
+    {
+      "title": "BICOL STANDARD | Bicol News | Bicol Newspaper",
+      "url": "http://www.bicolstandard.com/feeds/posts/default?alt=rss",
+      "description": "Bicol newspaper published and edited in Naga City, Philippines | We publish advertisements, announcements, and legal and judicial notices.",
+      "category": "philippines"
+    },
+    {
+      "title": "Polska Agencja Prasowa SA",
+      "url": "https://www.pap.pl/rss.xml",
+      "category": "poland"
+    },
+    {
+      "title": "Вести.Ru",
+      "url": "https://www.vesti.ru/vesti.rss",
+      "description": "Сетевое издание. Новости, видео и фото дня",
+      "category": "russia"
+    },
+    {
+      "title": "Российская Газета",
+      "url": "https://rg.ru/xml/index.xml",
+      "description": "Российская газета",
+      "category": "russia"
+    },
+    {
+      "title": "Газета ",
+      "url": "https://www.kommersant.ru/RSS/main.xml",
+      "description": "Ежедневная иллюстрированная общенациональная деловая газета",
+      "category": "russia"
+    },
+    {
+      "title": "SowetanLIVE",
+      "url": "https://www.sowetanlive.co.za/rss/?publication=sowetan-live",
+      "description": "SowetanLIVE RSS",
+      "category": "south-africa"
+    },
+    {
+      "title": "News24 Top Stories",
+      "url": "http://feeds.news24.com/articles/news24/TopStories/rss",
+      "category": "south-africa"
+    },
+    {
+      "title": "Eyewitness News | Latest News",
+      "url": "https://ewn.co.za/RSS%20Feeds/Latest%20News",
+      "description": "Eyewitness News is a 24-hour news site and content is uploaded around the clock",
+      "category": "south-africa"
+    },
+    {
+      "title": "The Citizen",
+      "url": "https://citizen.co.za/feed/",
+      "description": "More News Your Way",
+      "category": "south-africa"
+    },
+    {
+      "title": "TimesLIVE",
+      "url": "https://www.timeslive.co.za/rss/",
+      "description": "TimesLIVE RSS",
+      "category": "south-africa"
+    },
+    {
+      "title": "Agencia EFE | www.efe.com | English edition",
+      "url": "https://www.efe.com/efe/english/4/rss",
+      "description": "Breaking news from Agencia Efe. Reliable, trustworthy and easy. Information with EFE",
+      "category": "spain"
+    },
+    {
+      "title": "ТЕЛЕГРАФ - последние новости Украины и мира",
+      "url": "https://telegraf.com.ua/yandex-feed/",
+      "description": "ТЕЛЕГРАФ - последние новости Украины и мира за последний час, свежие и популярные мировые новости технологий, бизнеса, культуры и спорта за неделю",
+      "category": "ukraine"
+    },
+    {
+      "title": "Українська правда",
+      "url": "https://www.pravda.com.ua/rss/",
+      "category": "ukraine"
+    },
+    {
+      "title": "Repubblica.it > Homepage",
+      "url": "https://www.repubblica.it/rss/homepage/rss2.0.xml",
+      "description": "Repubblica.it: il quotidiano online in tempo reale.",
+      "category": "italy"
+    },
+    {
+      "title": "NYT > Japan",
+      "url": "https://www.nytimes.com/svc/collections/v1/publish/http://www.nytimes.com/topic/destination/japan/rss.xml",
+      "category": "japan"
+    },
+    {
+      "title": "NYT > Top Stories",
+      "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+      "category": "united-states"
     }
   ],
   "categories": [
@@ -3560,6 +5157,151 @@
       "label": "Local News",
       "color": "#1E88E5",
       "id": "local-news"
+    },
+    {
+      "id": "animal-wildlife",
+      "label": "Animal & Wildlife",
+      "color": "#FF5252"
+    },
+    {
+      "id": "chess",
+      "label": "Chess",
+      "color": "#FF4081"
+    },
+    {
+      "id": "cryptocurrency",
+      "label": "Cryptocurrency",
+      "color": "#E040FB"
+    },
+    {
+      "id": "cyber-security",
+      "label": "Cyber security",
+      "color": "#7C4DFF"
+    },
+    {
+      "id": "environment",
+      "label": "Environment",
+      "color": "#536DFE"
+    },
+    {
+      "id": "memes",
+      "label": "Memes",
+      "color": "#448AFF"
+    },
+    {
+      "id": "nature",
+      "label": "Nature",
+      "color": "#40C4FF"
+    },
+    {
+      "id": "australia",
+      "label": "Australia",
+      "color": "#18FFFF"
+    },
+    {
+      "id": "bangladesh",
+      "label": "Bangladesh",
+      "color": "#64FFDA"
+    },
+    {
+      "id": "brazil",
+      "label": "Brazil",
+      "color": "#69F0AE"
+    },
+    {
+      "id": "canada",
+      "label": "Canada",
+      "color": "#B2FF59"
+    },
+    {
+      "id": "france",
+      "label": "France",
+      "color": "#EEFF41"
+    },
+    {
+      "id": "germany",
+      "label": "Germany",
+      "color": "#FFD740"
+    },
+    {
+      "id": "hong-kong-sar-china",
+      "label": "Hong Kong SAR China",
+      "color": "#FFAB40"
+    },
+    {
+      "id": "india",
+      "label": "India",
+      "color": "#FF6E40"
+    },
+    {
+      "id": "indonesia",
+      "label": "Indonesia",
+      "color": "#F48FB1"
+    },
+    {
+      "id": "iran",
+      "label": "Iran",
+      "color": "#CE93D8"
+    },
+    {
+      "id": "italy",
+      "label": "Italy",
+      "color": "#81D4FA"
+    },
+    {
+      "id": "japan",
+      "label": "Japan",
+      "color": "#80DEEA"
+    },
+    {
+      "id": "mexico",
+      "label": "Mexico",
+      "color": "#A5D6A7"
+    },
+    {
+      "id": "myanmar-burma",
+      "label": "Myanmar (Burma)",
+      "color": "#C5E1A5"
+    },
+    {
+      "id": "nigeria",
+      "label": "Nigeria",
+      "color": "#E6EE9C"
+    },
+    {
+      "id": "philippines",
+      "label": "Philippines",
+      "color": "#FFCC80"
+    },
+    {
+      "id": "poland",
+      "label": "Poland",
+      "color": "#BCAAA4"
+    },
+    {
+      "id": "russia",
+      "label": "Russia",
+      "color": "#B0BEC5"
+    },
+    {
+      "id": "south-africa",
+      "label": "South Africa",
+      "color": "#F06292"
+    },
+    {
+      "id": "spain",
+      "label": "Spain",
+      "color": "#BA68C8"
+    },
+    {
+      "id": "ukraine",
+      "label": "Ukraine",
+      "color": "#4DB6AC"
+    },
+    {
+      "id": "united-states",
+      "label": "United States",
+      "color": "#7C4DFF"
     }
   ]
 }

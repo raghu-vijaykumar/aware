@@ -190,42 +190,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Folders';
-
-  @override
-  String get createFolderTitle => 'New Folder';
-
-  @override
-  String get folderNameHint => 'Folder name';
-
-  @override
   String get create => 'Create';
 
   @override
   String get rename => 'Rename';
 
   @override
-  String get renameFolderTitle => 'Rename Folder';
-
-  @override
   String get delete => 'Delete';
-
-  @override
-  String get deleteFolderTitle => 'Delete Folder';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'Remove \"$name\" and ungroup its feeds?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Create Folder';
-
-  @override
-  String get noFoldersYet => 'No folders yet';
-
-  @override
-  String get createFirstFolder => 'Create your first folder';
 
   @override
   String feedCount(num count) {
@@ -491,9 +462,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumSync => 'Sign in & sync across devices';
 
   @override
-  String get premiumFolders => 'Unlimited folder organization';
-
-  @override
   String get notNow => 'Not now';
 
   @override
@@ -556,16 +524,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'When narration finishes, move to the next item';
 
   @override
-  String get sectionData => 'Data';
-
-  @override
-  String get lowDataMode => 'Low-data mode prefetch';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Prefetch article text in background and prefer cached content when available';
-
-  @override
   String get sectionAccessibility => 'Accessibility';
 
   @override
@@ -587,12 +545,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Add or remove the feeds you follow';
-
-  @override
-  String get manageFolders => 'Manage Folders';
-
-  @override
-  String get manageFoldersSubtitle => 'Organise feeds into folders';
 
   @override
   String get importSubscriptions => 'Import Subscriptions';
@@ -638,42 +590,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Select Language';
-
-  @override
-  String get languageEnglish => 'English';
-
-  @override
-  String get languageChinese => 'Chinese';
-
-  @override
-  String get languageSpanish => 'Spanish';
-
-  @override
-  String get languageHindi => 'Hindi';
-
-  @override
-  String get languageArabic => 'Arabic';
-
-  @override
-  String get languageFrench => 'French';
-
-  @override
-  String get languagePortuguese => 'Portuguese';
-
-  @override
-  String get languageRussian => 'Russian';
-
-  @override
-  String get languageJapanese => 'Japanese';
-
-  @override
-  String get languageGerman => 'German';
-
-  @override
-  String get languageKorean => 'Korean';
-
-  @override
-  String get languageItalian => 'Italian';
 
   @override
   String get sectionLegal => 'Legal';

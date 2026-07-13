@@ -185,42 +185,13 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'フォルダ';
-
-  @override
-  String get createFolderTitle => '新しいフォルダ';
-
-  @override
-  String get folderNameHint => 'フォルダ名';
-
-  @override
   String get create => '作成';
 
   @override
   String get rename => '名前を変更';
 
   @override
-  String get renameFolderTitle => 'フォルダ名を変更';
-
-  @override
   String get delete => '削除';
-
-  @override
-  String get deleteFolderTitle => 'フォルダを削除';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return '\"$name\" を削除してフィードのグループ化を解除しますか？';
-  }
-
-  @override
-  String get createFolderTooltip => 'フォルダを作成';
-
-  @override
-  String get noFoldersYet => 'まだフォルダがありません';
-
-  @override
-  String get createFirstFolder => '最初のフォルダを作成';
 
   @override
   String feedCount(num count) {
@@ -478,9 +449,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get premiumSync => 'サインインしてデバイス間で同期';
 
   @override
-  String get premiumFolders => '無制限のフォルダ整理';
-
-  @override
   String get notNow => '今はしない';
 
   @override
@@ -539,16 +507,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get autoPlayNextSubtitle => '読み上げが終了したら、次のアイテムに移動';
 
   @override
-  String get sectionData => 'データ';
-
-  @override
-  String get lowDataMode => '低データモードプリフェッチ';
-
-  @override
-  String get lowDataModeSubtitle =>
-      '記事テキストをバックグラウンドでプリフェッチし、利用可能な場合はキャッシュされたコンテンツを優先';
-
-  @override
   String get sectionAccessibility => 'アクセシビリティ';
 
   @override
@@ -568,12 +526,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get manageSubscriptionsSubtitle => 'フォローしているフィードを追加または削除';
-
-  @override
-  String get manageFolders => 'フォルダを管理';
-
-  @override
-  String get manageFoldersSubtitle => 'フィードをフォルダに整理';
 
   @override
   String get importSubscriptions => '購読をインポート';
@@ -619,42 +571,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get selectLanguage => '言語を選択';
-
-  @override
-  String get languageEnglish => '英語';
-
-  @override
-  String get languageChinese => '中国語';
-
-  @override
-  String get languageSpanish => 'スペイン語';
-
-  @override
-  String get languageHindi => 'ヒンディー語';
-
-  @override
-  String get languageArabic => 'アラビア語';
-
-  @override
-  String get languageFrench => 'フランス語';
-
-  @override
-  String get languagePortuguese => 'ポルトガル語';
-
-  @override
-  String get languageRussian => 'ロシア語';
-
-  @override
-  String get languageJapanese => '日本語';
-
-  @override
-  String get languageGerman => 'ドイツ語';
-
-  @override
-  String get languageKorean => '韓国語';
-
-  @override
-  String get languageItalian => 'イタリア語';
 
   @override
   String get sectionLegal => '法的情報';

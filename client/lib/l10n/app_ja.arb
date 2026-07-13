@@ -1,988 +1,921 @@
 {
-  "@@locale": "ja",
-  "appName": "aware",
-  "@appName": {
-    "description": "The name of the application"
-  },
-  "appTitle": "Aware",
-  "@appTitle": {
-    "description": "Application title shown in settings/about"
-  },
-  "appVersion": "1.0.0",
-  "@appVersion": {
-    "description": "Application version number"
-  },
-  "splashTagline": "簡単に情報をキャッチ",
-  "@splashTagline": {
-    "description": "Tagline shown on splash screen"
-  },
-  "onboardingLanguageTitle": "言語を選択",
-  "@onboardingLanguageTitle": {
-    "description": "Title for onboarding language selection page"
-  },
-  "onboardingLanguageDesc": "アプリのインターフェースに使用する言語を選択してください。",
-  "@onboardingLanguageDesc": {
-    "description": "Description for onboarding language selection page"
-  },
-  "onboardingWelcomeTitle": "aware へようこそ",
-  "@onboardingWelcomeTitle": {
-    "description": "Title for first onboarding page"
-  },
-  "onboardingWelcomeDesc": "パーソナルフィードリーダー。大事な情報をひとつの場所で。",
-  "@onboardingWelcomeDesc": {
-    "description": "Description for first onboarding page"
-  },
-  "onboardingOfflineTitle": "オフラインで読む",
-  "@onboardingOfflineTitle": {
-    "description": "Title for second onboarding page"
-  },
-  "onboardingOfflineDesc": "フィードがダウンロードされるので、いつでもどこでも読めます。テキスト読み上げで聴くこともできます。",
-  "@onboardingOfflineDesc": {
-    "description": "Description for second onboarding page"
-  },
-  "onboardingNotifyTitle": "投稿を見逃さない",
-  "@onboardingNotifyTitle": {
-    "description": "Title for third onboarding page"
-  },
-  "onboardingNotifyDesc": "新しい記事が届いたら通知を受け取ります。最初のフィードを追加して始めましょう。",
-  "@onboardingNotifyDesc": {
-    "description": "Description for third onboarding page"
-  },
-  "next": "次へ",
-  "@next": {
-    "description": "Next button"
-  },
-  "getStarted": "始める",
-  "@getStarted": {
-    "description": "Get Started button on last onboarding page"
-  },
-  "skip": "スキップ",
-  "@skip": {
-    "description": "Skip button on onboarding"
-  },
-  "tabFeeds": "フィード",
-  "@tabFeeds": {
-    "description": "Bottom navigation tab for feeds"
-  },
-  "tabMarketplace": "マーケットプレイス",
-  "@tabMarketplace": {
-    "description": "Bottom navigation tab for marketplace"
-  },
-  "tabSettings": "設定",
-  "@tabSettings": {
-    "description": "Bottom navigation tab for settings"
-  },
-  "addFeedTitle": "RSSフィードを追加",
-  "@addFeedTitle": {
-    "description": "Title of the add feed dialog"
-  },
-  "addFeedUrlLabel": "フィードURL",
-  "@addFeedUrlLabel": {
-    "description": "Label for feed URL input"
-  },
-  "addFeedUrlHint": "https://example.com/feed.xml",
-  "@addFeedUrlHint": {
-    "description": "Hint text for feed URL input"
-  },
-  "cancel": "キャンセル",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "add": "追加",
-  "@add": {
-    "description": "Add button text"
-  },
-  "feedAdded": "フィードを追加しました",
-  "@feedAdded": {
-    "description": "Snackbar message when feed is added"
-  },
-  "failedToAddFeed": "フィードの追加に失敗しました: {error}",
-  "@failedToAddFeed": {
-    "description": "Snackbar message when adding a feed fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "feedUrlRequired": "フィードURLが必要です",
-  "@feedUrlRequired": {
-    "description": "Validation message when feed URL is empty"
-  },
-  "marketplaceTitle": "マーケットプレイス",
-  "@marketplaceTitle": {
-    "description": "Title of marketplace screen"
-  },
-  "marketplaceSubtitle": "カテゴリ別に厳選されたRSSリンク",
-  "@marketplaceSubtitle": {
-    "description": "Subtitle of marketplace screen"
-  },
-  "marketplaceHeroTitle": "高品質なフィードを素早く見つける",
-  "@marketplaceHeroTitle": {
-    "description": "Hero section title on marketplace"
-  },
-  "marketplaceHeroDesc": "トピック別に信頼できるソースを閲覧。フォローをタップしてホームフィードに即座に追加。",
-  "@marketplaceHeroDesc": {
-    "description": "Hero section description on marketplace"
-  },
-  "marketplaceCategoriesCount": "{count} カテゴリ",
-  "@marketplaceCategoriesCount": {
-    "description": "Category count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceFeedsCount": "{count} フィード",
-  "@marketplaceFeedsCount": {
-    "description": "Feed count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceSearchHint": "フィードを検索...",
-  "@marketplaceSearchHint": {
-    "description": "Search field placeholder"
-  },
-  "marketplaceUntitledFeed": "無題のフィード",
-  "@marketplaceUntitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "marketplaceSubscribed": "購読中",
-  "@marketplaceSubscribed": {
-    "description": "Tooltip when feed is subscribed"
-  },
-  "marketplaceFollow": "フォロー",
-  "@marketplaceFollow": {
-    "description": "Follow button tooltip"
-  },
-  "marketplaceSubscribedTo": "{title} を購読しました",
-  "@marketplaceSubscribedTo": {
-    "description": "Snackbar when subscribing to a feed",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "marketplaceInvalidUrl": "無効なフィードURL",
-  "@marketplaceInvalidUrl": {
-    "description": "Error when feed URL is invalid"
-  },
-  "marketplaceUnreachable": "購読に失敗しました: フィードにアクセスできない可能性があります",
-  "@marketplaceUnreachable": {
-    "description": "Error when feed subscription fails"
-  },
-  "marketplaceCuratedSources": "{count} の厳選ソース",
-  "@marketplaceCuratedSources": {
-    "description": "Subtitle showing curated source count",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "signIn": "サインイン",
-  "@signIn": {
-    "description": "Sign in button / title"
-  },
-  "emailLabel": "メール",
-  "@emailLabel": {
-    "description": "Email field label"
-  },
-  "passwordLabel": "パスワード",
-  "@passwordLabel": {
-    "description": "Password field label"
-  },
-  "emailRequired": "メールアドレスを入力",
-  "@emailRequired": {
-    "description": "Validation for empty email"
-  },
-  "passwordRequired": "パスワードを入力",
-  "@passwordRequired": {
-    "description": "Validation for empty password"
-  },
-  "subscriptionsTitle": "購読",
-  "@subscriptionsTitle": {
-    "description": "Title of subscriptions screen"
-  },
-  "subscriptionsEmpty": "まだ購読がありません。マーケットプレイスからフィードを追加！",
-  "@subscriptionsEmpty": {
-    "description": "Empty state message"
-  },
-  "untitledFeed": "無題のフィード",
-  "@untitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "paused": "一時停止中",
-  "@paused": {
-    "description": "Paused feed label"
-  },
-  "resume": "再開",
-  "@resume": {
-    "description": "Resume feed action"
-  },
-  "pause": "一時停止",
-  "@pause": {
-    "description": "Pause feed action"
-  },
-  "unsubscribe": "購読解除",
-  "@unsubscribe": {
-    "description": "Unsubscribe action"
-  },
-  "unsubscribeTitle": "購読解除",
-  "@unsubscribeTitle": {
-    "description": "Unsubscribe dialog title"
-  },
-  "unsubscribeConfirm": "{title} の購読を解除しますか？",
-  "@unsubscribeConfirm": {
-    "description": "Unsubscribe confirmation message",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "foldersTitle": "フォルダ",
-  "@foldersTitle": {
-    "description": "Title of folders screen"
-  },
-  "createFolderTitle": "新しいフォルダ",
-  "@createFolderTitle": {
-    "description": "Create folder dialog title"
-  },
-  "folderNameHint": "フォルダ名",
-  "@folderNameHint": {
-    "description": "Folder name input hint"
-  },
-  "create": "作成",
-  "@create": {
-    "description": "Create button"
-  },
-  "rename": "名前を変更",
-  "@rename": {
-    "description": "Rename button"
-  },
-  "renameFolderTitle": "フォルダ名を変更",
-  "@renameFolderTitle": {
-    "description": "Rename folder dialog title"
-  },
-  "delete": "削除",
-  "@delete": {
-    "description": "Delete button"
-  },
-  "deleteFolderTitle": "フォルダを削除",
-  "@deleteFolderTitle": {
-    "description": "Delete folder dialog title"
-  },
-  "deleteFolderConfirm": "\"{name}\" を削除してフィードのグループ化を解除しますか？",
-  "@deleteFolderConfirm": {
-    "description": "Delete folder confirmation",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "createFolderTooltip": "フォルダを作成",
-  "@createFolderTooltip": {
-    "description": "Tooltip for create folder button"
-  },
-  "noFoldersYet": "まだフォルダがありません",
-  "@noFoldersYet": {
-    "description": "Empty state for folders"
-  },
-  "createFirstFolder": "最初のフォルダを作成",
-  "@createFirstFolder": {
-    "description": "Button to create first folder"
-  },
-  "feedCount": "{count} フィード",
-  "@feedCount": {
-    "description": "Feed count with pluralization",
-    "placeholders": {
-      "count": {
-        "type": "num"
-      }
-    }
-  },
-  "filters": "フィルター",
-  "@filters": {
-    "description": "Filters button"
-  },
-  "unread": "未読",
-  "@unread": {
-    "description": "Unread filter chip"
-  },
-  "liked": "いいね",
-  "@liked": {
-    "description": "Liked filter chip"
-  },
-  "saved": "保存済み",
-  "@saved": {
-    "description": "Saved filter chip"
-  },
-  "last24h": "24時間",
-  "@last24h": {
-    "description": "Time filter: last 24 hours"
-  },
-  "last7d": "7日間",
-  "@last7d": {
-    "description": "Time filter: last 7 days"
-  },
-  "last30d": "30日間",
-  "@last30d": {
-    "description": "Time filter: last 30 days"
-  },
-  "engagement": "エンゲージメント",
-  "@engagement": {
-    "description": "Filter section: engagement"
-  },
-  "unreadOnly": "未読のみ",
-  "@unreadOnly": {
-    "description": "Unread only filter option"
-  },
-  "lengthPreview": "長さ / プレビュー",
-  "@lengthPreview": {
-    "description": "Filter section: length/preview"
-  },
-  "any": "すべて",
-  "@any": {
-    "description": "Any length filter"
-  },
-  "short": "短い <100語",
-  "@short": {
-    "description": "Short article filter"
-  },
-  "medium": "中程度 100-300",
-  "@medium": {
-    "description": "Medium article filter"
-  },
-  "long": "長い >300",
-  "@long": {
-    "description": "Long article filter"
-  },
-  "multiParagraph": "2段落以上",
-  "@multiParagraph": {
-    "description": "Multi-paragraph filter"
-  },
-  "timeWindow": "期間",
-  "@timeWindow": {
-    "description": "Filter section: time window"
-  },
-  "all": "すべて",
-  "@all": {
-    "description": "All filter option"
-  },
-  "sources": "ソース",
-  "@sources": {
-    "description": "Filter section: sources"
-  },
-  "allSources": "すべてのソース",
-  "@allSources": {
-    "description": "All sources filter option"
-  },
-  "keyword": "キーワード",
-  "@keyword": {
-    "description": "Filter section: keyword"
-  },
-  "keywordHint": "タイトル、要約、または本文",
-  "@keywordHint": {
-    "description": "Keyword search hint"
-  },
-  "reset": "リセット",
-  "@reset": {
-    "description": "Reset filters button"
-  },
-  "done": "完了",
-  "@done": {
-    "description": "Done button"
-  },
-  "searchArticlesHint": "記事を検索...",
-  "@searchArticlesHint": {
-    "description": "Search field placeholder in article list"
-  },
-  "retry": "再試行",
-  "@retry": {
-    "description": "Retry button"
-  },
-  "noArticlesYet": "記事がまだありません。プルして更新。",
-  "@noArticlesYet": {
-    "description": "Empty state for article list"
-  },
-  "noArticlesMatch": "現在のフィルターに一致する記事はありません。",
-  "@noArticlesMatch": {
-    "description": "Empty state when filters match nothing"
-  },
-  "untitled": "無題",
-  "@untitled": {
-    "description": "Fallback article title"
-  },
-  "removedLike": "いいねを解除",
-  "@removedLike": {
-    "description": "Snackbar when removing a like"
-  },
-  "likedArticle": "記事にいいね",
-  "@likedArticle": {
-    "description": "Snackbar when liking an article"
-  },
-  "removedFromSaved": "保存済みから削除",
-  "@removedFromSaved": {
-    "description": "Snackbar when removing from saved"
-  },
-  "savedForLater": "後で読むために保存",
-  "@savedForLater": {
-    "description": "Snackbar when saving for later"
-  },
-  "markedUnread": "未読にマーク",
-  "@markedUnread": {
-    "description": "Snackbar when marking unread"
-  },
-  "markedRead": "既読にマーク",
-  "@markedRead": {
-    "description": "Snackbar when marking read"
-  },
-  "undo": "元に戻す",
-  "@undo": {
-    "description": "Undo action label"
-  },
-  "publishDateUnknown": "公開日不明",
-  "@publishDateUnknown": {
-    "description": "Fallback when publish date is unknown"
-  },
-  "justNow": "たった今",
-  "@justNow": {
-    "description": "Time label: just now"
-  },
-  "minutesAgo": "{count} 分前",
-  "@minutesAgo": {
-    "description": "Time label: minutes ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "hoursAgo": "{count} 時間前",
-  "@hoursAgo": {
-    "description": "Time label: hours ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "daysAgo": "{count} 日前",
-  "@daysAgo": {
-    "description": "Time label: days ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "weeksAgo": "{count} 週間前",
-  "@weeksAgo": {
-    "description": "Time label: weeks ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "monthsAgo": "{count} ヶ月前",
-  "@monthsAgo": {
-    "description": "Time label: months ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "yearsAgo": "{count} 年前",
-  "@yearsAgo": {
-    "description": "Time label: years ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "fetched": "取得済み",
-  "@fetched": {
-    "description": "Indicator that timestamp is fallback fetched time"
-  },
-  "continueReading": "続きを読む",
-  "@continueReading": {
-    "description": "FAB label for continue reading"
-  },
-  "readerSavedForLater": "後で読むために保存",
-  "@readerSavedForLater": {
-    "description": "Snackbar when saving in reader"
-  },
-  "readerRemovedFromSaved": "保存済みから削除",
-  "@readerRemovedFromSaved": {
-    "description": "Snackbar when removing save in reader"
-  },
-  "resumingLastRead": "最後に読んだ記事を再開",
-  "@resumingLastRead": {
-    "description": "Snackbar when resuming playback"
-  },
-  "startingPlayback": "未読記事の再生を開始",
-  "@startingPlayback": {
-    "description": "Snackbar when auto-playing"
-  },
-  "showReader": "リーダー表示",
-  "@showReader": {
-    "description": "Tooltip to show reader view"
-  },
-  "showWebView": "Web表示",
-  "@showWebView": {
-    "description": "Tooltip to show web view"
-  },
-  "webviewUnsupported": "アプリ内WebViewはAndroid/iOSでのみサポートされています。\n代わりにテキスト表示を表示します。",
-  "@webviewUnsupported": {
-    "description": "Message when WebView is unsupported on platform"
-  },
-  "byAuthor": "{author} 著",
-  "@byAuthor": {
-    "description": "Article author attribution",
-    "placeholders": {
-      "author": {}
-    }
-  },
-  "markedReadSkipped": "既読にして次へスキップ",
-  "@markedReadSkipped": {
-    "description": "Snackbar when marking read and skipping"
-  },
-  "markUnread": "未読にする",
-  "@markUnread": {
-    "description": "Tooltip to mark as unread"
-  },
-  "markReadPlay": "既読にして次を再生",
-  "@markReadPlay": {
-    "description": "Tooltip to mark read and play next"
-  },
-  "previousArticle": "前の記事",
-  "@previousArticle": {
-    "description": "Tooltip for previous article button"
-  },
-  "nextArticle": "次の記事",
-  "@nextArticle": {
-    "description": "Tooltip for next article button"
-  },
-  "playingSection": "セクション {current}/{total} を再生中",
-  "@playingSection": {
-    "description": "Audio playback progress text",
-    "placeholders": {
-      "current": {},
-      "total": {}
-    }
-  },
-  "readAloudNotAvailable": "この記事では読み上げ機能は利用できません。",
-  "@readAloudNotAvailable": {
-    "description": "Message when TTS is not available"
-  },
-  "unreadCount": "未読: {count}",
-  "@unreadCount": {
-    "description": "Unread article count badge",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "embeddedVideoUnsupported": "埋め込みビデオはAndroid/iOSでのみサポートされています。",
-  "@embeddedVideoUnsupported": {
-    "description": "Message when embedded video is unsupported"
-  },
-  "loadVideo": "ビデオを読み込む",
-  "@loadVideo": {
-    "description": "Button to load embedded video"
-  },
-  "settingsTitle": "設定",
-  "@settingsTitle": {
-    "description": "Title of settings screen"
-  },
-  "goAdFree": "広告を非表示に",
-  "@goAdFree": {
-    "description": "Premium card title"
-  },
-  "goAdFreeSubtitle": "わずか $1/月。個人開発者を支援。",
-  "@goAdFreeSubtitle": {
-    "description": "Premium card subtitle"
-  },
-  "pricePerMonth": "$1/月",
-  "@pricePerMonth": {
-    "description": "Price label"
-  },
-  "premiumTitle": "Aware Premium",
-  "@premiumTitle": {
-    "description": "Premium dialog title"
-  },
-  "premiumSubscribeDesc": "$1/月で購読して以下を入手：",
-  "@premiumSubscribeDesc": {
-    "description": "Premium dialog description"
-  },
-  "premiumRemoveAds": "すべての広告を削除",
-  "@premiumRemoveAds": {
-    "description": "Premium feature: remove ads"
-  },
-  "premiumCloudStorage": "データのクラウドストレージ",
-  "@premiumCloudStorage": {
-    "description": "Premium feature: cloud storage"
-  },
-  "premiumCloudSubscriptions": "購読をクラウドに保存",
-  "@premiumCloudSubscriptions": {
-    "description": "Premium feature: cloud subscriptions"
-  },
-  "premiumSync": "サインインしてデバイス間で同期",
-  "@premiumSync": {
-    "description": "Premium feature: sync"
-  },
-  "premiumFolders": "無制限のフォルダ整理",
-  "@premiumFolders": {
-    "description": "Premium feature: folders"
-  },
-  "notNow": "今はしない",
-  "@notNow": {
-    "description": "Not now button"
-  },
-  "comingSoon": "近日公開",
-  "@comingSoon": {
-    "description": "Coming soon badge label"
-  },
-  "subscribeNow": "購読 $1/月",
-  "@subscribeNow": {
-    "description": "Subscribe button"
-  },
-  "subscriptionComingSoon": "購読機能はまもなく公開！月額 $1 が請求されます。",
-  "@subscriptionComingSoon": {
-    "description": "Snackbar when subscription is coming soon"
-  },
-  "sectionAdvanced": "詳細設定",
-  "@sectionAdvanced": {
-    "description": "Settings section: advanced"
-  },
-  "readTracking": "読書追跡",
-  "@readTracking": {
-    "description": "Read tracking setting title"
-  },
-  "readTrackingSubtitle": "読書の進行度に基づいて記事を自動的に既読にする",
-  "@readTrackingSubtitle": {
-    "description": "Read tracking setting subtitle"
-  },
-  "autoMarkRead": "進行度で自動既読",
-  "@autoMarkRead": {
-    "description": "Auto-mark read setting title"
-  },
-  "autoMarkReadSubtitle": "スクロールまたは音声がしきい値に達したときに既読としてマーク",
-  "@autoMarkReadSubtitle": {
-    "description": "Auto-mark read setting subtitle"
-  },
-  "autoMarkThreshold": "自動マークしきい値",
-  "@autoMarkThreshold": {
-    "description": "Auto-mark threshold setting title"
-  },
-  "progressNeeded": "{percent}% の進行が必要",
-  "@progressNeeded": {
-    "description": "Progress threshold label",
-    "placeholders": {
-      "percent": {}
-    }
-  },
-  "sectionVoice": "音声と読み上げ",
-  "@sectionVoice": {
-    "description": "Settings section: voice & read aloud"
-  },
-  "narrationSpeed": "デフォルトの読み上げ速度",
-  "@narrationSpeed": {
-    "description": "Narration speed setting title"
-  },
-  "speedLabel": "{speed}倍（1x = 標準）",
-  "@speedLabel": {
-    "description": "Speed slider label",
-    "placeholders": {
-      "speed": {}
-    }
-  },
-  "defaultVoice": "デフォルト音声",
-  "@defaultVoice": {
-    "description": "Default voice setting title"
-  },
-  "systemDefault": "システムデフォルト",
-  "@systemDefault": {
-    "description": "System default voice option"
-  },
-  "autoPlayNext": "次の記事を自動再生",
-  "@autoPlayNext": {
-    "description": "Auto-play next setting title"
-  },
-  "autoPlayNextSubtitle": "読み上げが終了したら、次のアイテムに移動",
-  "@autoPlayNextSubtitle": {
-    "description": "Auto-play next setting subtitle"
-  },
-  "sectionData": "データ",
-  "@sectionData": {
-    "description": "Settings section: data"
-  },
-  "lowDataMode": "低データモードプリフェッチ",
-  "@lowDataMode": {
-    "description": "Low data mode setting title"
-  },
-  "lowDataModeSubtitle": "記事テキストをバックグラウンドでプリフェッチし、利用可能な場合はキャッシュされたコンテンツを優先",
-  "@lowDataModeSubtitle": {
-    "description": "Low data mode setting subtitle"
-  },
-  "sectionAccessibility": "アクセシビリティ",
-  "@sectionAccessibility": {
-    "description": "Settings section: accessibility"
-  },
-  "textSize": "テキストサイズ",
-  "@textSize": {
-    "description": "Text size setting title"
-  },
-  "textSizeSubtitle": "記事やナビゲーションを含むアプリ全体に適用されます。",
-  "@textSizeSubtitle": {
-    "description": "Text size setting subtitle"
-  },
-  "sampleText": "すばしっこい茶色のキツネがのろまな犬を飛び越える。",
-  "@sampleText": {
-    "description": "Sample text for text size preview"
-  },
-  "save": "Save",
-  "@save": {
-    "description": "Menu item to save article"
-  },
-  "unsave": "Unsave",
-  "@unsave": {
-    "description": "Menu item to unsave article"
-  },
-  "copyLink": "Copy link",
-  "@copyLink": {
-    "description": "Menu item to copy article URL"
-  },
-  "linkCopied": "Link copied to clipboard",
-  "@linkCopied": {
-    "description": "Snackbar when link is copied"
-  },
-  "sectionSubscriptions": "購読",
-  "@sectionSubscriptions": {
-    "description": "Settings section: subscriptions"
-  },
-  "manageSubscriptions": "購読を管理",
-  "@manageSubscriptions": {
-    "description": "Manage subscriptions setting title"
-  },
-  "manageSubscriptionsSubtitle": "フォローしているフィードを追加または削除",
-  "@manageSubscriptionsSubtitle": {
-    "description": "Manage subscriptions setting subtitle"
-  },
-  "manageFolders": "フォルダを管理",
-  "@manageFolders": {
-    "description": "Manage folders setting title"
-  },
-  "manageFoldersSubtitle": "フィードをフォルダに整理",
-  "@manageFoldersSubtitle": {
-    "description": "Manage folders setting subtitle"
-  },
-  "importSubscriptions": "購読をインポート",
-  "@importSubscriptions": {
-    "description": "Import subscriptions setting title"
-  },
-  "importSubscriptionsSubtitle": "OPMLファイルからインポート",
-  "@importSubscriptionsSubtitle": {
-    "description": "Import subscriptions setting subtitle"
-  },
-  "exportSubscriptions": "購読をエクスポート",
-  "@exportSubscriptions": {
-    "description": "Export subscriptions setting title"
-  },
-  "exportSubscriptionsSubtitle": "フィードをOPMLにエクスポート",
-  "@exportSubscriptionsSubtitle": {
-    "description": "Export subscriptions setting subtitle"
-  },
-  "sectionThemes": "テーマ",
-  "@sectionThemes": {
-    "description": "Settings section: themes"
-  },
-  "themes": "テーマ",
-  "@themes": {
-    "description": "Themes setting title"
-  },
-  "themesSubtitle": "ライト / ダーク / システム",
-  "@themesSubtitle": {
-    "description": "Themes setting subtitle"
-  },
-  "selectTheme": "テーマを選択",
-  "@selectTheme": {
-    "description": "Theme selection dialog title"
-  },
-  "system": "システム",
-  "@system": {
-    "description": "System theme option"
-  },
-  "light": "ライト",
-  "@light": {
-    "description": "Light theme option"
-  },
-  "dark": "ダーク",
-  "@dark": {
-    "description": "Dark theme option"
-  },
-  "sectionLanguage": "言語",
-  "@sectionLanguage": {
-    "description": "Settings section: language"
-  },
-  "language": "言語",
-  "@language": {
-    "description": "Language setting title"
-  },
-  "languageSubtitle": "日本語",
-  "@languageSubtitle": {
-    "description": "Language setting subtitle - currently selected language"
-  },
-  "selectLanguage": "言語を選択",
-  "@selectLanguage": {
-    "description": "Language selection dialog title"
-  },
-  "languageEnglish": "英語",
-  "@languageEnglish": {
-    "description": "English language option"
-  },
-  "languageChinese": "中国語",
-  "@languageChinese": {
-    "description": "Chinese language option"
-  },
-  "languageSpanish": "スペイン語",
-  "@languageSpanish": {
-    "description": "Spanish language option"
-  },
-  "languageHindi": "ヒンディー語",
-  "@languageHindi": {
-    "description": "Hindi language option"
-  },
-  "languageArabic": "アラビア語",
-  "@languageArabic": {
-    "description": "Arabic language option"
-  },
-  "languageFrench": "フランス語",
-  "@languageFrench": {
-    "description": "French language option"
-  },
-  "languagePortuguese": "ポルトガル語",
-  "@languagePortuguese": {
-    "description": "Portuguese language option"
-  },
-  "languageRussian": "ロシア語",
-  "@languageRussian": {
-    "description": "Russian language option"
-  },
-  "languageJapanese": "日本語",
-  "@languageJapanese": {
-    "description": "Japanese language option"
-  },
-  "languageGerman": "ドイツ語",
-  "@languageGerman": {
-    "description": "German language option"
-  },
-  "languageKorean": "韓国語",
-  "@languageKorean": {
-    "description": "Korean language option"
-  },
-  "languageItalian": "イタリア語",
-  "@languageItalian": {
-    "description": "Italian language option"
-  },
-  "sectionLegal": "法的情報",
-  "@sectionLegal": {
-    "description": "Settings section: legal"
-  },
-  "privacyPolicy": "プライバシーポリシー",
-  "@privacyPolicy": {
-    "description": "Privacy policy setting title"
-  },
-  "openSourceLicenses": "オープンソースライセンス",
-  "@openSourceLicenses": {
-    "description": "Open source licenses setting title"
-  },
-  "noFeedsFoundOpml": "OPMLにフィードが見つかりませんでした",
-  "@noFeedsFoundOpml": {
-    "description": "Snackbar when no feeds found in OPML"
-  },
-  "importedCount": "{count} フィードをインポートしました",
-  "@importedCount": {
-    "description": "Snackbar when import succeeds",
-    "placeholders": {
-      "count": {
-        "type": "num"
-      }
-    }
-  },
-  "allFeedsAlreadyAdded": "すべてのフィードは既に追加されています",
-  "@allFeedsAlreadyAdded": {
-    "description": "Snackbar when all feeds already exist"
-  },
-  "importFailed": "インポートに失敗しました: {error}",
-  "@importFailed": {
-    "description": "Snackbar when import fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "noSubscriptionsToExport": "エクスポートする購読がありません",
-  "@noSubscriptionsToExport": {
-    "description": "Snackbar when no subscriptions to export"
-  },
-  "exportedCount": "{count} フィードをエクスポートしました",
-  "@exportedCount": {
-    "description": "Snackbar when export succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "exportFailed": "エクスポートに失敗しました: {error}",
-  "@exportFailed": {
-    "description": "Snackbar when export fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "exportShareText": "Aware 購読エクスポート",
-  "@exportShareText": {
-    "description": "Share text for OPML export"
-  },
-  "exportShareSubject": "Aware 購読エクスポート",
-  "@exportShareSubject": {
-    "description": "Share subject for OPML export"
-  },
-  "savedArticlesTitle": "保存した記事",
-  "@savedArticlesTitle": {
-    "description": "Title of saved articles screen"
-  },
-  "noSavedArticlesYet": "保存した記事はまだありません。",
-  "@noSavedArticlesYet": {
-    "description": "Empty state for saved articles"
-  },
-  "error": "エラー: {error}",
-  "@error": {
-    "description": "Error message format",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "privacyPolicyTitle": "プライバシーポリシー",
-  "@privacyPolicyTitle": {
-    "description": "Privacy policy screen title"
-  },
-  "privacyPolicyLastUpdated": "最終更新: 2026年6月20日",
-  "@privacyPolicyLastUpdated": {
-    "description": "Privacy policy last updated date"
-  },
-  "privacyInfoWeCollect": "収集する情報",
-  "@privacyInfoWeCollect": {
-    "description": "Privacy section: information we collect"
-  },
-  "privacyInfoWeCollectBody": "Aware は個人データを収集、保存、送信しません。すべてのアプリデータ（フィード、記事、読書進行度、設定）はお使いのデバイスにローカルに保存され、サーバーに送信されることは決してありません。",
-  "@privacyInfoWeCollectBody": {
-    "description": "Privacy section body: information we collect"
-  },
-  "privacyThirdParty": "第三者サービス",
-  "@privacyThirdParty": {
-    "description": "Privacy section: third-party services"
-  },
-  "privacyThirdPartyBody": "Aware は Google AdMob を使用して広告を表示します。AdMob は関連広告を配信するために、非個人の使用データおよびデバイス識別子を収集する場合があります。広告は非パーソナライズド広告リクエストでのみ配信されます。ユーザーデータが広告主と共有されることはありません。\n\nGoogle のプライバシーポリシーが AdMob によって収集されたデータに適用されます：\n",
-  "@privacyThirdPartyBody": {
-    "description": "Privacy section body: third-party services"
-  },
-  "privacyDataStorage": "データストレージ",
-  "@privacyDataStorage": {
-    "description": "Privacy section: data storage"
-  },
-  "privacyDataStorageBody": "すべてのフィード購読、記事、読書進行度、アプリ設定は、お使いのデバイスの SQLite データベースにローカルに保存されます。設定の OPML エクスポート機能を使用して、いつでもデータをエクスポートできます。\n\nすべてのデータを削除するには、アプリをアンインストールするか、デバイス設定からアプリデータを消去してください。",
-  "@privacyDataStorageBody": {
-    "description": "Privacy section body: data storage"
-  },
-  "privacyContact": "お問い合わせ",
-  "@privacyContact": {
-    "description": "Privacy section: contact"
-  },
-  "privacyContactBody": "このプライバシーポリシーについてご質問がある場合は、アプリのサポートチャネルからお問い合わせください。",
-  "@privacyContactBody": {
-    "description": "Privacy section body: contact"
-  }
+    "@@locale":  "ja",
+    "appName":  "aware",
+    "@appName":  {
+                     "description":  "The name of the application"
+                 },
+    "appTitle":  "Aware",
+    "@appTitle":  {
+                      "description":  "Application title shown in settings/about"
+                  },
+    "appVersion":  "1.0.0",
+    "@appVersion":  {
+                        "description":  "Application version number"
+                    },
+    "splashTagline":  "簡単に情報をキャッチ",
+    "@splashTagline":  {
+                           "description":  "Tagline shown on splash screen"
+                       },
+    "onboardingLanguageTitle":  "言語を選択",
+    "@onboardingLanguageTitle":  {
+                                     "description":  "Title for onboarding language selection page"
+                                 },
+    "onboardingLanguageDesc":  "アプリのインターフェースに使用する言語を選択してください。",
+    "@onboardingLanguageDesc":  {
+                                    "description":  "Description for onboarding language selection page"
+                                },
+    "onboardingWelcomeTitle":  "aware へようこそ",
+    "@onboardingWelcomeTitle":  {
+                                    "description":  "Title for first onboarding page"
+                                },
+    "onboardingWelcomeDesc":  "パーソナルフィードリーダー。大事な情報をひとつの場所で。",
+    "@onboardingWelcomeDesc":  {
+                                   "description":  "Description for first onboarding page"
+                               },
+    "onboardingOfflineTitle":  "オフラインで読む",
+    "@onboardingOfflineTitle":  {
+                                    "description":  "Title for second onboarding page"
+                                },
+    "onboardingOfflineDesc":  "フィードがダウンロードされるので、いつでもどこでも読めます。テキスト読み上げで聴くこともできます。",
+    "@onboardingOfflineDesc":  {
+                                   "description":  "Description for second onboarding page"
+                               },
+    "onboardingNotifyTitle":  "投稿を見逃さない",
+    "@onboardingNotifyTitle":  {
+                                   "description":  "Title for third onboarding page"
+                               },
+    "onboardingNotifyDesc":  "新しい記事が届いたら通知を受け取ります。最初のフィードを追加して始めましょう。",
+    "@onboardingNotifyDesc":  {
+                                  "description":  "Description for third onboarding page"
+                              },
+    "next":  "次へ",
+    "@next":  {
+                  "description":  "Next button"
+              },
+    "getStarted":  "始める",
+    "@getStarted":  {
+                        "description":  "Get Started button on last onboarding page"
+                    },
+    "skip":  "スキップ",
+    "@skip":  {
+                  "description":  "Skip button on onboarding"
+              },
+    "tabFeeds":  "フィード",
+    "@tabFeeds":  {
+                      "description":  "Bottom navigation tab for feeds"
+                  },
+    "tabMarketplace":  "マーケットプレイス",
+    "@tabMarketplace":  {
+                            "description":  "Bottom navigation tab for marketplace"
+                        },
+    "tabSettings":  "設定",
+    "@tabSettings":  {
+                         "description":  "Bottom navigation tab for settings"
+                     },
+    "addFeedTitle":  "RSSフィードを追加",
+    "@addFeedTitle":  {
+                          "description":  "Title of the add feed dialog"
+                      },
+    "addFeedUrlLabel":  "フィードURL",
+    "@addFeedUrlLabel":  {
+                             "description":  "Label for feed URL input"
+                         },
+    "addFeedUrlHint":  "https://example.com/feed.xml",
+    "@addFeedUrlHint":  {
+                            "description":  "Hint text for feed URL input"
+                        },
+    "cancel":  "キャンセル",
+    "@cancel":  {
+                    "description":  "Cancel button text"
+                },
+    "add":  "追加",
+    "@add":  {
+                 "description":  "Add button text"
+             },
+    "feedAdded":  "フィードを追加しました",
+    "@feedAdded":  {
+                       "description":  "Snackbar message when feed is added"
+                   },
+    "failedToAddFeed":  "フィードの追加に失敗しました: {error}",
+    "@failedToAddFeed":  {
+                             "description":  "Snackbar message when adding a feed fails",
+                             "placeholders":  {
+                                                  "error":  {
+
+                                                            }
+                                              }
+                         },
+    "feedUrlRequired":  "フィードURLが必要です",
+    "@feedUrlRequired":  {
+                             "description":  "Validation message when feed URL is empty"
+                         },
+    "marketplaceTitle":  "マーケットプレイス",
+    "@marketplaceTitle":  {
+                              "description":  "Title of marketplace screen"
+                          },
+    "marketplaceSubtitle":  "カテゴリ別に厳選されたRSSリンク",
+    "@marketplaceSubtitle":  {
+                                 "description":  "Subtitle of marketplace screen"
+                             },
+    "marketplaceHeroTitle":  "高品質なフィードを素早く見つける",
+    "@marketplaceHeroTitle":  {
+                                  "description":  "Hero section title on marketplace"
+                              },
+    "marketplaceHeroDesc":  "トピック別に信頼できるソースを閲覧。フォローをタップしてホームフィードに即座に追加。",
+    "@marketplaceHeroDesc":  {
+                                 "description":  "Hero section description on marketplace"
+                             },
+    "marketplaceCategoriesCount":  "{count} カテゴリ",
+    "@marketplaceCategoriesCount":  {
+                                        "description":  "Category count stat",
+                                        "placeholders":  {
+                                                             "count":  {
+
+                                                                       }
+                                                         }
+                                    },
+    "marketplaceFeedsCount":  "{count} フィード",
+    "@marketplaceFeedsCount":  {
+                                   "description":  "Feed count stat",
+                                   "placeholders":  {
+                                                        "count":  {
+
+                                                                  }
+                                                    }
+                               },
+    "marketplaceSearchHint":  "フィードを検索...",
+    "@marketplaceSearchHint":  {
+                                   "description":  "Search field placeholder"
+                               },
+    "marketplaceUntitledFeed":  "無題のフィード",
+    "@marketplaceUntitledFeed":  {
+                                     "description":  "Fallback title for unnamed feed"
+                                 },
+    "marketplaceSubscribed":  "購読中",
+    "@marketplaceSubscribed":  {
+                                   "description":  "Tooltip when feed is subscribed"
+                               },
+    "marketplaceFollow":  "フォロー",
+    "@marketplaceFollow":  {
+                               "description":  "Follow button tooltip"
+                           },
+    "marketplaceSubscribedTo":  "{title} を購読しました",
+    "@marketplaceSubscribedTo":  {
+                                     "description":  "Snackbar when subscribing to a feed",
+                                     "placeholders":  {
+                                                          "title":  {
+
+                                                                    }
+                                                      }
+                                 },
+    "marketplaceInvalidUrl":  "無効なフィードURL",
+    "@marketplaceInvalidUrl":  {
+                                   "description":  "Error when feed URL is invalid"
+                               },
+    "marketplaceUnreachable":  "購読に失敗しました: フィードにアクセスできない可能性があります",
+    "@marketplaceUnreachable":  {
+                                    "description":  "Error when feed subscription fails"
+                                },
+    "marketplaceCuratedSources":  "{count} の厳選ソース",
+    "@marketplaceCuratedSources":  {
+                                       "description":  "Subtitle showing curated source count",
+                                       "placeholders":  {
+                                                            "count":  {
+
+                                                                      }
+                                                        }
+                                   },
+    "signIn":  "サインイン",
+    "@signIn":  {
+                    "description":  "Sign in button / title"
+                },
+    "emailLabel":  "メール",
+    "@emailLabel":  {
+                        "description":  "Email field label"
+                    },
+    "passwordLabel":  "パスワード",
+    "@passwordLabel":  {
+                           "description":  "Password field label"
+                       },
+    "emailRequired":  "メールアドレスを入力",
+    "@emailRequired":  {
+                           "description":  "Validation for empty email"
+                       },
+    "passwordRequired":  "パスワードを入力",
+    "@passwordRequired":  {
+                              "description":  "Validation for empty password"
+                          },
+    "subscriptionsTitle":  "購読",
+    "@subscriptionsTitle":  {
+                                "description":  "Title of subscriptions screen"
+                            },
+    "subscriptionsEmpty":  "まだ購読がありません。マーケットプレイスからフィードを追加！",
+    "@subscriptionsEmpty":  {
+                                "description":  "Empty state message"
+                            },
+    "untitledFeed":  "無題のフィード",
+    "@untitledFeed":  {
+                          "description":  "Fallback title for unnamed feed"
+                      },
+    "paused":  "一時停止中",
+    "@paused":  {
+                    "description":  "Paused feed label"
+                },
+    "resume":  "再開",
+    "@resume":  {
+                    "description":  "Resume feed action"
+                },
+    "pause":  "一時停止",
+    "@pause":  {
+                   "description":  "Pause feed action"
+               },
+    "unsubscribe":  "購読解除",
+    "@unsubscribe":  {
+                         "description":  "Unsubscribe action"
+                     },
+    "unsubscribeTitle":  "購読解除",
+    "@unsubscribeTitle":  {
+                              "description":  "Unsubscribe dialog title"
+                          },
+    "unsubscribeConfirm":  "{title} の購読を解除しますか？",
+    "@unsubscribeConfirm":  {
+                                "description":  "Unsubscribe confirmation message",
+                                "placeholders":  {
+                                                     "title":  {
+
+                                                               }
+                                                 }
+                            },
+    "create":  "作成",
+    "@create":  {
+                    "description":  "Create button"
+                },
+    "rename":  "名前を変更",
+    "@rename":  {
+                    "description":  "Rename button"
+                },
+    "delete":  "削除",
+    "@delete":  {
+                    "description":  "Delete button"
+                },
+    "feedCount":  "{count} フィード",
+    "@feedCount":  {
+                       "description":  "Feed count with pluralization",
+                       "placeholders":  {
+                                            "count":  {
+                                                          "type":  "num"
+                                                      }
+                                        }
+                   },
+    "filters":  "フィルター",
+    "@filters":  {
+                     "description":  "Filters button"
+                 },
+    "unread":  "未読",
+    "@unread":  {
+                    "description":  "Unread filter chip"
+                },
+    "liked":  "いいね",
+    "@liked":  {
+                   "description":  "Liked filter chip"
+               },
+    "saved":  "保存済み",
+    "@saved":  {
+                   "description":  "Saved filter chip"
+               },
+    "last24h":  "24時間",
+    "@last24h":  {
+                     "description":  "Time filter: last 24 hours"
+                 },
+    "last7d":  "7日間",
+    "@last7d":  {
+                    "description":  "Time filter: last 7 days"
+                },
+    "last30d":  "30日間",
+    "@last30d":  {
+                     "description":  "Time filter: last 30 days"
+                 },
+    "engagement":  "エンゲージメント",
+    "@engagement":  {
+                        "description":  "Filter section: engagement"
+                    },
+    "unreadOnly":  "未読のみ",
+    "@unreadOnly":  {
+                        "description":  "Unread only filter option"
+                    },
+    "lengthPreview":  "長さ / プレビュー",
+    "@lengthPreview":  {
+                           "description":  "Filter section: length/preview"
+                       },
+    "any":  "すべて",
+    "@any":  {
+                 "description":  "Any length filter"
+             },
+    "short":  "短い \u003c100語",
+    "@short":  {
+                   "description":  "Short article filter"
+               },
+    "medium":  "中程度 100-300",
+    "@medium":  {
+                    "description":  "Medium article filter"
+                },
+    "long":  "長い \u003e300",
+    "@long":  {
+                  "description":  "Long article filter"
+              },
+    "multiParagraph":  "2段落以上",
+    "@multiParagraph":  {
+                            "description":  "Multi-paragraph filter"
+                        },
+    "timeWindow":  "期間",
+    "@timeWindow":  {
+                        "description":  "Filter section: time window"
+                    },
+    "all":  "すべて",
+    "@all":  {
+                 "description":  "All filter option"
+             },
+    "sources":  "ソース",
+    "@sources":  {
+                     "description":  "Filter section: sources"
+                 },
+    "allSources":  "すべてのソース",
+    "@allSources":  {
+                        "description":  "All sources filter option"
+                    },
+    "keyword":  "キーワード",
+    "@keyword":  {
+                     "description":  "Filter section: keyword"
+                 },
+    "keywordHint":  "タイトル、要約、または本文",
+    "@keywordHint":  {
+                         "description":  "Keyword search hint"
+                     },
+    "reset":  "リセット",
+    "@reset":  {
+                   "description":  "Reset filters button"
+               },
+    "done":  "完了",
+    "@done":  {
+                  "description":  "Done button"
+              },
+    "searchArticlesHint":  "記事を検索...",
+    "@searchArticlesHint":  {
+                                "description":  "Search field placeholder in article list"
+                            },
+    "retry":  "再試行",
+    "@retry":  {
+                   "description":  "Retry button"
+               },
+    "noArticlesYet":  "記事がまだありません。プルして更新。",
+    "@noArticlesYet":  {
+                           "description":  "Empty state for article list"
+                       },
+    "noArticlesMatch":  "現在のフィルターに一致する記事はありません。",
+    "@noArticlesMatch":  {
+                             "description":  "Empty state when filters match nothing"
+                         },
+    "untitled":  "無題",
+    "@untitled":  {
+                      "description":  "Fallback article title"
+                  },
+    "removedLike":  "いいねを解除",
+    "@removedLike":  {
+                         "description":  "Snackbar when removing a like"
+                     },
+    "likedArticle":  "記事にいいね",
+    "@likedArticle":  {
+                          "description":  "Snackbar when liking an article"
+                      },
+    "removedFromSaved":  "保存済みから削除",
+    "@removedFromSaved":  {
+                              "description":  "Snackbar when removing from saved"
+                          },
+    "savedForLater":  "後で読むために保存",
+    "@savedForLater":  {
+                           "description":  "Snackbar when saving for later"
+                       },
+    "markedUnread":  "未読にマーク",
+    "@markedUnread":  {
+                          "description":  "Snackbar when marking unread"
+                      },
+    "markedRead":  "既読にマーク",
+    "@markedRead":  {
+                        "description":  "Snackbar when marking read"
+                    },
+    "undo":  "元に戻す",
+    "@undo":  {
+                  "description":  "Undo action label"
+              },
+    "publishDateUnknown":  "公開日不明",
+    "@publishDateUnknown":  {
+                                "description":  "Fallback when publish date is unknown"
+                            },
+    "justNow":  "たった今",
+    "@justNow":  {
+                     "description":  "Time label: just now"
+                 },
+    "minutesAgo":  "{count} 分前",
+    "@minutesAgo":  {
+                        "description":  "Time label: minutes ago",
+                        "placeholders":  {
+                                             "count":  {
+
+                                                       }
+                                         }
+                    },
+    "hoursAgo":  "{count} 時間前",
+    "@hoursAgo":  {
+                      "description":  "Time label: hours ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "daysAgo":  "{count} 日前",
+    "@daysAgo":  {
+                     "description":  "Time label: days ago",
+                     "placeholders":  {
+                                          "count":  {
+
+                                                    }
+                                      }
+                 },
+    "weeksAgo":  "{count} 週間前",
+    "@weeksAgo":  {
+                      "description":  "Time label: weeks ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "monthsAgo":  "{count} ヶ月前",
+    "@monthsAgo":  {
+                       "description":  "Time label: months ago",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "yearsAgo":  "{count} 年前",
+    "@yearsAgo":  {
+                      "description":  "Time label: years ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "fetched":  "取得済み",
+    "@fetched":  {
+                     "description":  "Indicator that timestamp is fallback fetched time"
+                 },
+    "continueReading":  "続きを読む",
+    "@continueReading":  {
+                             "description":  "FAB label for continue reading"
+                         },
+    "readerSavedForLater":  "後で読むために保存",
+    "@readerSavedForLater":  {
+                                 "description":  "Snackbar when saving in reader"
+                             },
+    "readerRemovedFromSaved":  "保存済みから削除",
+    "@readerRemovedFromSaved":  {
+                                    "description":  "Snackbar when removing save in reader"
+                                },
+    "resumingLastRead":  "最後に読んだ記事を再開",
+    "@resumingLastRead":  {
+                              "description":  "Snackbar when resuming playback"
+                          },
+    "startingPlayback":  "未読記事の再生を開始",
+    "@startingPlayback":  {
+                              "description":  "Snackbar when auto-playing"
+                          },
+    "showReader":  "リーダー表示",
+    "@showReader":  {
+                        "description":  "Tooltip to show reader view"
+                    },
+    "showWebView":  "Web表示",
+    "@showWebView":  {
+                         "description":  "Tooltip to show web view"
+                     },
+    "webviewUnsupported":  "アプリ内WebViewはAndroid/iOSでのみサポートされています。\n代わりにテキスト表示を表示します。",
+    "@webviewUnsupported":  {
+                                "description":  "Message when WebView is unsupported on platform"
+                            },
+    "byAuthor":  "{author} 著",
+    "@byAuthor":  {
+                      "description":  "Article author attribution",
+                      "placeholders":  {
+                                           "author":  {
+
+                                                      }
+                                       }
+                  },
+    "markedReadSkipped":  "既読にして次へスキップ",
+    "@markedReadSkipped":  {
+                               "description":  "Snackbar when marking read and skipping"
+                           },
+    "markUnread":  "未読にする",
+    "@markUnread":  {
+                        "description":  "Tooltip to mark as unread"
+                    },
+    "markReadPlay":  "既読にして次を再生",
+    "@markReadPlay":  {
+                          "description":  "Tooltip to mark read and play next"
+                      },
+    "previousArticle":  "前の記事",
+    "@previousArticle":  {
+                             "description":  "Tooltip for previous article button"
+                         },
+    "nextArticle":  "次の記事",
+    "@nextArticle":  {
+                         "description":  "Tooltip for next article button"
+                     },
+    "playingSection":  "セクション {current}/{total} を再生中",
+    "@playingSection":  {
+                            "description":  "Audio playback progress text",
+                            "placeholders":  {
+                                                 "current":  {
+
+                                                             },
+                                                 "total":  {
+
+                                                           }
+                                             }
+                        },
+    "readAloudNotAvailable":  "この記事では読み上げ機能は利用できません。",
+    "@readAloudNotAvailable":  {
+                                   "description":  "Message when TTS is not available"
+                               },
+    "unreadCount":  "未読: {count}",
+    "@unreadCount":  {
+                         "description":  "Unread article count badge",
+                         "placeholders":  {
+                                              "count":  {
+
+                                                        }
+                                          }
+                     },
+    "embeddedVideoUnsupported":  "埋め込みビデオはAndroid/iOSでのみサポートされています。",
+    "@embeddedVideoUnsupported":  {
+                                      "description":  "Message when embedded video is unsupported"
+                                  },
+    "loadVideo":  "ビデオを読み込む",
+    "@loadVideo":  {
+                       "description":  "Button to load embedded video"
+                   },
+    "settingsTitle":  "設定",
+    "@settingsTitle":  {
+                           "description":  "Title of settings screen"
+                       },
+    "goAdFree":  "広告を非表示に",
+    "@goAdFree":  {
+                      "description":  "Premium card title"
+                  },
+    "goAdFreeSubtitle":  "わずか $1/月。個人開発者を支援。",
+    "@goAdFreeSubtitle":  {
+                              "description":  "Premium card subtitle"
+                          },
+    "pricePerMonth":  "$1/月",
+    "@pricePerMonth":  {
+                           "description":  "Price label"
+                       },
+    "premiumTitle":  "Aware Premium",
+    "@premiumTitle":  {
+                          "description":  "Premium dialog title"
+                      },
+    "premiumSubscribeDesc":  "$1/月で購読して以下を入手：",
+    "@premiumSubscribeDesc":  {
+                                  "description":  "Premium dialog description"
+                              },
+    "premiumRemoveAds":  "すべての広告を削除",
+    "@premiumRemoveAds":  {
+                              "description":  "Premium feature: remove ads"
+                          },
+    "premiumCloudStorage":  "データのクラウドストレージ",
+    "@premiumCloudStorage":  {
+                                 "description":  "Premium feature: cloud storage"
+                             },
+    "premiumCloudSubscriptions":  "購読をクラウドに保存",
+    "@premiumCloudSubscriptions":  {
+                                       "description":  "Premium feature: cloud subscriptions"
+                                   },
+    "premiumSync":  "サインインしてデバイス間で同期",
+    "@premiumSync":  {
+                         "description":  "Premium feature: sync"
+                     },
+    "notNow":  "今はしない",
+    "@notNow":  {
+                    "description":  "Not now button"
+                },
+    "comingSoon":  "近日公開",
+    "@comingSoon":  {
+                        "description":  "Coming soon badge label"
+                    },
+    "subscribeNow":  "購読 $1/月",
+    "@subscribeNow":  {
+                          "description":  "Subscribe button"
+                      },
+    "subscriptionComingSoon":  "購読機能はまもなく公開！月額 $1 が請求されます。",
+    "@subscriptionComingSoon":  {
+                                    "description":  "Snackbar when subscription is coming soon"
+                                },
+    "sectionAdvanced":  "詳細設定",
+    "@sectionAdvanced":  {
+                             "description":  "Settings section: advanced"
+                         },
+    "readTracking":  "読書追跡",
+    "@readTracking":  {
+                          "description":  "Read tracking setting title"
+                      },
+    "readTrackingSubtitle":  "読書の進行度に基づいて記事を自動的に既読にする",
+    "@readTrackingSubtitle":  {
+                                  "description":  "Read tracking setting subtitle"
+                              },
+    "autoMarkRead":  "進行度で自動既読",
+    "@autoMarkRead":  {
+                          "description":  "Auto-mark read setting title"
+                      },
+    "autoMarkReadSubtitle":  "スクロールまたは音声がしきい値に達したときに既読としてマーク",
+    "@autoMarkReadSubtitle":  {
+                                  "description":  "Auto-mark read setting subtitle"
+                              },
+    "autoMarkThreshold":  "自動マークしきい値",
+    "@autoMarkThreshold":  {
+                               "description":  "Auto-mark threshold setting title"
+                           },
+    "progressNeeded":  "{percent}% の進行が必要",
+    "@progressNeeded":  {
+                            "description":  "Progress threshold label",
+                            "placeholders":  {
+                                                 "percent":  {
+
+                                                             }
+                                             }
+                        },
+    "sectionVoice":  "音声と読み上げ",
+    "@sectionVoice":  {
+                          "description":  "Settings section: voice \u0026 read aloud"
+                      },
+    "narrationSpeed":  "デフォルトの読み上げ速度",
+    "@narrationSpeed":  {
+                            "description":  "Narration speed setting title"
+                        },
+    "speedLabel":  "{speed}倍（1x = 標準）",
+    "@speedLabel":  {
+                        "description":  "Speed slider label",
+                        "placeholders":  {
+                                             "speed":  {
+
+                                                       }
+                                         }
+                    },
+    "defaultVoice":  "デフォルト音声",
+    "@defaultVoice":  {
+                          "description":  "Default voice setting title"
+                      },
+    "systemDefault":  "システムデフォルト",
+    "@systemDefault":  {
+                           "description":  "System default voice option"
+                       },
+    "autoPlayNext":  "次の記事を自動再生",
+    "@autoPlayNext":  {
+                          "description":  "Auto-play next setting title"
+                      },
+    "autoPlayNextSubtitle":  "読み上げが終了したら、次のアイテムに移動",
+    "@autoPlayNextSubtitle":  {
+                                  "description":  "Auto-play next setting subtitle"
+                              },
+    "sectionAccessibility":  "アクセシビリティ",
+    "@sectionAccessibility":  {
+                                  "description":  "Settings section: accessibility"
+                              },
+    "textSize":  "テキストサイズ",
+    "@textSize":  {
+                      "description":  "Text size setting title"
+                  },
+    "textSizeSubtitle":  "記事やナビゲーションを含むアプリ全体に適用されます。",
+    "@textSizeSubtitle":  {
+                              "description":  "Text size setting subtitle"
+                          },
+    "sampleText":  "すばしっこい茶色のキツネがのろまな犬を飛び越える。",
+    "@sampleText":  {
+                        "description":  "Sample text for text size preview"
+                    },
+    "save":  "Save",
+    "@save":  {
+                  "description":  "Menu item to save article"
+              },
+    "unsave":  "Unsave",
+    "@unsave":  {
+                    "description":  "Menu item to unsave article"
+                },
+    "copyLink":  "Copy link",
+    "@copyLink":  {
+                      "description":  "Menu item to copy article URL"
+                  },
+    "linkCopied":  "Link copied to clipboard",
+    "@linkCopied":  {
+                        "description":  "Snackbar when link is copied"
+                    },
+    "sectionSubscriptions":  "購読",
+    "@sectionSubscriptions":  {
+                                  "description":  "Settings section: subscriptions"
+                              },
+    "manageSubscriptions":  "購読を管理",
+    "@manageSubscriptions":  {
+                                 "description":  "Manage subscriptions setting title"
+                             },
+    "manageSubscriptionsSubtitle":  "フォローしているフィードを追加または削除",
+    "@manageSubscriptionsSubtitle":  {
+                                         "description":  "Manage subscriptions setting subtitle"
+                                     },
+    "importSubscriptions":  "購読をインポート",
+    "@importSubscriptions":  {
+                                 "description":  "Import subscriptions setting title"
+                             },
+    "importSubscriptionsSubtitle":  "OPMLファイルからインポート",
+    "@importSubscriptionsSubtitle":  {
+                                         "description":  "Import subscriptions setting subtitle"
+                                     },
+    "exportSubscriptions":  "購読をエクスポート",
+    "@exportSubscriptions":  {
+                                 "description":  "Export subscriptions setting title"
+                             },
+    "exportSubscriptionsSubtitle":  "フィードをOPMLにエクスポート",
+    "@exportSubscriptionsSubtitle":  {
+                                         "description":  "Export subscriptions setting subtitle"
+                                     },
+    "sectionThemes":  "テーマ",
+    "@sectionThemes":  {
+                           "description":  "Settings section: themes"
+                       },
+    "themes":  "テーマ",
+    "@themes":  {
+                    "description":  "Themes setting title"
+                },
+    "themesSubtitle":  "ライト / ダーク / システム",
+    "@themesSubtitle":  {
+                            "description":  "Themes setting subtitle"
+                        },
+    "selectTheme":  "テーマを選択",
+    "@selectTheme":  {
+                         "description":  "Theme selection dialog title"
+                     },
+    "system":  "システム",
+    "@system":  {
+                    "description":  "System theme option"
+                },
+    "light":  "ライト",
+    "@light":  {
+                   "description":  "Light theme option"
+               },
+    "dark":  "ダーク",
+    "@dark":  {
+                  "description":  "Dark theme option"
+              },
+    "sectionLanguage":  "言語",
+    "@sectionLanguage":  {
+                             "description":  "Settings section: language"
+                         },
+    "language":  "言語",
+    "@language":  {
+                      "description":  "Language setting title"
+                  },
+    "languageSubtitle":  "日本語",
+    "@languageSubtitle":  {
+                              "description":  "Language setting subtitle - currently selected language"
+                          },
+    "selectLanguage":  "言語を選択",
+    "@selectLanguage":  {
+                            "description":  "Language selection dialog title"
+                        },
+    "sectionLegal":  "法的情報",
+    "@sectionLegal":  {
+                          "description":  "Settings section: legal"
+                      },
+    "privacyPolicy":  "プライバシーポリシー",
+    "@privacyPolicy":  {
+                           "description":  "Privacy policy setting title"
+                       },
+    "openSourceLicenses":  "オープンソースライセンス",
+    "@openSourceLicenses":  {
+                                "description":  "Open source licenses setting title"
+                            },
+    "noFeedsFoundOpml":  "OPMLにフィードが見つかりませんでした",
+    "@noFeedsFoundOpml":  {
+                              "description":  "Snackbar when no feeds found in OPML"
+                          },
+    "importedCount":  "{count} フィードをインポートしました",
+    "@importedCount":  {
+                           "description":  "Snackbar when import succeeds",
+                           "placeholders":  {
+                                                "count":  {
+                                                              "type":  "num"
+                                                          }
+                                            }
+                       },
+    "allFeedsAlreadyAdded":  "すべてのフィードは既に追加されています",
+    "@allFeedsAlreadyAdded":  {
+                                  "description":  "Snackbar when all feeds already exist"
+                              },
+    "importFailed":  "インポートに失敗しました: {error}",
+    "@importFailed":  {
+                          "description":  "Snackbar when import fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "noSubscriptionsToExport":  "エクスポートする購読がありません",
+    "@noSubscriptionsToExport":  {
+                                     "description":  "Snackbar when no subscriptions to export"
+                                 },
+    "exportedCount":  "{count} フィードをエクスポートしました",
+    "@exportedCount":  {
+                           "description":  "Snackbar when export succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "exportFailed":  "エクスポートに失敗しました: {error}",
+    "@exportFailed":  {
+                          "description":  "Snackbar when export fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "exportShareText":  "Aware 購読エクスポート",
+    "@exportShareText":  {
+                             "description":  "Share text for OPML export"
+                         },
+    "exportShareSubject":  "Aware 購読エクスポート",
+    "@exportShareSubject":  {
+                                "description":  "Share subject for OPML export"
+                            },
+    "savedArticlesTitle":  "保存した記事",
+    "@savedArticlesTitle":  {
+                                "description":  "Title of saved articles screen"
+                            },
+    "noSavedArticlesYet":  "保存した記事はまだありません。",
+    "@noSavedArticlesYet":  {
+                                "description":  "Empty state for saved articles"
+                            },
+    "error":  "エラー: {error}",
+    "@error":  {
+                   "description":  "Error message format",
+                   "placeholders":  {
+                                        "error":  {
+
+                                                  }
+                                    }
+               },
+    "privacyPolicyTitle":  "プライバシーポリシー",
+    "@privacyPolicyTitle":  {
+                                "description":  "Privacy policy screen title"
+                            },
+    "privacyPolicyLastUpdated":  "最終更新: 2026年6月20日",
+    "@privacyPolicyLastUpdated":  {
+                                      "description":  "Privacy policy last updated date"
+                                  },
+    "privacyInfoWeCollect":  "収集する情報",
+    "@privacyInfoWeCollect":  {
+                                  "description":  "Privacy section: information we collect"
+                              },
+    "privacyInfoWeCollectBody":  "Aware は個人データを収集、保存、送信しません。すべてのアプリデータ（フィード、記事、読書進行度、設定）はお使いのデバイスにローカルに保存され、サーバーに送信されることは決してありません。",
+    "@privacyInfoWeCollectBody":  {
+                                      "description":  "Privacy section body: information we collect"
+                                  },
+    "privacyThirdParty":  "第三者サービス",
+    "@privacyThirdParty":  {
+                               "description":  "Privacy section: third-party services"
+                           },
+    "privacyThirdPartyBody":  "Aware は Google AdMob を使用して広告を表示します。AdMob は関連広告を配信するために、非個人の使用データおよびデバイス識別子を収集する場合があります。広告は非パーソナライズド広告リクエストでのみ配信されます。ユーザーデータが広告主と共有されることはありません。\n\nGoogle のプライバシーポリシーが AdMob によって収集されたデータに適用されます：\n",
+    "@privacyThirdPartyBody":  {
+                                   "description":  "Privacy section body: third-party services"
+                               },
+    "privacyDataStorage":  "データストレージ",
+    "@privacyDataStorage":  {
+                                "description":  "Privacy section: data storage"
+                            },
+    "privacyDataStorageBody":  "すべてのフィード購読、記事、読書進行度、アプリ設定は、お使いのデバイスの SQLite データベースにローカルに保存されます。設定の OPML エクスポート機能を使用して、いつでもデータをエクスポートできます。\n\nすべてのデータを削除するには、アプリをアンインストールするか、デバイス設定からアプリデータを消去してください。",
+    "@privacyDataStorageBody":  {
+                                    "description":  "Privacy section body: data storage"
+                                },
+    "privacyContact":  "お問い合わせ",
+    "@privacyContact":  {
+                            "description":  "Privacy section: contact"
+                        },
+    "privacyContactBody":  "このプライバシーポリシーについてご質問がある場合は、アプリのサポートチャネルからお問い合わせください。",
+    "@privacyContactBody":  {
+                                "description":  "Privacy section body: contact"
+                            }
 }

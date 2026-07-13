@@ -190,42 +190,13 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Cartelle';
-
-  @override
-  String get createFolderTitle => 'Nuova cartella';
-
-  @override
-  String get folderNameHint => 'Nome cartella';
-
-  @override
   String get create => 'Crea';
 
   @override
   String get rename => 'Rinomina';
 
   @override
-  String get renameFolderTitle => 'Rinomina cartella';
-
-  @override
   String get delete => 'Elimina';
-
-  @override
-  String get deleteFolderTitle => 'Elimina cartella';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'Rimuovere \"$name\" e separare i suoi feed?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Crea cartella';
-
-  @override
-  String get noFoldersYet => 'Ancora nessuna cartella';
-
-  @override
-  String get createFirstFolder => 'Crea la tua prima cartella';
 
   @override
   String feedCount(num count) {
@@ -493,9 +464,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get premiumSync => 'Accedi e sincronizza tra dispositivi';
 
   @override
-  String get premiumFolders => 'Organizzazione illimitata delle cartelle';
-
-  @override
   String get notNow => 'Non ora';
 
   @override
@@ -558,16 +526,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Quando la narrazione termina, passa all\'elemento successivo';
 
   @override
-  String get sectionData => 'Dati';
-
-  @override
-  String get lowDataMode => 'Precaricamento modalità dati ridotti';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Precarica il testo degli articoli in background e preferisci i contenuti nella cache quando disponibili';
-
-  @override
   String get sectionAccessibility => 'Accessibilità';
 
   @override
@@ -589,12 +547,6 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Aggiungi o rimuovi i feed che segui';
-
-  @override
-  String get manageFolders => 'Gestisci cartelle';
-
-  @override
-  String get manageFoldersSubtitle => 'Organizza i feed in cartelle';
 
   @override
   String get importSubscriptions => 'Importa abbonamenti';
@@ -640,42 +592,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Seleziona lingua';
-
-  @override
-  String get languageEnglish => 'Inglese';
-
-  @override
-  String get languageChinese => 'Cinese';
-
-  @override
-  String get languageSpanish => 'Spagnolo';
-
-  @override
-  String get languageHindi => 'Hindi';
-
-  @override
-  String get languageArabic => 'Arabo';
-
-  @override
-  String get languageFrench => 'Francese';
-
-  @override
-  String get languagePortuguese => 'Portoghese';
-
-  @override
-  String get languageRussian => 'Russo';
-
-  @override
-  String get languageJapanese => 'Giapponese';
-
-  @override
-  String get languageGerman => 'Tedesco';
-
-  @override
-  String get languageKorean => 'Coreano';
-
-  @override
-  String get languageItalian => 'Italiano';
 
   @override
   String get sectionLegal => 'Note legali';

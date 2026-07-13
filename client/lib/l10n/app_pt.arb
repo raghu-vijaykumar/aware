@@ -1,984 +1,921 @@
 {
-  "@@locale": "pt",
-  "appName": "aware",
-  "@appName": {
-    "description": "The name of the application"
-  },
-  "appTitle": "Aware",
-  "@appTitle": {
-    "description": "Application title shown in settings/about"
-  },
-  "appVersion": "1.0.0",
-  "@appVersion": {
-    "description": "Application version number"
-  },
-  "splashTagline": "Mantenha-se informado, sem esforço",
-  "@splashTagline": {
-    "description": "Tagline shown on splash screen"
-  },
-  "onboardingLanguageTitle": "Escolha seu idioma",
-  "@onboardingLanguageTitle": {
-    "description": "Title for onboarding language selection page"
-  },
-  "onboardingLanguageDesc": "Selecione seu idioma preferido para a interface do aplicativo.",
-  "@onboardingLanguageDesc": {
-    "description": "Description for onboarding language selection page"
-  },
-  "onboardingWelcomeTitle": "Bem-vindo ao aware",
-  "@onboardingWelcomeTitle": {
-    "description": "Title for first onboarding page"
-  },
-  "onboardingWelcomeDesc": "Seu leitor de feeds pessoal. Mantenha-se informado sobre o que importa, tudo em um só lugar.",
-  "@onboardingWelcomeDesc": {
-    "description": "Description for first onboarding page"
-  },
-  "onboardingOfflineTitle": "Ler offline",
-  "@onboardingOfflineTitle": {
-    "description": "Title for second onboarding page"
-  },
-  "onboardingOfflineDesc": "Os feeds são baixados para você ler a qualquer hora, em qualquer lugar. Ouça com conversão de texto em fala.",
-  "@onboardingOfflineDesc": {
-    "description": "Description for second onboarding page"
-  },
-  "onboardingNotifyTitle": "Nunca perca uma publicação",
-  "@onboardingNotifyTitle": {
-    "description": "Title for third onboarding page"
-  },
-  "onboardingNotifyDesc": "Receba notificações quando novos artigos chegarem. Adicione seu primeiro feed para começar.",
-  "@onboardingNotifyDesc": {
-    "description": "Description for third onboarding page"
-  },
-  "next": "Próximo",
-  "@next": {
-    "description": "Next button"
-  },
-  "getStarted": "Começar",
-  "@getStarted": {
-    "description": "Get Started button on last onboarding page"
-  },
-  "skip": "Pular",
-  "@skip": {
-    "description": "Skip button on onboarding"
-  },
-  "tabFeeds": "Feeds",
-  "@tabFeeds": {
-    "description": "Bottom navigation tab for feeds"
-  },
-  "tabMarketplace": "Marketplace",
-  "@tabMarketplace": {
-    "description": "Bottom navigation tab for marketplace"
-  },
-  "tabSettings": "Configurações",
-  "@tabSettings": {
-    "description": "Bottom navigation tab for settings"
-  },
-  "addFeedTitle": "Adicionar feed RSS",
-  "@addFeedTitle": {
-    "description": "Title of the add feed dialog"
-  },
-  "addFeedUrlLabel": "URL do feed",
-  "@addFeedUrlLabel": {
-    "description": "Label for feed URL input"
-  },
-  "addFeedUrlHint": "https://exemplo.com/feed.xml",
-  "@addFeedUrlHint": {
-    "description": "Hint text for feed URL input"
-  },
-  "cancel": "Cancelar",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "add": "Adicionar",
-  "@add": {
-    "description": "Add button text"
-  },
-  "feedAdded": "Feed adicionado",
-  "@feedAdded": {
-    "description": "Snackbar message when feed is added"
-  },
-  "failedToAddFeed": "Falha ao adicionar feed: {error}",
-  "@failedToAddFeed": {
-    "description": "Snackbar message when adding a feed fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "feedUrlRequired": "A URL do feed é obrigatória",
-  "@feedUrlRequired": {
-    "description": "Validation message when feed URL is empty"
-  },
-  "marketplaceTitle": "Marketplace",
-  "@marketplaceTitle": {
-    "description": "Title of marketplace screen"
-  },
-  "marketplaceSubtitle": "Links RSS selecionados por categoria",
-  "@marketplaceSubtitle": {
-    "description": "Subtitle of marketplace screen"
-  },
-  "marketplaceHeroTitle": "Descubra feeds de qualidade rapidamente",
-  "@marketplaceHeroTitle": {
-    "description": "Hero section title on marketplace"
-  },
-  "marketplaceHeroDesc": "Navegue por fontes confiáveis por tópico. Toque em Seguir para adicioná-las ao seu feed inicial instantaneamente.",
-  "@marketplaceHeroDesc": {
-    "description": "Hero section description on marketplace"
-  },
-  "marketplaceCategoriesCount": "{count} categorias",
-  "@marketplaceCategoriesCount": {
-    "description": "Category count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceFeedsCount": "{count} feeds",
-  "@marketplaceFeedsCount": {
-    "description": "Feed count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceSearchHint": "Pesquisar feeds...",
-  "@marketplaceSearchHint": {
-    "description": "Search field placeholder"
-  },
-  "marketplaceUntitledFeed": "Feed sem título",
-  "@marketplaceUntitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "marketplaceSubscribed": "Inscrito",
-  "@marketplaceSubscribed": {
-    "description": "Tooltip when feed is subscribed"
-  },
-  "marketplaceFollow": "Seguir",
-  "@marketplaceFollow": {
-    "description": "Follow button tooltip"
-  },
-  "marketplaceSubscribedTo": "Inscrito em {title}",
-  "@marketplaceSubscribedTo": {
-    "description": "Snackbar when subscribing to a feed",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "marketplaceInvalidUrl": "URL de feed inválida",
-  "@marketplaceInvalidUrl": {
-    "description": "Error when feed URL is invalid"
-  },
-  "marketplaceUnreachable": "Falha ao inscrever: o feed pode estar inacessível",
-  "@marketplaceUnreachable": {
-    "description": "Error when feed subscription fails"
-  },
-  "marketplaceCuratedSources": "{count} fontes selecionadas",
-  "@marketplaceCuratedSources": {
-    "description": "Subtitle showing curated source count",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "signIn": "Entrar",
-  "@signIn": {
-    "description": "Sign in button / title"
-  },
-  "emailLabel": "E-mail",
-  "@emailLabel": {
-    "description": "Email field label"
-  },
-  "passwordLabel": "Senha",
-  "@passwordLabel": {
-    "description": "Password field label"
-  },
-  "emailRequired": "Digite seu e-mail",
-  "@emailRequired": {
-    "description": "Validation for empty email"
-  },
-  "passwordRequired": "Digite sua senha",
-  "@passwordRequired": {
-    "description": "Validation for empty password"
-  },
-  "subscriptionsTitle": "Inscrições",
-  "@subscriptionsTitle": {
-    "description": "Title of subscriptions screen"
-  },
-  "subscriptionsEmpty": "Nenhuma inscrição ainda. Adicione feeds do Marketplace!",
-  "@subscriptionsEmpty": {
-    "description": "Empty state message"
-  },
-  "untitledFeed": "Feed sem título",
-  "@untitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "paused": "Pausado",
-  "@paused": {
-    "description": "Paused feed label"
-  },
-  "resume": "Continuar",
-  "@resume": {
-    "description": "Resume feed action"
-  },
-  "pause": "Pausar",
-  "@pause": {
-    "description": "Pause feed action"
-  },
-  "unsubscribe": "Cancelar inscrição",
-  "@unsubscribe": {
-    "description": "Unsubscribe action"
-  },
-  "unsubscribeTitle": "Cancelar inscrição",
-  "@unsubscribeTitle": {
-    "description": "Unsubscribe dialog title"
-  },
-  "unsubscribeConfirm": "Cancelar inscrição em {title}?",
-  "@unsubscribeConfirm": {
-    "description": "Unsubscribe confirmation message",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "foldersTitle": "Pastas",
-  "@foldersTitle": {
-    "description": "Title of folders screen"
-  },
-  "createFolderTitle": "Nova pasta",
-  "@createFolderTitle": {
-    "description": "Create folder dialog title"
-  },
-  "folderNameHint": "Nome da pasta",
-  "@folderNameHint": {
-    "description": "Folder name input hint"
-  },
-  "create": "Criar",
-  "@create": {
-    "description": "Create button"
-  },
-  "rename": "Renomear",
-  "@rename": {
-    "description": "Rename button"
-  },
-  "renameFolderTitle": "Renomear pasta",
-  "@renameFolderTitle": {
-    "description": "Rename folder dialog title"
-  },
-  "delete": "Excluir",
-  "@delete": {
-    "description": "Delete button"
-  },
-  "deleteFolderTitle": "Excluir pasta",
-  "@deleteFolderTitle": {
-    "description": "Delete folder dialog title"
-  },
-  "deleteFolderConfirm": "Remover \"{name}\" e desagrupar seus feeds?",
-  "@deleteFolderConfirm": {
-    "description": "Delete folder confirmation",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "createFolderTooltip": "Criar pasta",
-  "@createFolderTooltip": {
-    "description": "Tooltip for create folder button"
-  },
-  "noFoldersYet": "Nenhuma pasta ainda",
-  "@noFoldersYet": {
-    "description": "Empty state for folders"
-  },
-  "createFirstFolder": "Crie sua primeira pasta",
-  "@createFirstFolder": {
-    "description": "Button to create first folder"
-  },
-  "feedCount": "{count} feed{count, plural, one {} other {s}}",
-  "@feedCount": {
-    "description": "Feed count with pluralization",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "filters": "Filtros",
-  "@filters": {
-    "description": "Filters button"
-  },
-  "unread": "Não lidos",
-  "@unread": {
-    "description": "Unread filter chip"
-  },
-  "liked": "Curtidos",
-  "@liked": {
-    "description": "Liked filter chip"
-  },
-  "saved": "Salvos",
-  "@saved": {
-    "description": "Saved filter chip"
-  },
-  "last24h": "Últimas 24h",
-  "@last24h": {
-    "description": "Time filter: last 24 hours"
-  },
-  "last7d": "Últimos 7d",
-  "@last7d": {
-    "description": "Time filter: last 7 days"
-  },
-  "last30d": "Últimos 30d",
-  "@last30d": {
-    "description": "Time filter: last 30 days"
-  },
-  "engagement": "Engajamento",
-  "@engagement": {
-    "description": "Filter section: engagement"
-  },
-  "unreadOnly": "Apenas não lidos",
-  "@unreadOnly": {
-    "description": "Unread only filter option"
-  },
-  "lengthPreview": "Tamanho / prévia",
-  "@lengthPreview": {
-    "description": "Filter section: length/preview"
-  },
-  "any": "Qualquer",
-  "@any": {
-    "description": "Any length filter"
-  },
-  "short": "Curto <100p",
-  "@short": {
-    "description": "Short article filter"
-  },
-  "medium": "Médio 100–300",
-  "@medium": {
-    "description": "Medium article filter"
-  },
-  "long": "Longo >300",
-  "@long": {
-    "description": "Long article filter"
-  },
-  "multiParagraph": "2+ parágrafos",
-  "@multiParagraph": {
-    "description": "Multi-paragraph filter"
-  },
-  "timeWindow": "Período",
-  "@timeWindow": {
-    "description": "Filter section: time window"
-  },
-  "all": "Todos",
-  "@all": {
-    "description": "All filter option"
-  },
-  "sources": "Fontes",
-  "@sources": {
-    "description": "Filter section: sources"
-  },
-  "allSources": "Todas as fontes",
-  "@allSources": {
-    "description": "All sources filter option"
-  },
-  "keyword": "Palavra-chave",
-  "@keyword": {
-    "description": "Filter section: keyword"
-  },
-  "keywordHint": "Título, resumo ou conteúdo",
-  "@keywordHint": {
-    "description": "Keyword search hint"
-  },
-  "reset": "Redefinir",
-  "@reset": {
-    "description": "Reset filters button"
-  },
-  "done": "Concluído",
-  "@done": {
-    "description": "Done button"
-  },
-  "searchArticlesHint": "Pesquisar artigos...",
-  "@searchArticlesHint": {
-    "description": "Search field placeholder in article list"
-  },
-  "retry": "Tentar novamente",
-  "@retry": {
-    "description": "Retry button"
-  },
-  "noArticlesYet": "Nenhum artigo ainda. Puxe para atualizar.",
-  "@noArticlesYet": {
-    "description": "Empty state for article list"
-  },
-  "noArticlesMatch": "Nenhum artigo corresponde aos filtros atuais.",
-  "@noArticlesMatch": {
-    "description": "Empty state when filters match nothing"
-  },
-  "untitled": "Sem título",
-  "@untitled": {
-    "description": "Fallback article title"
-  },
-  "removedLike": "Curtida removida",
-  "@removedLike": {
-    "description": "Snackbar when removing a like"
-  },
-  "likedArticle": "Artigo curtido",
-  "@likedArticle": {
-    "description": "Snackbar when liking an article"
-  },
-  "removedFromSaved": "Removido dos salvos",
-  "@removedFromSaved": {
-    "description": "Snackbar when removing from saved"
-  },
-  "savedForLater": "Salvo para depois",
-  "@savedForLater": {
-    "description": "Snackbar when saving for later"
-  },
-  "markedUnread": "Marcado como não lido",
-  "@markedUnread": {
-    "description": "Snackbar when marking unread"
-  },
-  "markedRead": "Marcado como lido",
-  "@markedRead": {
-    "description": "Snackbar when marking read"
-  },
-  "undo": "Desfazer",
-  "@undo": {
-    "description": "Undo action label"
-  },
-  "publishDateUnknown": "Data de publicação desconhecida",
-  "@publishDateUnknown": {
-    "description": "Fallback when publish date is unknown"
-  },
-  "justNow": "Agora mesmo",
-  "@justNow": {
-    "description": "Time label: just now"
-  },
-  "minutesAgo": "Há {count} min",
-  "@minutesAgo": {
-    "description": "Time label: minutes ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "hoursAgo": "Há {count} h",
-  "@hoursAgo": {
-    "description": "Time label: hours ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "daysAgo": "Há {count} d",
-  "@daysAgo": {
-    "description": "Time label: days ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "weeksAgo": "Há {count} sem",
-  "@weeksAgo": {
-    "description": "Time label: weeks ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "monthsAgo": "Há {count} meses",
-  "@monthsAgo": {
-    "description": "Time label: months ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "yearsAgo": "Há {count} anos",
-  "@yearsAgo": {
-    "description": "Time label: years ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "fetched": "obtido",
-  "@fetched": {
-    "description": "Indicator that timestamp is fallback fetched time"
-  },
-  "continueReading": "Continuar lendo",
-  "@continueReading": {
-    "description": "FAB label for continue reading"
-  },
-  "readerSavedForLater": "Salvo para depois",
-  "@readerSavedForLater": {
-    "description": "Snackbar when saving in reader"
-  },
-  "readerRemovedFromSaved": "Removido dos salvos",
-  "@readerRemovedFromSaved": {
-    "description": "Snackbar when removing save in reader"
-  },
-  "resumingLastRead": "Retomando último artigo lido",
-  "@resumingLastRead": {
-    "description": "Snackbar when resuming playback"
-  },
-  "startingPlayback": "Iniciando reprodução para artigo não lido",
-  "@startingPlayback": {
-    "description": "Snackbar when auto-playing"
-  },
-  "showReader": "Mostrar leitor",
-  "@showReader": {
-    "description": "Tooltip to show reader view"
-  },
-  "showWebView": "Mostrar visualização web",
-  "@showWebView": {
-    "description": "Tooltip to show web view"
-  },
-  "webviewUnsupported": "A WebView no aplicativo é compatível apenas com Android/iOS.\nMostrando visualização de texto como alternativa.",
-  "@webviewUnsupported": {
-    "description": "Message when WebView is unsupported on platform"
-  },
-  "byAuthor": "Por {author}",
-  "@byAuthor": {
-    "description": "Article author attribution",
-    "placeholders": {
-      "author": {}
-    }
-  },
-  "markedReadSkipped": "Marcado como lido e pulado para o próximo",
-  "@markedReadSkipped": {
-    "description": "Snackbar when marking read and skipping"
-  },
-  "markUnread": "Marcar como não lido",
-  "@markUnread": {
-    "description": "Tooltip to mark as unread"
-  },
-  "markReadPlay": "Marcar como lido e reproduzir próximo",
-  "@markReadPlay": {
-    "description": "Tooltip to mark read and play next"
-  },
-  "previousArticle": "Artigo anterior",
-  "@previousArticle": {
-    "description": "Tooltip for previous article button"
-  },
-  "nextArticle": "Próximo artigo",
-  "@nextArticle": {
-    "description": "Tooltip for next article button"
-  },
-  "playingSection": "Reproduzindo seção {current}/{total}",
-  "@playingSection": {
-    "description": "Audio playback progress text",
-    "placeholders": {
-      "current": {},
-      "total": {}
-    }
-  },
-  "readAloudNotAvailable": "Leitura em voz alta não disponível para este artigo.",
-  "@readAloudNotAvailable": {
-    "description": "Message when TTS is not available"
-  },
-  "unreadCount": "Não lidos: {count}",
-  "@unreadCount": {
-    "description": "Unread article count badge",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "embeddedVideoUnsupported": "Vídeo incorporado é compatível apenas com Android/iOS.",
-  "@embeddedVideoUnsupported": {
-    "description": "Message when embedded video is unsupported"
-  },
-  "loadVideo": "Carregar vídeo",
-  "@loadVideo": {
-    "description": "Button to load embedded video"
-  },
-  "settingsTitle": "Configurações",
-  "@settingsTitle": {
-    "description": "Title of settings screen"
-  },
-  "goAdFree": "Sem anúncios",
-  "@goAdFree": {
-    "description": "Premium card title"
-  },
-  "goAdFreeSubtitle": "Apenas R$ 5/mês. Apoie um desenvolvedor independente.",
-  "@goAdFreeSubtitle": {
-    "description": "Premium card subtitle"
-  },
-  "pricePerMonth": "R$ 5/mês",
-  "@pricePerMonth": {
-    "description": "Price label"
-  },
-  "premiumTitle": "Aware Premium",
-  "@premiumTitle": {
-    "description": "Premium dialog title"
-  },
-  "premiumSubscribeDesc": "Assine por R$ 5/mês e obtenha:",
-  "@premiumSubscribeDesc": {
-    "description": "Premium dialog description"
-  },
-  "premiumRemoveAds": "Remover todos os anúncios",
-  "@premiumRemoveAds": {
-    "description": "Premium feature: remove ads"
-  },
-  "premiumCloudStorage": "Armazenamento em nuvem para seus dados",
-  "@premiumCloudStorage": {
-    "description": "Premium feature: cloud storage"
-  },
-  "premiumCloudSubscriptions": "Salvar inscrições na nuvem",
-  "@premiumCloudSubscriptions": {
-    "description": "Premium feature: cloud subscriptions"
-  },
-  "premiumSync": "Faça login e sincronize entre dispositivos",
-  "@premiumSync": {
-    "description": "Premium feature: sync"
-  },
-  "premiumFolders": "Organização ilimitada de pastas",
-  "@premiumFolders": {
-    "description": "Premium feature: folders"
-  },
-  "notNow": "Agora não",
-  "@notNow": {
-    "description": "Not now button"
-  },
-  "comingSoon": "Em breve",
-  "@comingSoon": {
-    "description": "Coming soon badge label"
-  },
-  "subscribeNow": "Assinar R$ 5/mês",
-  "@subscribeNow": {
-    "description": "Subscribe button"
-  },
-  "subscriptionComingSoon": "Assinatura em breve! Será cobrado R$ 5/mês.",
-  "@subscriptionComingSoon": {
-    "description": "Snackbar when subscription is coming soon"
-  },
-  "sectionAdvanced": "Avançado",
-  "@sectionAdvanced": {
-    "description": "Settings section: advanced"
-  },
-  "readTracking": "Rastreamento de leitura",
-  "@readTracking": {
-    "description": "Read tracking setting title"
-  },
-  "readTrackingSubtitle": "Marcar artigos como lidos automaticamente com base no progresso da leitura",
-  "@readTrackingSubtitle": {
-    "description": "Read tracking setting subtitle"
-  },
-  "autoMarkRead": "Marcar automaticamente por progresso",
-  "@autoMarkRead": {
-    "description": "Auto-mark read setting title"
-  },
-  "autoMarkReadSubtitle": "Marca como lido quando a rolagem ou áudio atinge seu limite",
-  "@autoMarkReadSubtitle": {
-    "description": "Auto-mark read setting subtitle"
-  },
-  "autoMarkThreshold": "Limite de marcação automática",
-  "@autoMarkThreshold": {
-    "description": "Auto-mark threshold setting title"
-  },
-  "progressNeeded": "{percent}% de progresso necessário",
-  "@progressNeeded": {
-    "description": "Progress threshold label",
-    "placeholders": {
-      "percent": {}
-    }
-  },
-  "sectionVoice": "Voz e leitura em voz alta",
-  "@sectionVoice": {
-    "description": "Settings section: voice & read aloud"
-  },
-  "narrationSpeed": "Velocidade de narração padrão",
-  "@narrationSpeed": {
-    "description": "Narration speed setting title"
-  },
-  "speedLabel": "{speed}x (1x = calmo padrão)",
-  "@speedLabel": {
-    "description": "Speed slider label",
-    "placeholders": {
-      "speed": {}
-    }
-  },
-  "defaultVoice": "Voz padrão",
-  "@defaultVoice": {
-    "description": "Default voice setting title"
-  },
-  "systemDefault": "Padrão do sistema",
-  "@systemDefault": {
-    "description": "System default voice option"
-  },
-  "autoPlayNext": "Reproduzir próximo artigo automaticamente",
-  "@autoPlayNext": {
-    "description": "Auto-play next setting title"
-  },
-  "autoPlayNextSubtitle": "Quando a narração terminar, passar para o próximo item",
-  "@autoPlayNextSubtitle": {
-    "description": "Auto-play next setting subtitle"
-  },
-  "sectionData": "Dados",
-  "@sectionData": {
-    "description": "Settings section: data"
-  },
-  "lowDataMode": "Pré-carregamento em modo de dados reduzidos",
-  "@lowDataMode": {
-    "description": "Low data mode setting title"
-  },
-  "lowDataModeSubtitle": "Pré-carregar texto de artigos em segundo plano e preferir conteúdo em cache quando disponível",
-  "@lowDataModeSubtitle": {
-    "description": "Low data mode setting subtitle"
-  },
-  "sectionAccessibility": "Acessibilidade",
-  "@sectionAccessibility": {
-    "description": "Settings section: accessibility"
-  },
-  "textSize": "Tamanho do texto",
-  "@textSize": {
-    "description": "Text size setting title"
-  },
-  "textSizeSubtitle": "Aplica-se a todo o aplicativo, incluindo artigos e navegação.",
-  "@textSizeSubtitle": {
-    "description": "Text size setting subtitle"
-  },
-  "sampleText": "A rápida raposa marrom pula sobre o cão preguiçoso.",
-  "@sampleText": {
-    "description": "Sample text for text size preview"
-  },
-  "save": "Save",
-  "@save": {
-    "description": "Menu item to save article"
-  },
-  "unsave": "Unsave",
-  "@unsave": {
-    "description": "Menu item to unsave article"
-  },
-  "copyLink": "Copy link",
-  "@copyLink": {
-    "description": "Menu item to copy article URL"
-  },
-  "linkCopied": "Link copied to clipboard",
-  "@linkCopied": {
-    "description": "Snackbar when link is copied"
-  },
-  "sectionSubscriptions": "Inscrições",
-  "@sectionSubscriptions": {
-    "description": "Settings section: subscriptions"
-  },
-  "manageSubscriptions": "Gerenciar inscrições",
-  "@manageSubscriptions": {
-    "description": "Manage subscriptions setting title"
-  },
-  "manageSubscriptionsSubtitle": "Adicionar ou remover os feeds que você segue",
-  "@manageSubscriptionsSubtitle": {
-    "description": "Manage subscriptions setting subtitle"
-  },
-  "manageFolders": "Gerenciar pastas",
-  "@manageFolders": {
-    "description": "Manage folders setting title"
-  },
-  "manageFoldersSubtitle": "Organizar feeds em pastas",
-  "@manageFoldersSubtitle": {
-    "description": "Manage folders setting subtitle"
-  },
-  "importSubscriptions": "Importar inscrições",
-  "@importSubscriptions": {
-    "description": "Import subscriptions setting title"
-  },
-  "importSubscriptionsSubtitle": "Importar via arquivo OPML",
-  "@importSubscriptionsSubtitle": {
-    "description": "Import subscriptions setting subtitle"
-  },
-  "exportSubscriptions": "Exportar inscrições",
-  "@exportSubscriptions": {
-    "description": "Export subscriptions setting title"
-  },
-  "exportSubscriptionsSubtitle": "Exportar seus feeds para OPML",
-  "@exportSubscriptionsSubtitle": {
-    "description": "Export subscriptions setting subtitle"
-  },
-  "sectionThemes": "Temas",
-  "@sectionThemes": {
-    "description": "Settings section: themes"
-  },
-  "themes": "Temas",
-  "@themes": {
-    "description": "Themes setting title"
-  },
-  "themesSubtitle": "Claro / Escuro / Sistema",
-  "@themesSubtitle": {
-    "description": "Themes setting subtitle"
-  },
-  "selectTheme": "Selecionar tema",
-  "@selectTheme": {
-    "description": "Theme selection dialog title"
-  },
-  "system": "Sistema",
-  "@system": {
-    "description": "System theme option"
-  },
-  "light": "Claro",
-  "@light": {
-    "description": "Light theme option"
-  },
-  "dark": "Escuro",
-  "@dark": {
-    "description": "Dark theme option"
-  },
-  "sectionLanguage": "Idioma",
-  "@sectionLanguage": {
-    "description": "Settings section: language"
-  },
-  "language": "Idioma",
-  "@language": {
-    "description": "Language setting title"
-  },
-  "languageSubtitle": "Português",
-  "@languageSubtitle": {
-    "description": "Language setting subtitle - currently selected language"
-  },
-  "selectLanguage": "Selecionar idioma",
-  "@selectLanguage": {
-    "description": "Language selection dialog title"
-  },
-  "languageEnglish": "Inglês",
-  "@languageEnglish": {
-    "description": "English language option"
-  },
-  "languageChinese": "Chinês",
-  "@languageChinese": {
-    "description": "Chinese language option"
-  },
-  "languageSpanish": "Espanhol",
-  "@languageSpanish": {
-    "description": "Spanish language option"
-  },
-  "languageHindi": "Hindi",
-  "@languageHindi": {
-    "description": "Hindi language option"
-  },
-  "languageArabic": "Árabe",
-  "@languageArabic": {
-    "description": "Arabic language option"
-  },
-  "languageFrench": "Francês",
-  "@languageFrench": {
-    "description": "French language option"
-  },
-  "languagePortuguese": "Português",
-  "@languagePortuguese": {
-    "description": "Portuguese language option"
-  },
-  "languageRussian": "Russo",
-  "@languageRussian": {
-    "description": "Russian language option"
-  },
-  "languageJapanese": "Japonês",
-  "@languageJapanese": {
-    "description": "Japanese language option"
-  },
-  "languageGerman": "Alemão",
-  "@languageGerman": {
-    "description": "German language option"
-  },
-  "languageKorean": "Coreano",
-  "@languageKorean": {
-    "description": "Korean language option"
-  },
-  "languageItalian": "Italiano",
-  "@languageItalian": {
-    "description": "Italian language option"
-  },
-  "sectionLegal": "Legal",
-  "@sectionLegal": {
-    "description": "Settings section: legal"
-  },
-  "privacyPolicy": "Política de privacidade",
-  "@privacyPolicy": {
-    "description": "Privacy policy setting title"
-  },
-  "openSourceLicenses": "Licenças de código aberto",
-  "@openSourceLicenses": {
-    "description": "Open source licenses setting title"
-  },
-  "noFeedsFoundOpml": "Nenhum feed encontrado no OPML",
-  "@noFeedsFoundOpml": {
-    "description": "Snackbar when no feeds found in OPML"
-  },
-  "importedCount": "{count} feed{count, plural, one {} other {s}} importados",
-  "@importedCount": {
-    "description": "Snackbar when import succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "allFeedsAlreadyAdded": "Todos os feeds já foram adicionados",
-  "@allFeedsAlreadyAdded": {
-    "description": "Snackbar when all feeds already exist"
-  },
-  "importFailed": "Falha na importação: {error}",
-  "@importFailed": {
-    "description": "Snackbar when import fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "noSubscriptionsToExport": "Nenhuma inscrição para exportar",
-  "@noSubscriptionsToExport": {
-    "description": "Snackbar when no subscriptions to export"
-  },
-  "exportedCount": "{count} feed(s) exportados",
-  "@exportedCount": {
-    "description": "Snackbar when export succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "exportFailed": "Falha na exportação: {error}",
-  "@exportFailed": {
-    "description": "Snackbar when export fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "exportShareText": "Exportação de inscrições do Aware",
-  "@exportShareText": {
-    "description": "Share text for OPML export"
-  },
-  "exportShareSubject": "Exportação de inscrições do Aware",
-  "@exportShareSubject": {
-    "description": "Share subject for OPML export"
-  },
-  "savedArticlesTitle": "Artigos salvos",
-  "@savedArticlesTitle": {
-    "description": "Title of saved articles screen"
-  },
-  "noSavedArticlesYet": "Nenhum artigo salvo ainda.",
-  "@noSavedArticlesYet": {
-    "description": "Empty state for saved articles"
-  },
-  "error": "Erro: {error}",
-  "@error": {
-    "description": "Error message format",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "privacyPolicyTitle": "Política de privacidade",
-  "@privacyPolicyTitle": {
-    "description": "Privacy policy screen title"
-  },
-  "privacyPolicyLastUpdated": "Última atualização: 20 de junho de 2026",
-  "@privacyPolicyLastUpdated": {
-    "description": "Privacy policy last updated date"
-  },
-  "privacyInfoWeCollect": "Informações que coletamos",
-  "@privacyInfoWeCollect": {
-    "description": "Privacy section: information we collect"
-  },
-  "privacyInfoWeCollectBody": "O Aware não coleta, armazena ou transmite dados pessoais. Todos os dados do aplicativo (feeds, artigos, progresso de leitura, preferências e configurações) são armazenados localmente no seu dispositivo e nunca são enviados a nenhum servidor.",
-  "@privacyInfoWeCollectBody": {
-    "description": "Privacy section body: information we collect"
-  },
-  "privacyThirdParty": "Serviços de terceiros",
-  "@privacyThirdParty": {
-    "description": "Privacy section: third-party services"
-  },
-  "privacyThirdPartyBody": "O Aware usa o Google AdMob para exibir anúncios. O AdMob pode coletar dados de uso não pessoais e identificadores de dispositivo para veicular anúncios relevantes. Os anúncios são veiculados apenas com solicitações de anúncios não personalizadas. Nenhum dado do usuário é compartilhado com anunciantes.\n\nA Política de Privacidade do Google se aplica aos dados coletados pelo AdMob:\n",
-  "@privacyThirdPartyBody": {
-    "description": "Privacy section body: third-party services"
-  },
-  "privacyDataStorage": "Armazenamento de dados",
-  "@privacyDataStorage": {
-    "description": "Privacy section: data storage"
-  },
-  "privacyDataStorageBody": "Todas as inscrições de feeds, artigos, progresso de leitura e preferências do aplicativo são armazenados localmente em um banco de dados SQLite no seu dispositivo. Você pode exportar seus dados a qualquer momento através do recurso de exportação OPML nas Configurações.\n\nPara excluir todos os dados, desinstale o aplicativo ou limpe os dados do aplicativo nas configurações do dispositivo.",
-  "@privacyDataStorageBody": {
-    "description": "Privacy section body: data storage"
-  },
-  "privacyContact": "Contato",
-  "@privacyContact": {
-    "description": "Privacy section: contact"
-  },
-  "privacyContactBody": "Se você tiver dúvidas sobre esta política de privacidade, entre em contato conosco através dos canais de suporte do aplicativo.",
-  "@privacyContactBody": {
-    "description": "Privacy section body: contact"
-  }
+    "@@locale":  "pt",
+    "appName":  "aware",
+    "@appName":  {
+                     "description":  "The name of the application"
+                 },
+    "appTitle":  "Aware",
+    "@appTitle":  {
+                      "description":  "Application title shown in settings/about"
+                  },
+    "appVersion":  "1.0.0",
+    "@appVersion":  {
+                        "description":  "Application version number"
+                    },
+    "splashTagline":  "Mantenha-se informado, sem esforço",
+    "@splashTagline":  {
+                           "description":  "Tagline shown on splash screen"
+                       },
+    "onboardingLanguageTitle":  "Escolha seu idioma",
+    "@onboardingLanguageTitle":  {
+                                     "description":  "Title for onboarding language selection page"
+                                 },
+    "onboardingLanguageDesc":  "Selecione seu idioma preferido para a interface do aplicativo.",
+    "@onboardingLanguageDesc":  {
+                                    "description":  "Description for onboarding language selection page"
+                                },
+    "onboardingWelcomeTitle":  "Bem-vindo ao aware",
+    "@onboardingWelcomeTitle":  {
+                                    "description":  "Title for first onboarding page"
+                                },
+    "onboardingWelcomeDesc":  "Seu leitor de feeds pessoal. Mantenha-se informado sobre o que importa, tudo em um só lugar.",
+    "@onboardingWelcomeDesc":  {
+                                   "description":  "Description for first onboarding page"
+                               },
+    "onboardingOfflineTitle":  "Ler offline",
+    "@onboardingOfflineTitle":  {
+                                    "description":  "Title for second onboarding page"
+                                },
+    "onboardingOfflineDesc":  "Os feeds são baixados para você ler a qualquer hora, em qualquer lugar. Ouça com conversão de texto em fala.",
+    "@onboardingOfflineDesc":  {
+                                   "description":  "Description for second onboarding page"
+                               },
+    "onboardingNotifyTitle":  "Nunca perca uma publicação",
+    "@onboardingNotifyTitle":  {
+                                   "description":  "Title for third onboarding page"
+                               },
+    "onboardingNotifyDesc":  "Receba notificações quando novos artigos chegarem. Adicione seu primeiro feed para começar.",
+    "@onboardingNotifyDesc":  {
+                                  "description":  "Description for third onboarding page"
+                              },
+    "next":  "Próximo",
+    "@next":  {
+                  "description":  "Next button"
+              },
+    "getStarted":  "Começar",
+    "@getStarted":  {
+                        "description":  "Get Started button on last onboarding page"
+                    },
+    "skip":  "Pular",
+    "@skip":  {
+                  "description":  "Skip button on onboarding"
+              },
+    "tabFeeds":  "Feeds",
+    "@tabFeeds":  {
+                      "description":  "Bottom navigation tab for feeds"
+                  },
+    "tabMarketplace":  "Marketplace",
+    "@tabMarketplace":  {
+                            "description":  "Bottom navigation tab for marketplace"
+                        },
+    "tabSettings":  "Configurações",
+    "@tabSettings":  {
+                         "description":  "Bottom navigation tab for settings"
+                     },
+    "addFeedTitle":  "Adicionar feed RSS",
+    "@addFeedTitle":  {
+                          "description":  "Title of the add feed dialog"
+                      },
+    "addFeedUrlLabel":  "URL do feed",
+    "@addFeedUrlLabel":  {
+                             "description":  "Label for feed URL input"
+                         },
+    "addFeedUrlHint":  "https://exemplo.com/feed.xml",
+    "@addFeedUrlHint":  {
+                            "description":  "Hint text for feed URL input"
+                        },
+    "cancel":  "Cancelar",
+    "@cancel":  {
+                    "description":  "Cancel button text"
+                },
+    "add":  "Adicionar",
+    "@add":  {
+                 "description":  "Add button text"
+             },
+    "feedAdded":  "Feed adicionado",
+    "@feedAdded":  {
+                       "description":  "Snackbar message when feed is added"
+                   },
+    "failedToAddFeed":  "Falha ao adicionar feed: {error}",
+    "@failedToAddFeed":  {
+                             "description":  "Snackbar message when adding a feed fails",
+                             "placeholders":  {
+                                                  "error":  {
+
+                                                            }
+                                              }
+                         },
+    "feedUrlRequired":  "A URL do feed é obrigatória",
+    "@feedUrlRequired":  {
+                             "description":  "Validation message when feed URL is empty"
+                         },
+    "marketplaceTitle":  "Marketplace",
+    "@marketplaceTitle":  {
+                              "description":  "Title of marketplace screen"
+                          },
+    "marketplaceSubtitle":  "Links RSS selecionados por categoria",
+    "@marketplaceSubtitle":  {
+                                 "description":  "Subtitle of marketplace screen"
+                             },
+    "marketplaceHeroTitle":  "Descubra feeds de qualidade rapidamente",
+    "@marketplaceHeroTitle":  {
+                                  "description":  "Hero section title on marketplace"
+                              },
+    "marketplaceHeroDesc":  "Navegue por fontes confiáveis por tópico. Toque em Seguir para adicioná-las ao seu feed inicial instantaneamente.",
+    "@marketplaceHeroDesc":  {
+                                 "description":  "Hero section description on marketplace"
+                             },
+    "marketplaceCategoriesCount":  "{count} categorias",
+    "@marketplaceCategoriesCount":  {
+                                        "description":  "Category count stat",
+                                        "placeholders":  {
+                                                             "count":  {
+
+                                                                       }
+                                                         }
+                                    },
+    "marketplaceFeedsCount":  "{count} feeds",
+    "@marketplaceFeedsCount":  {
+                                   "description":  "Feed count stat",
+                                   "placeholders":  {
+                                                        "count":  {
+
+                                                                  }
+                                                    }
+                               },
+    "marketplaceSearchHint":  "Pesquisar feeds...",
+    "@marketplaceSearchHint":  {
+                                   "description":  "Search field placeholder"
+                               },
+    "marketplaceUntitledFeed":  "Feed sem título",
+    "@marketplaceUntitledFeed":  {
+                                     "description":  "Fallback title for unnamed feed"
+                                 },
+    "marketplaceSubscribed":  "Inscrito",
+    "@marketplaceSubscribed":  {
+                                   "description":  "Tooltip when feed is subscribed"
+                               },
+    "marketplaceFollow":  "Seguir",
+    "@marketplaceFollow":  {
+                               "description":  "Follow button tooltip"
+                           },
+    "marketplaceSubscribedTo":  "Inscrito em {title}",
+    "@marketplaceSubscribedTo":  {
+                                     "description":  "Snackbar when subscribing to a feed",
+                                     "placeholders":  {
+                                                          "title":  {
+
+                                                                    }
+                                                      }
+                                 },
+    "marketplaceInvalidUrl":  "URL de feed inválida",
+    "@marketplaceInvalidUrl":  {
+                                   "description":  "Error when feed URL is invalid"
+                               },
+    "marketplaceUnreachable":  "Falha ao inscrever: o feed pode estar inacessível",
+    "@marketplaceUnreachable":  {
+                                    "description":  "Error when feed subscription fails"
+                                },
+    "marketplaceCuratedSources":  "{count} fontes selecionadas",
+    "@marketplaceCuratedSources":  {
+                                       "description":  "Subtitle showing curated source count",
+                                       "placeholders":  {
+                                                            "count":  {
+
+                                                                      }
+                                                        }
+                                   },
+    "signIn":  "Entrar",
+    "@signIn":  {
+                    "description":  "Sign in button / title"
+                },
+    "emailLabel":  "E-mail",
+    "@emailLabel":  {
+                        "description":  "Email field label"
+                    },
+    "passwordLabel":  "Senha",
+    "@passwordLabel":  {
+                           "description":  "Password field label"
+                       },
+    "emailRequired":  "Digite seu e-mail",
+    "@emailRequired":  {
+                           "description":  "Validation for empty email"
+                       },
+    "passwordRequired":  "Digite sua senha",
+    "@passwordRequired":  {
+                              "description":  "Validation for empty password"
+                          },
+    "subscriptionsTitle":  "Inscrições",
+    "@subscriptionsTitle":  {
+                                "description":  "Title of subscriptions screen"
+                            },
+    "subscriptionsEmpty":  "Nenhuma inscrição ainda. Adicione feeds do Marketplace!",
+    "@subscriptionsEmpty":  {
+                                "description":  "Empty state message"
+                            },
+    "untitledFeed":  "Feed sem título",
+    "@untitledFeed":  {
+                          "description":  "Fallback title for unnamed feed"
+                      },
+    "paused":  "Pausado",
+    "@paused":  {
+                    "description":  "Paused feed label"
+                },
+    "resume":  "Continuar",
+    "@resume":  {
+                    "description":  "Resume feed action"
+                },
+    "pause":  "Pausar",
+    "@pause":  {
+                   "description":  "Pause feed action"
+               },
+    "unsubscribe":  "Cancelar inscrição",
+    "@unsubscribe":  {
+                         "description":  "Unsubscribe action"
+                     },
+    "unsubscribeTitle":  "Cancelar inscrição",
+    "@unsubscribeTitle":  {
+                              "description":  "Unsubscribe dialog title"
+                          },
+    "unsubscribeConfirm":  "Cancelar inscrição em {title}?",
+    "@unsubscribeConfirm":  {
+                                "description":  "Unsubscribe confirmation message",
+                                "placeholders":  {
+                                                     "title":  {
+
+                                                               }
+                                                 }
+                            },
+    "create":  "Criar",
+    "@create":  {
+                    "description":  "Create button"
+                },
+    "rename":  "Renomear",
+    "@rename":  {
+                    "description":  "Rename button"
+                },
+    "delete":  "Excluir",
+    "@delete":  {
+                    "description":  "Delete button"
+                },
+    "feedCount":  "{count} feed{count, plural, one {} other {s}}",
+    "@feedCount":  {
+                       "description":  "Feed count with pluralization",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "filters":  "Filtros",
+    "@filters":  {
+                     "description":  "Filters button"
+                 },
+    "unread":  "Não lidos",
+    "@unread":  {
+                    "description":  "Unread filter chip"
+                },
+    "liked":  "Curtidos",
+    "@liked":  {
+                   "description":  "Liked filter chip"
+               },
+    "saved":  "Salvos",
+    "@saved":  {
+                   "description":  "Saved filter chip"
+               },
+    "last24h":  "Últimas 24h",
+    "@last24h":  {
+                     "description":  "Time filter: last 24 hours"
+                 },
+    "last7d":  "Últimos 7d",
+    "@last7d":  {
+                    "description":  "Time filter: last 7 days"
+                },
+    "last30d":  "Últimos 30d",
+    "@last30d":  {
+                     "description":  "Time filter: last 30 days"
+                 },
+    "engagement":  "Engajamento",
+    "@engagement":  {
+                        "description":  "Filter section: engagement"
+                    },
+    "unreadOnly":  "Apenas não lidos",
+    "@unreadOnly":  {
+                        "description":  "Unread only filter option"
+                    },
+    "lengthPreview":  "Tamanho / prévia",
+    "@lengthPreview":  {
+                           "description":  "Filter section: length/preview"
+                       },
+    "any":  "Qualquer",
+    "@any":  {
+                 "description":  "Any length filter"
+             },
+    "short":  "Curto \u003c100p",
+    "@short":  {
+                   "description":  "Short article filter"
+               },
+    "medium":  "Médio 100–300",
+    "@medium":  {
+                    "description":  "Medium article filter"
+                },
+    "long":  "Longo \u003e300",
+    "@long":  {
+                  "description":  "Long article filter"
+              },
+    "multiParagraph":  "2+ parágrafos",
+    "@multiParagraph":  {
+                            "description":  "Multi-paragraph filter"
+                        },
+    "timeWindow":  "Período",
+    "@timeWindow":  {
+                        "description":  "Filter section: time window"
+                    },
+    "all":  "Todos",
+    "@all":  {
+                 "description":  "All filter option"
+             },
+    "sources":  "Fontes",
+    "@sources":  {
+                     "description":  "Filter section: sources"
+                 },
+    "allSources":  "Todas as fontes",
+    "@allSources":  {
+                        "description":  "All sources filter option"
+                    },
+    "keyword":  "Palavra-chave",
+    "@keyword":  {
+                     "description":  "Filter section: keyword"
+                 },
+    "keywordHint":  "Título, resumo ou conteúdo",
+    "@keywordHint":  {
+                         "description":  "Keyword search hint"
+                     },
+    "reset":  "Redefinir",
+    "@reset":  {
+                   "description":  "Reset filters button"
+               },
+    "done":  "Concluído",
+    "@done":  {
+                  "description":  "Done button"
+              },
+    "searchArticlesHint":  "Pesquisar artigos...",
+    "@searchArticlesHint":  {
+                                "description":  "Search field placeholder in article list"
+                            },
+    "retry":  "Tentar novamente",
+    "@retry":  {
+                   "description":  "Retry button"
+               },
+    "noArticlesYet":  "Nenhum artigo ainda. Puxe para atualizar.",
+    "@noArticlesYet":  {
+                           "description":  "Empty state for article list"
+                       },
+    "noArticlesMatch":  "Nenhum artigo corresponde aos filtros atuais.",
+    "@noArticlesMatch":  {
+                             "description":  "Empty state when filters match nothing"
+                         },
+    "untitled":  "Sem título",
+    "@untitled":  {
+                      "description":  "Fallback article title"
+                  },
+    "removedLike":  "Curtida removida",
+    "@removedLike":  {
+                         "description":  "Snackbar when removing a like"
+                     },
+    "likedArticle":  "Artigo curtido",
+    "@likedArticle":  {
+                          "description":  "Snackbar when liking an article"
+                      },
+    "removedFromSaved":  "Removido dos salvos",
+    "@removedFromSaved":  {
+                              "description":  "Snackbar when removing from saved"
+                          },
+    "savedForLater":  "Salvo para depois",
+    "@savedForLater":  {
+                           "description":  "Snackbar when saving for later"
+                       },
+    "markedUnread":  "Marcado como não lido",
+    "@markedUnread":  {
+                          "description":  "Snackbar when marking unread"
+                      },
+    "markedRead":  "Marcado como lido",
+    "@markedRead":  {
+                        "description":  "Snackbar when marking read"
+                    },
+    "undo":  "Desfazer",
+    "@undo":  {
+                  "description":  "Undo action label"
+              },
+    "publishDateUnknown":  "Data de publicação desconhecida",
+    "@publishDateUnknown":  {
+                                "description":  "Fallback when publish date is unknown"
+                            },
+    "justNow":  "Agora mesmo",
+    "@justNow":  {
+                     "description":  "Time label: just now"
+                 },
+    "minutesAgo":  "Há {count} min",
+    "@minutesAgo":  {
+                        "description":  "Time label: minutes ago",
+                        "placeholders":  {
+                                             "count":  {
+
+                                                       }
+                                         }
+                    },
+    "hoursAgo":  "Há {count} h",
+    "@hoursAgo":  {
+                      "description":  "Time label: hours ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "daysAgo":  "Há {count} d",
+    "@daysAgo":  {
+                     "description":  "Time label: days ago",
+                     "placeholders":  {
+                                          "count":  {
+
+                                                    }
+                                      }
+                 },
+    "weeksAgo":  "Há {count} sem",
+    "@weeksAgo":  {
+                      "description":  "Time label: weeks ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "monthsAgo":  "Há {count} meses",
+    "@monthsAgo":  {
+                       "description":  "Time label: months ago",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "yearsAgo":  "Há {count} anos",
+    "@yearsAgo":  {
+                      "description":  "Time label: years ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "fetched":  "obtido",
+    "@fetched":  {
+                     "description":  "Indicator that timestamp is fallback fetched time"
+                 },
+    "continueReading":  "Continuar lendo",
+    "@continueReading":  {
+                             "description":  "FAB label for continue reading"
+                         },
+    "readerSavedForLater":  "Salvo para depois",
+    "@readerSavedForLater":  {
+                                 "description":  "Snackbar when saving in reader"
+                             },
+    "readerRemovedFromSaved":  "Removido dos salvos",
+    "@readerRemovedFromSaved":  {
+                                    "description":  "Snackbar when removing save in reader"
+                                },
+    "resumingLastRead":  "Retomando último artigo lido",
+    "@resumingLastRead":  {
+                              "description":  "Snackbar when resuming playback"
+                          },
+    "startingPlayback":  "Iniciando reprodução para artigo não lido",
+    "@startingPlayback":  {
+                              "description":  "Snackbar when auto-playing"
+                          },
+    "showReader":  "Mostrar leitor",
+    "@showReader":  {
+                        "description":  "Tooltip to show reader view"
+                    },
+    "showWebView":  "Mostrar visualização web",
+    "@showWebView":  {
+                         "description":  "Tooltip to show web view"
+                     },
+    "webviewUnsupported":  "A WebView no aplicativo é compatível apenas com Android/iOS.\nMostrando visualização de texto como alternativa.",
+    "@webviewUnsupported":  {
+                                "description":  "Message when WebView is unsupported on platform"
+                            },
+    "byAuthor":  "Por {author}",
+    "@byAuthor":  {
+                      "description":  "Article author attribution",
+                      "placeholders":  {
+                                           "author":  {
+
+                                                      }
+                                       }
+                  },
+    "markedReadSkipped":  "Marcado como lido e pulado para o próximo",
+    "@markedReadSkipped":  {
+                               "description":  "Snackbar when marking read and skipping"
+                           },
+    "markUnread":  "Marcar como não lido",
+    "@markUnread":  {
+                        "description":  "Tooltip to mark as unread"
+                    },
+    "markReadPlay":  "Marcar como lido e reproduzir próximo",
+    "@markReadPlay":  {
+                          "description":  "Tooltip to mark read and play next"
+                      },
+    "previousArticle":  "Artigo anterior",
+    "@previousArticle":  {
+                             "description":  "Tooltip for previous article button"
+                         },
+    "nextArticle":  "Próximo artigo",
+    "@nextArticle":  {
+                         "description":  "Tooltip for next article button"
+                     },
+    "playingSection":  "Reproduzindo seção {current}/{total}",
+    "@playingSection":  {
+                            "description":  "Audio playback progress text",
+                            "placeholders":  {
+                                                 "current":  {
+
+                                                             },
+                                                 "total":  {
+
+                                                           }
+                                             }
+                        },
+    "readAloudNotAvailable":  "Leitura em voz alta não disponível para este artigo.",
+    "@readAloudNotAvailable":  {
+                                   "description":  "Message when TTS is not available"
+                               },
+    "unreadCount":  "Não lidos: {count}",
+    "@unreadCount":  {
+                         "description":  "Unread article count badge",
+                         "placeholders":  {
+                                              "count":  {
+
+                                                        }
+                                          }
+                     },
+    "embeddedVideoUnsupported":  "Vídeo incorporado é compatível apenas com Android/iOS.",
+    "@embeddedVideoUnsupported":  {
+                                      "description":  "Message when embedded video is unsupported"
+                                  },
+    "loadVideo":  "Carregar vídeo",
+    "@loadVideo":  {
+                       "description":  "Button to load embedded video"
+                   },
+    "settingsTitle":  "Configurações",
+    "@settingsTitle":  {
+                           "description":  "Title of settings screen"
+                       },
+    "goAdFree":  "Sem anúncios",
+    "@goAdFree":  {
+                      "description":  "Premium card title"
+                  },
+    "goAdFreeSubtitle":  "Apenas R$ 5/mês. Apoie um desenvolvedor independente.",
+    "@goAdFreeSubtitle":  {
+                              "description":  "Premium card subtitle"
+                          },
+    "pricePerMonth":  "R$ 5/mês",
+    "@pricePerMonth":  {
+                           "description":  "Price label"
+                       },
+    "premiumTitle":  "Aware Premium",
+    "@premiumTitle":  {
+                          "description":  "Premium dialog title"
+                      },
+    "premiumSubscribeDesc":  "Assine por R$ 5/mês e obtenha:",
+    "@premiumSubscribeDesc":  {
+                                  "description":  "Premium dialog description"
+                              },
+    "premiumRemoveAds":  "Remover todos os anúncios",
+    "@premiumRemoveAds":  {
+                              "description":  "Premium feature: remove ads"
+                          },
+    "premiumCloudStorage":  "Armazenamento em nuvem para seus dados",
+    "@premiumCloudStorage":  {
+                                 "description":  "Premium feature: cloud storage"
+                             },
+    "premiumCloudSubscriptions":  "Salvar inscrições na nuvem",
+    "@premiumCloudSubscriptions":  {
+                                       "description":  "Premium feature: cloud subscriptions"
+                                   },
+    "premiumSync":  "Faça login e sincronize entre dispositivos",
+    "@premiumSync":  {
+                         "description":  "Premium feature: sync"
+                     },
+    "notNow":  "Agora não",
+    "@notNow":  {
+                    "description":  "Not now button"
+                },
+    "comingSoon":  "Em breve",
+    "@comingSoon":  {
+                        "description":  "Coming soon badge label"
+                    },
+    "subscribeNow":  "Assinar R$ 5/mês",
+    "@subscribeNow":  {
+                          "description":  "Subscribe button"
+                      },
+    "subscriptionComingSoon":  "Assinatura em breve! Será cobrado R$ 5/mês.",
+    "@subscriptionComingSoon":  {
+                                    "description":  "Snackbar when subscription is coming soon"
+                                },
+    "sectionAdvanced":  "Avançado",
+    "@sectionAdvanced":  {
+                             "description":  "Settings section: advanced"
+                         },
+    "readTracking":  "Rastreamento de leitura",
+    "@readTracking":  {
+                          "description":  "Read tracking setting title"
+                      },
+    "readTrackingSubtitle":  "Marcar artigos como lidos automaticamente com base no progresso da leitura",
+    "@readTrackingSubtitle":  {
+                                  "description":  "Read tracking setting subtitle"
+                              },
+    "autoMarkRead":  "Marcar automaticamente por progresso",
+    "@autoMarkRead":  {
+                          "description":  "Auto-mark read setting title"
+                      },
+    "autoMarkReadSubtitle":  "Marca como lido quando a rolagem ou áudio atinge seu limite",
+    "@autoMarkReadSubtitle":  {
+                                  "description":  "Auto-mark read setting subtitle"
+                              },
+    "autoMarkThreshold":  "Limite de marcação automática",
+    "@autoMarkThreshold":  {
+                               "description":  "Auto-mark threshold setting title"
+                           },
+    "progressNeeded":  "{percent}% de progresso necessário",
+    "@progressNeeded":  {
+                            "description":  "Progress threshold label",
+                            "placeholders":  {
+                                                 "percent":  {
+
+                                                             }
+                                             }
+                        },
+    "sectionVoice":  "Voz e leitura em voz alta",
+    "@sectionVoice":  {
+                          "description":  "Settings section: voice \u0026 read aloud"
+                      },
+    "narrationSpeed":  "Velocidade de narração padrão",
+    "@narrationSpeed":  {
+                            "description":  "Narration speed setting title"
+                        },
+    "speedLabel":  "{speed}x (1x = calmo padrão)",
+    "@speedLabel":  {
+                        "description":  "Speed slider label",
+                        "placeholders":  {
+                                             "speed":  {
+
+                                                       }
+                                         }
+                    },
+    "defaultVoice":  "Voz padrão",
+    "@defaultVoice":  {
+                          "description":  "Default voice setting title"
+                      },
+    "systemDefault":  "Padrão do sistema",
+    "@systemDefault":  {
+                           "description":  "System default voice option"
+                       },
+    "autoPlayNext":  "Reproduzir próximo artigo automaticamente",
+    "@autoPlayNext":  {
+                          "description":  "Auto-play next setting title"
+                      },
+    "autoPlayNextSubtitle":  "Quando a narração terminar, passar para o próximo item",
+    "@autoPlayNextSubtitle":  {
+                                  "description":  "Auto-play next setting subtitle"
+                              },
+    "sectionAccessibility":  "Acessibilidade",
+    "@sectionAccessibility":  {
+                                  "description":  "Settings section: accessibility"
+                              },
+    "textSize":  "Tamanho do texto",
+    "@textSize":  {
+                      "description":  "Text size setting title"
+                  },
+    "textSizeSubtitle":  "Aplica-se a todo o aplicativo, incluindo artigos e navegação.",
+    "@textSizeSubtitle":  {
+                              "description":  "Text size setting subtitle"
+                          },
+    "sampleText":  "A rápida raposa marrom pula sobre o cão preguiçoso.",
+    "@sampleText":  {
+                        "description":  "Sample text for text size preview"
+                    },
+    "save":  "Save",
+    "@save":  {
+                  "description":  "Menu item to save article"
+              },
+    "unsave":  "Unsave",
+    "@unsave":  {
+                    "description":  "Menu item to unsave article"
+                },
+    "copyLink":  "Copy link",
+    "@copyLink":  {
+                      "description":  "Menu item to copy article URL"
+                  },
+    "linkCopied":  "Link copied to clipboard",
+    "@linkCopied":  {
+                        "description":  "Snackbar when link is copied"
+                    },
+    "sectionSubscriptions":  "Inscrições",
+    "@sectionSubscriptions":  {
+                                  "description":  "Settings section: subscriptions"
+                              },
+    "manageSubscriptions":  "Gerenciar inscrições",
+    "@manageSubscriptions":  {
+                                 "description":  "Manage subscriptions setting title"
+                             },
+    "manageSubscriptionsSubtitle":  "Adicionar ou remover os feeds que você segue",
+    "@manageSubscriptionsSubtitle":  {
+                                         "description":  "Manage subscriptions setting subtitle"
+                                     },
+    "importSubscriptions":  "Importar inscrições",
+    "@importSubscriptions":  {
+                                 "description":  "Import subscriptions setting title"
+                             },
+    "importSubscriptionsSubtitle":  "Importar via arquivo OPML",
+    "@importSubscriptionsSubtitle":  {
+                                         "description":  "Import subscriptions setting subtitle"
+                                     },
+    "exportSubscriptions":  "Exportar inscrições",
+    "@exportSubscriptions":  {
+                                 "description":  "Export subscriptions setting title"
+                             },
+    "exportSubscriptionsSubtitle":  "Exportar seus feeds para OPML",
+    "@exportSubscriptionsSubtitle":  {
+                                         "description":  "Export subscriptions setting subtitle"
+                                     },
+    "sectionThemes":  "Temas",
+    "@sectionThemes":  {
+                           "description":  "Settings section: themes"
+                       },
+    "themes":  "Temas",
+    "@themes":  {
+                    "description":  "Themes setting title"
+                },
+    "themesSubtitle":  "Claro / Escuro / Sistema",
+    "@themesSubtitle":  {
+                            "description":  "Themes setting subtitle"
+                        },
+    "selectTheme":  "Selecionar tema",
+    "@selectTheme":  {
+                         "description":  "Theme selection dialog title"
+                     },
+    "system":  "Sistema",
+    "@system":  {
+                    "description":  "System theme option"
+                },
+    "light":  "Claro",
+    "@light":  {
+                   "description":  "Light theme option"
+               },
+    "dark":  "Escuro",
+    "@dark":  {
+                  "description":  "Dark theme option"
+              },
+    "sectionLanguage":  "Idioma",
+    "@sectionLanguage":  {
+                             "description":  "Settings section: language"
+                         },
+    "language":  "Idioma",
+    "@language":  {
+                      "description":  "Language setting title"
+                  },
+    "languageSubtitle":  "Português",
+    "@languageSubtitle":  {
+                              "description":  "Language setting subtitle - currently selected language"
+                          },
+    "selectLanguage":  "Selecionar idioma",
+    "@selectLanguage":  {
+                            "description":  "Language selection dialog title"
+                        },
+    "sectionLegal":  "Legal",
+    "@sectionLegal":  {
+                          "description":  "Settings section: legal"
+                      },
+    "privacyPolicy":  "Política de privacidade",
+    "@privacyPolicy":  {
+                           "description":  "Privacy policy setting title"
+                       },
+    "openSourceLicenses":  "Licenças de código aberto",
+    "@openSourceLicenses":  {
+                                "description":  "Open source licenses setting title"
+                            },
+    "noFeedsFoundOpml":  "Nenhum feed encontrado no OPML",
+    "@noFeedsFoundOpml":  {
+                              "description":  "Snackbar when no feeds found in OPML"
+                          },
+    "importedCount":  "{count} feed{count, plural, one {} other {s}} importados",
+    "@importedCount":  {
+                           "description":  "Snackbar when import succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "allFeedsAlreadyAdded":  "Todos os feeds já foram adicionados",
+    "@allFeedsAlreadyAdded":  {
+                                  "description":  "Snackbar when all feeds already exist"
+                              },
+    "importFailed":  "Falha na importação: {error}",
+    "@importFailed":  {
+                          "description":  "Snackbar when import fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "noSubscriptionsToExport":  "Nenhuma inscrição para exportar",
+    "@noSubscriptionsToExport":  {
+                                     "description":  "Snackbar when no subscriptions to export"
+                                 },
+    "exportedCount":  "{count} feed(s) exportados",
+    "@exportedCount":  {
+                           "description":  "Snackbar when export succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "exportFailed":  "Falha na exportação: {error}",
+    "@exportFailed":  {
+                          "description":  "Snackbar when export fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "exportShareText":  "Exportação de inscrições do Aware",
+    "@exportShareText":  {
+                             "description":  "Share text for OPML export"
+                         },
+    "exportShareSubject":  "Exportação de inscrições do Aware",
+    "@exportShareSubject":  {
+                                "description":  "Share subject for OPML export"
+                            },
+    "savedArticlesTitle":  "Artigos salvos",
+    "@savedArticlesTitle":  {
+                                "description":  "Title of saved articles screen"
+                            },
+    "noSavedArticlesYet":  "Nenhum artigo salvo ainda.",
+    "@noSavedArticlesYet":  {
+                                "description":  "Empty state for saved articles"
+                            },
+    "error":  "Erro: {error}",
+    "@error":  {
+                   "description":  "Error message format",
+                   "placeholders":  {
+                                        "error":  {
+
+                                                  }
+                                    }
+               },
+    "privacyPolicyTitle":  "Política de privacidade",
+    "@privacyPolicyTitle":  {
+                                "description":  "Privacy policy screen title"
+                            },
+    "privacyPolicyLastUpdated":  "Última atualização: 20 de junho de 2026",
+    "@privacyPolicyLastUpdated":  {
+                                      "description":  "Privacy policy last updated date"
+                                  },
+    "privacyInfoWeCollect":  "Informações que coletamos",
+    "@privacyInfoWeCollect":  {
+                                  "description":  "Privacy section: information we collect"
+                              },
+    "privacyInfoWeCollectBody":  "O Aware não coleta, armazena ou transmite dados pessoais. Todos os dados do aplicativo (feeds, artigos, progresso de leitura, preferências e configurações) são armazenados localmente no seu dispositivo e nunca são enviados a nenhum servidor.",
+    "@privacyInfoWeCollectBody":  {
+                                      "description":  "Privacy section body: information we collect"
+                                  },
+    "privacyThirdParty":  "Serviços de terceiros",
+    "@privacyThirdParty":  {
+                               "description":  "Privacy section: third-party services"
+                           },
+    "privacyThirdPartyBody":  "O Aware usa o Google AdMob para exibir anúncios. O AdMob pode coletar dados de uso não pessoais e identificadores de dispositivo para veicular anúncios relevantes. Os anúncios são veiculados apenas com solicitações de anúncios não personalizadas. Nenhum dado do usuário é compartilhado com anunciantes.\n\nA Política de Privacidade do Google se aplica aos dados coletados pelo AdMob:\n",
+    "@privacyThirdPartyBody":  {
+                                   "description":  "Privacy section body: third-party services"
+                               },
+    "privacyDataStorage":  "Armazenamento de dados",
+    "@privacyDataStorage":  {
+                                "description":  "Privacy section: data storage"
+                            },
+    "privacyDataStorageBody":  "Todas as inscrições de feeds, artigos, progresso de leitura e preferências do aplicativo são armazenados localmente em um banco de dados SQLite no seu dispositivo. Você pode exportar seus dados a qualquer momento através do recurso de exportação OPML nas Configurações.\n\nPara excluir todos os dados, desinstale o aplicativo ou limpe os dados do aplicativo nas configurações do dispositivo.",
+    "@privacyDataStorageBody":  {
+                                    "description":  "Privacy section body: data storage"
+                                },
+    "privacyContact":  "Contato",
+    "@privacyContact":  {
+                            "description":  "Privacy section: contact"
+                        },
+    "privacyContactBody":  "Se você tiver dúvidas sobre esta política de privacidade, entre em contato conosco através dos canais de suporte do aplicativo.",
+    "@privacyContactBody":  {
+                                "description":  "Privacy section body: contact"
+                            }
 }

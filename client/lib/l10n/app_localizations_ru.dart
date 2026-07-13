@@ -190,42 +190,13 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Папки';
-
-  @override
-  String get createFolderTitle => 'Новая папка';
-
-  @override
-  String get folderNameHint => 'Имя папки';
-
-  @override
   String get create => 'Создать';
 
   @override
   String get rename => 'Переименовать';
 
   @override
-  String get renameFolderTitle => 'Переименовать папку';
-
-  @override
   String get delete => 'Удалить';
-
-  @override
-  String get deleteFolderTitle => 'Удалить папку';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'Удалить «$name» и разгруппировать его ленты?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Создать папку';
-
-  @override
-  String get noFoldersYet => 'Папок пока нет';
-
-  @override
-  String get createFirstFolder => 'Создайте свою первую папку';
 
   @override
   String feedCount(num count) {
@@ -496,9 +467,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get premiumSync => 'Войти и синхронизировать между устройствами';
 
   @override
-  String get premiumFolders => 'Неограниченная организация папок';
-
-  @override
   String get notNow => 'Не сейчас';
 
   @override
@@ -561,16 +529,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Когда озвучивание заканчивается, перейти к следующему элементу';
 
   @override
-  String get sectionData => 'Данные';
-
-  @override
-  String get lowDataMode => 'Предзагрузка в экономичном режиме';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Предзагружать текст статей в фоне и использовать кэшированный контент, когда доступен';
-
-  @override
   String get sectionAccessibility => 'Доступность';
 
   @override
@@ -593,12 +551,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Добавлять или удалять ленты, на которые вы подписаны';
-
-  @override
-  String get manageFolders => 'Управление папками';
-
-  @override
-  String get manageFoldersSubtitle => 'Организовывать ленты в папки';
 
   @override
   String get importSubscriptions => 'Импорт подписок';
@@ -644,42 +596,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Выбрать язык';
-
-  @override
-  String get languageEnglish => 'Английский';
-
-  @override
-  String get languageChinese => 'Китайский';
-
-  @override
-  String get languageSpanish => 'Испанский';
-
-  @override
-  String get languageHindi => 'Хинди';
-
-  @override
-  String get languageArabic => 'Арабский';
-
-  @override
-  String get languageFrench => 'Французский';
-
-  @override
-  String get languagePortuguese => 'Португальский';
-
-  @override
-  String get languageRussian => 'Русский';
-
-  @override
-  String get languageJapanese => 'Японский';
-
-  @override
-  String get languageGerman => 'Немецкий';
-
-  @override
-  String get languageKorean => 'Корейский';
-
-  @override
-  String get languageItalian => 'Итальянский';
 
   @override
   String get sectionLegal => 'Правовая информация';

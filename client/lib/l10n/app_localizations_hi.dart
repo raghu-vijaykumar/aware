@@ -190,42 +190,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'फ़ोल्डर';
-
-  @override
-  String get createFolderTitle => 'नया फ़ोल्डर';
-
-  @override
-  String get folderNameHint => 'फ़ोल्डर का नाम';
-
-  @override
   String get create => 'बनाएं';
 
   @override
   String get rename => 'नाम बदलें';
 
   @override
-  String get renameFolderTitle => 'फ़ोल्डर का नाम बदलें';
-
-  @override
   String get delete => 'हटाएं';
-
-  @override
-  String get deleteFolderTitle => 'फ़ोल्डर हटाएं';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return '\"$name\" हटाएं और इसके फ़ीड को अनग्रुप करें?';
-  }
-
-  @override
-  String get createFolderTooltip => 'फ़ोल्डर बनाएं';
-
-  @override
-  String get noFoldersYet => 'अभी तक कोई फ़ोल्डर नहीं';
-
-  @override
-  String get createFirstFolder => 'अपना पहला फ़ोल्डर बनाएं';
 
   @override
   String feedCount(num count) {
@@ -492,9 +463,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get premiumSync => 'साइन इन करें और डिवाइसों पर सिंक करें';
 
   @override
-  String get premiumFolders => 'असीमित फ़ोल्डर संगठन';
-
-  @override
   String get notNow => 'अब नहीं';
 
   @override
@@ -556,16 +524,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get autoPlayNextSubtitle => 'जब कथन समाप्त हो, अगले आइटम पर जाएं';
 
   @override
-  String get sectionData => 'डेटा';
-
-  @override
-  String get lowDataMode => 'कम-डेटा मोड प्रीफ़ेच';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'पृष्ठभूमि में लेख टेक्स्ट प्रीफ़ेच करें और उपलब्ध होने पर कैश की गई सामग्री पसंद करें';
-
-  @override
   String get sectionAccessibility => 'अभिगम्यता';
 
   @override
@@ -587,12 +545,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'आपके द्वारा फ़ॉलो किए जाने वाले फ़ीड जोड़ें या हटाएं';
-
-  @override
-  String get manageFolders => 'फ़ोल्डर प्रबंधित करें';
-
-  @override
-  String get manageFoldersSubtitle => 'फ़ीड को फ़ोल्डरों में व्यवस्थित करें';
 
   @override
   String get importSubscriptions => 'सब्सक्रिप्शन आयात करें';
@@ -639,42 +591,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get selectLanguage => 'भाषा चुनें';
-
-  @override
-  String get languageEnglish => 'अंग्रेज़ी';
-
-  @override
-  String get languageChinese => 'चीनी';
-
-  @override
-  String get languageSpanish => 'स्पैनिश';
-
-  @override
-  String get languageHindi => 'हिन्दी';
-
-  @override
-  String get languageArabic => 'अरबी';
-
-  @override
-  String get languageFrench => 'फ़्रेंच';
-
-  @override
-  String get languagePortuguese => 'पुर्तगाली';
-
-  @override
-  String get languageRussian => 'रूसी';
-
-  @override
-  String get languageJapanese => 'जापानी';
-
-  @override
-  String get languageGerman => 'जर्मन';
-
-  @override
-  String get languageKorean => 'कोरियाई';
-
-  @override
-  String get languageItalian => 'इतालवी';
 
   @override
   String get sectionLegal => 'कानूनी';

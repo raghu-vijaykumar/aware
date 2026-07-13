@@ -442,24 +442,6 @@ abstract class AppLocalizations {
   /// **'Unsubscribe from {title}?'**
   String unsubscribeConfirm(Object title);
 
-  /// Title of folders screen
-  ///
-  /// In en, this message translates to:
-  /// **'Folders'**
-  String get foldersTitle;
-
-  /// Create folder dialog title
-  ///
-  /// In en, this message translates to:
-  /// **'New Folder'**
-  String get createFolderTitle;
-
-  /// Folder name input hint
-  ///
-  /// In en, this message translates to:
-  /// **'Folder name'**
-  String get folderNameHint;
-
   /// Create button
   ///
   /// In en, this message translates to:
@@ -472,47 +454,11 @@ abstract class AppLocalizations {
   /// **'Rename'**
   String get rename;
 
-  /// Rename folder dialog title
-  ///
-  /// In en, this message translates to:
-  /// **'Rename Folder'**
-  String get renameFolderTitle;
-
   /// Delete button
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
-
-  /// Delete folder dialog title
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Folder'**
-  String get deleteFolderTitle;
-
-  /// Delete folder confirmation
-  ///
-  /// In en, this message translates to:
-  /// **'Remove \"{name}\" and ungroup its feeds?'**
-  String deleteFolderConfirm(Object name);
-
-  /// Tooltip for create folder button
-  ///
-  /// In en, this message translates to:
-  /// **'Create Folder'**
-  String get createFolderTooltip;
-
-  /// Empty state for folders
-  ///
-  /// In en, this message translates to:
-  /// **'No folders yet'**
-  String get noFoldersYet;
-
-  /// Button to create first folder
-  ///
-  /// In en, this message translates to:
-  /// **'Create your first folder'**
-  String get createFirstFolder;
 
   /// Feed count with pluralization
   ///
@@ -982,12 +928,6 @@ abstract class AppLocalizations {
   /// **'Sign in & sync across devices'**
   String get premiumSync;
 
-  /// Premium feature: folders
-  ///
-  /// In en, this message translates to:
-  /// **'Unlimited folder organization'**
-  String get premiumFolders;
-
   /// Not now button
   ///
   /// In en, this message translates to:
@@ -1096,24 +1036,6 @@ abstract class AppLocalizations {
   /// **'When narration finishes, move to the next item'**
   String get autoPlayNextSubtitle;
 
-  /// Settings section: data
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get sectionData;
-
-  /// Low data mode setting title
-  ///
-  /// In en, this message translates to:
-  /// **'Low-data mode prefetch'**
-  String get lowDataMode;
-
-  /// Low data mode setting subtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Prefetch article text in background and prefer cached content when available'**
-  String get lowDataModeSubtitle;
-
   /// Settings section: accessibility
   ///
   /// In en, this message translates to:
@@ -1155,18 +1077,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add or remove the feeds you follow'**
   String get manageSubscriptionsSubtitle;
-
-  /// Manage folders setting title
-  ///
-  /// In en, this message translates to:
-  /// **'Manage Folders'**
-  String get manageFolders;
-
-  /// Manage folders setting subtitle
-  ///
-  /// In en, this message translates to:
-  /// **'Organise feeds into folders'**
-  String get manageFoldersSubtitle;
 
   /// Import subscriptions setting title
   ///
@@ -1257,78 +1167,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Language'**
   String get selectLanguage;
-
-  /// English language option
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get languageEnglish;
-
-  /// Chinese language option
-  ///
-  /// In en, this message translates to:
-  /// **'Chinese'**
-  String get languageChinese;
-
-  /// Spanish language option
-  ///
-  /// In en, this message translates to:
-  /// **'Spanish'**
-  String get languageSpanish;
-
-  /// Hindi language option
-  ///
-  /// In en, this message translates to:
-  /// **'Hindi'**
-  String get languageHindi;
-
-  /// Arabic language option
-  ///
-  /// In en, this message translates to:
-  /// **'Arabic'**
-  String get languageArabic;
-
-  /// French language option
-  ///
-  /// In en, this message translates to:
-  /// **'French'**
-  String get languageFrench;
-
-  /// Portuguese language option
-  ///
-  /// In en, this message translates to:
-  /// **'Portuguese'**
-  String get languagePortuguese;
-
-  /// Russian language option
-  ///
-  /// In en, this message translates to:
-  /// **'Russian'**
-  String get languageRussian;
-
-  /// Japanese language option
-  ///
-  /// In en, this message translates to:
-  /// **'Japanese'**
-  String get languageJapanese;
-
-  /// German language option
-  ///
-  /// In en, this message translates to:
-  /// **'German'**
-  String get languageGerman;
-
-  /// Korean language option
-  ///
-  /// In en, this message translates to:
-  /// **'Korean'**
-  String get languageKorean;
-
-  /// Italian language option
-  ///
-  /// In en, this message translates to:
-  /// **'Italian'**
-  String get languageItalian;
 
   /// Settings section: legal
   ///

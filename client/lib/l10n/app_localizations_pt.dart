@@ -190,42 +190,13 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Pastas';
-
-  @override
-  String get createFolderTitle => 'Nova pasta';
-
-  @override
-  String get folderNameHint => 'Nome da pasta';
-
-  @override
   String get create => 'Criar';
 
   @override
   String get rename => 'Renomear';
 
   @override
-  String get renameFolderTitle => 'Renomear pasta';
-
-  @override
   String get delete => 'Excluir';
-
-  @override
-  String get deleteFolderTitle => 'Excluir pasta';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return 'Remover \"$name\" e desagrupar seus feeds?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Criar pasta';
-
-  @override
-  String get noFoldersYet => 'Nenhuma pasta ainda';
-
-  @override
-  String get createFirstFolder => 'Crie sua primeira pasta';
 
   @override
   String feedCount(num count) {
@@ -492,9 +463,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get premiumSync => 'Faça login e sincronize entre dispositivos';
 
   @override
-  String get premiumFolders => 'Organização ilimitada de pastas';
-
-  @override
   String get notNow => 'Agora não';
 
   @override
@@ -557,16 +525,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quando a narração terminar, passar para o próximo item';
 
   @override
-  String get sectionData => 'Dados';
-
-  @override
-  String get lowDataMode => 'Pré-carregamento em modo de dados reduzidos';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Pré-carregar texto de artigos em segundo plano e preferir conteúdo em cache quando disponível';
-
-  @override
   String get sectionAccessibility => 'Acessibilidade';
 
   @override
@@ -589,12 +547,6 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Adicionar ou remover os feeds que você segue';
-
-  @override
-  String get manageFolders => 'Gerenciar pastas';
-
-  @override
-  String get manageFoldersSubtitle => 'Organizar feeds em pastas';
 
   @override
   String get importSubscriptions => 'Importar inscrições';
@@ -640,42 +592,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Selecionar idioma';
-
-  @override
-  String get languageEnglish => 'Inglês';
-
-  @override
-  String get languageChinese => 'Chinês';
-
-  @override
-  String get languageSpanish => 'Espanhol';
-
-  @override
-  String get languageHindi => 'Hindi';
-
-  @override
-  String get languageArabic => 'Árabe';
-
-  @override
-  String get languageFrench => 'Francês';
-
-  @override
-  String get languagePortuguese => 'Português';
-
-  @override
-  String get languageRussian => 'Russo';
-
-  @override
-  String get languageJapanese => 'Japonês';
-
-  @override
-  String get languageGerman => 'Alemão';
-
-  @override
-  String get languageKorean => 'Coreano';
-
-  @override
-  String get languageItalian => 'Italiano';
 
   @override
   String get sectionLegal => 'Legal';

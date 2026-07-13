@@ -1,984 +1,921 @@
 {
-  "@@locale": "ar",
-  "appName": "aware",
-  "@appName": {
-    "description": "The name of the application"
-  },
-  "appTitle": "Aware",
-  "@appTitle": {
-    "description": "Application title shown in settings/about"
-  },
-  "appVersion": "1.0.0",
-  "@appVersion": {
-    "description": "Application version number"
-  },
-  "splashTagline": "ابق على اطلاع بسهولة",
-  "@splashTagline": {
-    "description": "Tagline shown on splash screen"
-  },
-  "onboardingLanguageTitle": "اختر لغتك",
-  "@onboardingLanguageTitle": {
-    "description": "Title for onboarding language selection page"
-  },
-  "onboardingLanguageDesc": "اختر لغتك المفضلة لواجهة التطبيق.",
-  "@onboardingLanguageDesc": {
-    "description": "Description for onboarding language selection page"
-  },
-  "onboardingWelcomeTitle": "مرحبًا بك في aware",
-  "@onboardingWelcomeTitle": {
-    "description": "Title for first onboarding page"
-  },
-  "onboardingWelcomeDesc": "قارئ التغذية الخاص بك. ابق على اطلاع بما يهم، كل ذلك في مكان واحد.",
-  "@onboardingWelcomeDesc": {
-    "description": "Description for first onboarding page"
-  },
-  "onboardingOfflineTitle": "القراءة بدون اتصال",
-  "@onboardingOfflineTitle": {
-    "description": "Title for second onboarding page"
-  },
-  "onboardingOfflineDesc": "يتم تنزيل التغذية لتتمكن من القراءة في أي وقت وأي مكان. استمع باستخدام تحويل النص إلى كلام.",
-  "@onboardingOfflineDesc": {
-    "description": "Description for second onboarding page"
-  },
-  "onboardingNotifyTitle": "لا تفوت أي منشور",
-  "@onboardingNotifyTitle": {
-    "description": "Title for third onboarding page"
-  },
-  "onboardingNotifyDesc": "احصل على إشعارات عند وصول مقالات جديدة. أضف أول تغذية للبدء.",
-  "@onboardingNotifyDesc": {
-    "description": "Description for third onboarding page"
-  },
-  "next": "التالي",
-  "@next": {
-    "description": "Next button"
-  },
-  "getStarted": "ابدأ",
-  "@getStarted": {
-    "description": "Get Started button on last onboarding page"
-  },
-  "skip": "تخطي",
-  "@skip": {
-    "description": "Skip button on onboarding"
-  },
-  "tabFeeds": "التغذية",
-  "@tabFeeds": {
-    "description": "Bottom navigation tab for feeds"
-  },
-  "tabMarketplace": "المتجر",
-  "@tabMarketplace": {
-    "description": "Bottom navigation tab for marketplace"
-  },
-  "tabSettings": "الإعدادات",
-  "@tabSettings": {
-    "description": "Bottom navigation tab for settings"
-  },
-  "addFeedTitle": "إضافة تغذية RSS",
-  "@addFeedTitle": {
-    "description": "Title of the add feed dialog"
-  },
-  "addFeedUrlLabel": "رابط التغذية",
-  "@addFeedUrlLabel": {
-    "description": "Label for feed URL input"
-  },
-  "addFeedUrlHint": "https://مثال.com/feed.xml",
-  "@addFeedUrlHint": {
-    "description": "Hint text for feed URL input"
-  },
-  "cancel": "إلغاء",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
-  "add": "إضافة",
-  "@add": {
-    "description": "Add button text"
-  },
-  "feedAdded": "تمت إضافة التغذية",
-  "@feedAdded": {
-    "description": "Snackbar message when feed is added"
-  },
-  "failedToAddFeed": "فشل في إضافة التغذية: {error}",
-  "@failedToAddFeed": {
-    "description": "Snackbar message when adding a feed fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "feedUrlRequired": "رابط التغذية مطلوب",
-  "@feedUrlRequired": {
-    "description": "Validation message when feed URL is empty"
-  },
-  "marketplaceTitle": "المتجر",
-  "@marketplaceTitle": {
-    "description": "Title of marketplace screen"
-  },
-  "marketplaceSubtitle": "روابط RSS مختارة حسب الفئة",
-  "@marketplaceSubtitle": {
-    "description": "Subtitle of marketplace screen"
-  },
-  "marketplaceHeroTitle": "اكتشف تغذية عالية الجودة بسرعة",
-  "@marketplaceHeroTitle": {
-    "description": "Hero section title on marketplace"
-  },
-  "marketplaceHeroDesc": "تصفح المصادر الموثوقة حسب الموضوع. اضغط على متابعة لإضافتها إلى تغذيتك الرئيسية فورًا.",
-  "@marketplaceHeroDesc": {
-    "description": "Hero section description on marketplace"
-  },
-  "marketplaceCategoriesCount": "{count} فئة",
-  "@marketplaceCategoriesCount": {
-    "description": "Category count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceFeedsCount": "{count} تغذية",
-  "@marketplaceFeedsCount": {
-    "description": "Feed count stat",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "marketplaceSearchHint": "بحث في التغذية...",
-  "@marketplaceSearchHint": {
-    "description": "Search field placeholder"
-  },
-  "marketplaceUntitledFeed": "تغذية بدون عنوان",
-  "@marketplaceUntitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "marketplaceSubscribed": "مشترك",
-  "@marketplaceSubscribed": {
-    "description": "Tooltip when feed is subscribed"
-  },
-  "marketplaceFollow": "متابعة",
-  "@marketplaceFollow": {
-    "description": "Follow button tooltip"
-  },
-  "marketplaceSubscribedTo": "مشترك في {title}",
-  "@marketplaceSubscribedTo": {
-    "description": "Snackbar when subscribing to a feed",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "marketplaceInvalidUrl": "رابط التغذية غير صالح",
-  "@marketplaceInvalidUrl": {
-    "description": "Error when feed URL is invalid"
-  },
-  "marketplaceUnreachable": "فشل الاشتراك: قد تكون التغذية غير متاحة",
-  "@marketplaceUnreachable": {
-    "description": "Error when feed subscription fails"
-  },
-  "marketplaceCuratedSources": "{count} مصدر مختار",
-  "@marketplaceCuratedSources": {
-    "description": "Subtitle showing curated source count",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "signIn": "تسجيل الدخول",
-  "@signIn": {
-    "description": "Sign in button / title"
-  },
-  "emailLabel": "البريد الإلكتروني",
-  "@emailLabel": {
-    "description": "Email field label"
-  },
-  "passwordLabel": "كلمة المرور",
-  "@passwordLabel": {
-    "description": "Password field label"
-  },
-  "emailRequired": "أدخل بريدك الإلكتروني",
-  "@emailRequired": {
-    "description": "Validation for empty email"
-  },
-  "passwordRequired": "أدخل كلمة المرور",
-  "@passwordRequired": {
-    "description": "Validation for empty password"
-  },
-  "subscriptionsTitle": "الاشتراكات",
-  "@subscriptionsTitle": {
-    "description": "Title of subscriptions screen"
-  },
-  "subscriptionsEmpty": "لا توجد اشتراكات بعد. أضف تغذية من المتجر!",
-  "@subscriptionsEmpty": {
-    "description": "Empty state message"
-  },
-  "untitledFeed": "تغذية بدون عنوان",
-  "@untitledFeed": {
-    "description": "Fallback title for unnamed feed"
-  },
-  "paused": "متوقف مؤقتًا",
-  "@paused": {
-    "description": "Paused feed label"
-  },
-  "resume": "استئناف",
-  "@resume": {
-    "description": "Resume feed action"
-  },
-  "pause": "إيقاف مؤقت",
-  "@pause": {
-    "description": "Pause feed action"
-  },
-  "unsubscribe": "إلغاء الاشتراك",
-  "@unsubscribe": {
-    "description": "Unsubscribe action"
-  },
-  "unsubscribeTitle": "إلغاء الاشتراك",
-  "@unsubscribeTitle": {
-    "description": "Unsubscribe dialog title"
-  },
-  "unsubscribeConfirm": "إلغاء الاشتراك في {title}؟",
-  "@unsubscribeConfirm": {
-    "description": "Unsubscribe confirmation message",
-    "placeholders": {
-      "title": {}
-    }
-  },
-  "foldersTitle": "المجلدات",
-  "@foldersTitle": {
-    "description": "Title of folders screen"
-  },
-  "createFolderTitle": "مجلد جديد",
-  "@createFolderTitle": {
-    "description": "Create folder dialog title"
-  },
-  "folderNameHint": "اسم المجلد",
-  "@folderNameHint": {
-    "description": "Folder name input hint"
-  },
-  "create": "إنشاء",
-  "@create": {
-    "description": "Create button"
-  },
-  "rename": "إعادة تسمية",
-  "@rename": {
-    "description": "Rename button"
-  },
-  "renameFolderTitle": "إعادة تسمية المجلد",
-  "@renameFolderTitle": {
-    "description": "Rename folder dialog title"
-  },
-  "delete": "حذف",
-  "@delete": {
-    "description": "Delete button"
-  },
-  "deleteFolderTitle": "حذف المجلد",
-  "@deleteFolderTitle": {
-    "description": "Delete folder dialog title"
-  },
-  "deleteFolderConfirm": "إزالة \"{name}\" وفك تجميع تغذيته؟",
-  "@deleteFolderConfirm": {
-    "description": "Delete folder confirmation",
-    "placeholders": {
-      "name": {}
-    }
-  },
-  "createFolderTooltip": "إنشاء مجلد",
-  "@createFolderTooltip": {
-    "description": "Tooltip for create folder button"
-  },
-  "noFoldersYet": "لا توجد مجلدات بعد",
-  "@noFoldersYet": {
-    "description": "Empty state for folders"
-  },
-  "createFirstFolder": "أنشئ مجلدك الأول",
-  "@createFirstFolder": {
-    "description": "Button to create first folder"
-  },
-  "feedCount": "{count} تغذية{count, plural, one {} other {}}",
-  "@feedCount": {
-    "description": "Feed count with pluralization",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "filters": "عوامل تصفية",
-  "@filters": {
-    "description": "Filters button"
-  },
-  "unread": "غير مقروء",
-  "@unread": {
-    "description": "Unread filter chip"
-  },
-  "liked": "معجب",
-  "@liked": {
-    "description": "Liked filter chip"
-  },
-  "saved": "محفوظ",
-  "@saved": {
-    "description": "Saved filter chip"
-  },
-  "last24h": "آخر 24 ساعة",
-  "@last24h": {
-    "description": "Time filter: last 24 hours"
-  },
-  "last7d": "آخر 7 أيام",
-  "@last7d": {
-    "description": "Time filter: last 7 days"
-  },
-  "last30d": "آخر 30 يومًا",
-  "@last30d": {
-    "description": "Time filter: last 30 days"
-  },
-  "engagement": "المشاركة",
-  "@engagement": {
-    "description": "Filter section: engagement"
-  },
-  "unreadOnly": "غير مقروء فقط",
-  "@unreadOnly": {
-    "description": "Unread only filter option"
-  },
-  "lengthPreview": "الطول / المعاينة",
-  "@lengthPreview": {
-    "description": "Filter section: length/preview"
-  },
-  "any": "أي",
-  "@any": {
-    "description": "Any length filter"
-  },
-  "short": "قصير <100 كلمة",
-  "@short": {
-    "description": "Short article filter"
-  },
-  "medium": "متوسط 100-300",
-  "@medium": {
-    "description": "Medium article filter"
-  },
-  "long": "طويل >300",
-  "@long": {
-    "description": "Long article filter"
-  },
-  "multiParagraph": "فقرة+ 2",
-  "@multiParagraph": {
-    "description": "Multi-paragraph filter"
-  },
-  "timeWindow": "النطاق الزمني",
-  "@timeWindow": {
-    "description": "Filter section: time window"
-  },
-  "all": "الكل",
-  "@all": {
-    "description": "All filter option"
-  },
-  "sources": "المصادر",
-  "@sources": {
-    "description": "Filter section: sources"
-  },
-  "allSources": "جميع المصادر",
-  "@allSources": {
-    "description": "All sources filter option"
-  },
-  "keyword": "كلمة مفتاحية",
-  "@keyword": {
-    "description": "Filter section: keyword"
-  },
-  "keywordHint": "العنوان، الملخص، أو المحتوى",
-  "@keywordHint": {
-    "description": "Keyword search hint"
-  },
-  "reset": "إعادة تعيين",
-  "@reset": {
-    "description": "Reset filters button"
-  },
-  "done": "تم",
-  "@done": {
-    "description": "Done button"
-  },
-  "searchArticlesHint": "بحث في المقالات...",
-  "@searchArticlesHint": {
-    "description": "Search field placeholder in article list"
-  },
-  "retry": "إعادة المحاولة",
-  "@retry": {
-    "description": "Retry button"
-  },
-  "noArticlesYet": "لا توجد مقالات بعد. اسحب للتحديث.",
-  "@noArticlesYet": {
-    "description": "Empty state for article list"
-  },
-  "noArticlesMatch": "لا توجد مقالات تطابق عوامل التصفية الحالية.",
-  "@noArticlesMatch": {
-    "description": "Empty state when filters match nothing"
-  },
-  "untitled": "بدون عنوان",
-  "@untitled": {
-    "description": "Fallback article title"
-  },
-  "removedLike": "تمت إزالة الإعجاب",
-  "@removedLike": {
-    "description": "Snackbar when removing a like"
-  },
-  "likedArticle": "أعجبك المقال",
-  "@likedArticle": {
-    "description": "Snackbar when liking an article"
-  },
-  "removedFromSaved": "تمت الإزالة من المحفوظات",
-  "@removedFromSaved": {
-    "description": "Snackbar when removing from saved"
-  },
-  "savedForLater": "تم الحفظ لوقت لاحق",
-  "@savedForLater": {
-    "description": "Snackbar when saving for later"
-  },
-  "markedUnread": "تم وضع علامة غير مقروء",
-  "@markedUnread": {
-    "description": "Snackbar when marking unread"
-  },
-  "markedRead": "تم وضع علامة مقروء",
-  "@markedRead": {
-    "description": "Snackbar when marking read"
-  },
-  "undo": "تراجع",
-  "@undo": {
-    "description": "Undo action label"
-  },
-  "publishDateUnknown": "تاريخ النشر غير معروف",
-  "@publishDateUnknown": {
-    "description": "Fallback when publish date is unknown"
-  },
-  "justNow": "الآن",
-  "@justNow": {
-    "description": "Time label: just now"
-  },
-  "minutesAgo": "منذ {count} دقيقة",
-  "@minutesAgo": {
-    "description": "Time label: minutes ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "hoursAgo": "منذ {count} ساعة",
-  "@hoursAgo": {
-    "description": "Time label: hours ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "daysAgo": "منذ {count} يوم",
-  "@daysAgo": {
-    "description": "Time label: days ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "weeksAgo": "منذ {count} أسبوع",
-  "@weeksAgo": {
-    "description": "Time label: weeks ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "monthsAgo": "منذ {count} شهر",
-  "@monthsAgo": {
-    "description": "Time label: months ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "yearsAgo": "منذ {count} سنة",
-  "@yearsAgo": {
-    "description": "Time label: years ago",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "fetched": "تم الجلب",
-  "@fetched": {
-    "description": "Indicator that timestamp is fallback fetched time"
-  },
-  "continueReading": "متابعة القراءة",
-  "@continueReading": {
-    "description": "FAB label for continue reading"
-  },
-  "readerSavedForLater": "تم الحفظ لوقت لاحق",
-  "@readerSavedForLater": {
-    "description": "Snackbar when saving in reader"
-  },
-  "readerRemovedFromSaved": "تمت الإزالة من المحفوظات",
-  "@readerRemovedFromSaved": {
-    "description": "Snackbar when removing save in reader"
-  },
-  "resumingLastRead": "استئناف آخر مقالة مقروءة",
-  "@resumingLastRead": {
-    "description": "Snackbar when resuming playback"
-  },
-  "startingPlayback": "بدء التشغيل لمقالة غير مقروءة",
-  "@startingPlayback": {
-    "description": "Snackbar when auto-playing"
-  },
-  "showReader": "إظهار القارئ",
-  "@showReader": {
-    "description": "Tooltip to show reader view"
-  },
-  "showWebView": "إظهار عرض الويب",
-  "@showWebView": {
-    "description": "Tooltip to show web view"
-  },
-  "webviewUnsupported": "عرض الويب المدمج مدعوم فقط على Android/iOS.\nسيتم عرض عرض النص بدلاً من ذلك.",
-  "@webviewUnsupported": {
-    "description": "Message when WebView is unsupported on platform"
-  },
-  "byAuthor": "بواسطة {author}",
-  "@byAuthor": {
-    "description": "Article author attribution",
-    "placeholders": {
-      "author": {}
-    }
-  },
-  "markedReadSkipped": "وُضعت علامة مقروء وانتقل إلى التالي",
-  "@markedReadSkipped": {
-    "description": "Snackbar when marking read and skipping"
-  },
-  "markUnread": "وضع علامة غير مقروء",
-  "@markUnread": {
-    "description": "Tooltip to mark as unread"
-  },
-  "markReadPlay": "وضع علامة مقروء وتشغيل التالي",
-  "@markReadPlay": {
-    "description": "Tooltip to mark read and play next"
-  },
-  "previousArticle": "المقالة السابقة",
-  "@previousArticle": {
-    "description": "Tooltip for previous article button"
-  },
-  "nextArticle": "المقالة التالية",
-  "@nextArticle": {
-    "description": "Tooltip for next article button"
-  },
-  "playingSection": "تشغيل القسم {current}/{total}",
-  "@playingSection": {
-    "description": "Audio playback progress text",
-    "placeholders": {
-      "current": {},
-      "total": {}
-    }
-  },
-  "readAloudNotAvailable": "القراءة بصوت عالٍ غير متاحة لهذه المقالة.",
-  "@readAloudNotAvailable": {
-    "description": "Message when TTS is not available"
-  },
-  "unreadCount": "غير مقروء: {count}",
-  "@unreadCount": {
-    "description": "Unread article count badge",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "embeddedVideoUnsupported": "الفيديو المضمن مدعوم فقط على Android/iOS.",
-  "@embeddedVideoUnsupported": {
-    "description": "Message when embedded video is unsupported"
-  },
-  "loadVideo": "تحميل الفيديو",
-  "@loadVideo": {
-    "description": "Button to load embedded video"
-  },
-  "settingsTitle": "الإعدادات",
-  "@settingsTitle": {
-    "description": "Title of settings screen"
-  },
-  "goAdFree": "بدون إعلانات",
-  "@goAdFree": {
-    "description": "Premium card title"
-  },
-  "goAdFreeSubtitle": "فقط $1/شهر. ادعم مطورًا مستقلاً.",
-  "@goAdFreeSubtitle": {
-    "description": "Premium card subtitle"
-  },
-  "pricePerMonth": "$1/شهر",
-  "@pricePerMonth": {
-    "description": "Price label"
-  },
-  "premiumTitle": "Aware بريميوم",
-  "@premiumTitle": {
-    "description": "Premium dialog title"
-  },
-  "premiumSubscribeDesc": "اشترك مقابل $1/شهر واحصل على:",
-  "@premiumSubscribeDesc": {
-    "description": "Premium dialog description"
-  },
-  "premiumRemoveAds": "إزالة جميع الإعلانات",
-  "@premiumRemoveAds": {
-    "description": "Premium feature: remove ads"
-  },
-  "premiumCloudStorage": "تخزين سحابي لبياناتك",
-  "@premiumCloudStorage": {
-    "description": "Premium feature: cloud storage"
-  },
-  "premiumCloudSubscriptions": "حفظ الاشتراكات في السحابة",
-  "@premiumCloudSubscriptions": {
-    "description": "Premium feature: cloud subscriptions"
-  },
-  "premiumSync": "تسجيل الدخول والمزامنة عبر الأجهزة",
-  "@premiumSync": {
-    "description": "Premium feature: sync"
-  },
-  "premiumFolders": "تنظيم غير محدود للمجلدات",
-  "@premiumFolders": {
-    "description": "Premium feature: folders"
-  },
-  "notNow": "ليس الآن",
-  "@notNow": {
-    "description": "Not now button"
-  },
-  "comingSoon": "قريبًا",
-  "@comingSoon": {
-    "description": "Coming soon badge label"
-  },
-  "subscribeNow": "اشترك $1/شهر",
-  "@subscribeNow": {
-    "description": "Subscribe button"
-  },
-  "subscriptionComingSoon": "الاشتراك قريبًا! سيتم خصم $1/شهر.",
-  "@subscriptionComingSoon": {
-    "description": "Snackbar when subscription is coming soon"
-  },
-  "sectionAdvanced": "متقدم",
-  "@sectionAdvanced": {
-    "description": "Settings section: advanced"
-  },
-  "readTracking": "تتبع القراءة",
-  "@readTracking": {
-    "description": "Read tracking setting title"
-  },
-  "readTrackingSubtitle": "وضع علامة تلقائيًا على المقالات كمقروءة بناءً على تقدم القراءة",
-  "@readTrackingSubtitle": {
-    "description": "Read tracking setting subtitle"
-  },
-  "autoMarkRead": "وضع علامة تلقائي حسب التقدم",
-  "@autoMarkRead": {
-    "description": "Auto-mark read setting title"
-  },
-  "autoMarkReadSubtitle": "يضع علامة مقروء عندما يصل التمرير أو الصوت إلى الحد الخاص بك",
-  "@autoMarkReadSubtitle": {
-    "description": "Auto-mark read setting subtitle"
-  },
-  "autoMarkThreshold": "حد العلامة التلقائية",
-  "@autoMarkThreshold": {
-    "description": "Auto-mark threshold setting title"
-  },
-  "progressNeeded": "مطلوب تقدم بنسبة {percent}%",
-  "@progressNeeded": {
-    "description": "Progress threshold label",
-    "placeholders": {
-      "percent": {}
-    }
-  },
-  "sectionVoice": "الصوت والقراءة بصوت عالٍ",
-  "@sectionVoice": {
-    "description": "Settings section: voice & read aloud"
-  },
-  "narrationSpeed": "سرعة السرد الافتراضية",
-  "@narrationSpeed": {
-    "description": "Narration speed setting title"
-  },
-  "speedLabel": "{speed}x (1x = هادئ افتراضي)",
-  "@speedLabel": {
-    "description": "Speed slider label",
-    "placeholders": {
-      "speed": {}
-    }
-  },
-  "defaultVoice": "الصوت الافتراضي",
-  "@defaultVoice": {
-    "description": "Default voice setting title"
-  },
-  "systemDefault": "إعدادات النظام",
-  "@systemDefault": {
-    "description": "System default voice option"
-  },
-  "autoPlayNext": "تشغيل المقالة التالية تلقائيًا",
-  "@autoPlayNext": {
-    "description": "Auto-play next setting title"
-  },
-  "autoPlayNextSubtitle": "عند انتهاء السرد، الانتقال إلى العنصر التالي",
-  "@autoPlayNextSubtitle": {
-    "description": "Auto-play next setting subtitle"
-  },
-  "sectionData": "البيانات",
-  "@sectionData": {
-    "description": "Settings section: data"
-  },
-  "lowDataMode": "التحميل المسبق في وضع البيانات المنخفضة",
-  "@lowDataMode": {
-    "description": "Low data mode setting title"
-  },
-  "lowDataModeSubtitle": "تحميل نص المقالات مسبقًا في الخلفية وتفضيل المحتوى المخبأ عند توفره",
-  "@lowDataModeSubtitle": {
-    "description": "Low data mode setting subtitle"
-  },
-  "sectionAccessibility": "إمكانية الوصول",
-  "@sectionAccessibility": {
-    "description": "Settings section: accessibility"
-  },
-  "textSize": "حجم النص",
-  "@textSize": {
-    "description": "Text size setting title"
-  },
-  "textSizeSubtitle": "يسري على التطبيق بالكامل، بما في ذلك المقالات والتنقل.",
-  "@textSizeSubtitle": {
-    "description": "Text size setting subtitle"
-  },
-  "sampleText": "نص تجريبي لحجم النص.",
-  "@sampleText": {
-    "description": "Sample text for text size preview"
-  },
-  "save": "Save",
-  "@save": {
-    "description": "Menu item to save article"
-  },
-  "unsave": "Unsave",
-  "@unsave": {
-    "description": "Menu item to unsave article"
-  },
-  "copyLink": "Copy link",
-  "@copyLink": {
-    "description": "Menu item to copy article URL"
-  },
-  "linkCopied": "Link copied to clipboard",
-  "@linkCopied": {
-    "description": "Snackbar when link is copied"
-  },
-  "sectionSubscriptions": "الاشتراكات",
-  "@sectionSubscriptions": {
-    "description": "Settings section: subscriptions"
-  },
-  "manageSubscriptions": "إدارة الاشتراكات",
-  "@manageSubscriptions": {
-    "description": "Manage subscriptions setting title"
-  },
-  "manageSubscriptionsSubtitle": "إضافة أو إزالة التغذية التي تتابعها",
-  "@manageSubscriptionsSubtitle": {
-    "description": "Manage subscriptions setting subtitle"
-  },
-  "manageFolders": "إدارة المجلدات",
-  "@manageFolders": {
-    "description": "Manage folders setting title"
-  },
-  "manageFoldersSubtitle": "تنظيم التغذية في مجلدات",
-  "@manageFoldersSubtitle": {
-    "description": "Manage folders setting subtitle"
-  },
-  "importSubscriptions": "استيراد الاشتراكات",
-  "@importSubscriptions": {
-    "description": "Import subscriptions setting title"
-  },
-  "importSubscriptionsSubtitle": "استيراد عبر ملف OPML",
-  "@importSubscriptionsSubtitle": {
-    "description": "Import subscriptions setting subtitle"
-  },
-  "exportSubscriptions": "تصدير الاشتراكات",
-  "@exportSubscriptions": {
-    "description": "Export subscriptions setting title"
-  },
-  "exportSubscriptionsSubtitle": "تصدير التغذية إلى OPML",
-  "@exportSubscriptionsSubtitle": {
-    "description": "Export subscriptions setting subtitle"
-  },
-  "sectionThemes": "السمات",
-  "@sectionThemes": {
-    "description": "Settings section: themes"
-  },
-  "themes": "السمات",
-  "@themes": {
-    "description": "Themes setting title"
-  },
-  "themesSubtitle": "فاتح / داكن / النظام",
-  "@themesSubtitle": {
-    "description": "Themes setting subtitle"
-  },
-  "selectTheme": "اختيار السمة",
-  "@selectTheme": {
-    "description": "Theme selection dialog title"
-  },
-  "system": "النظام",
-  "@system": {
-    "description": "System theme option"
-  },
-  "light": "فاتح",
-  "@light": {
-    "description": "Light theme option"
-  },
-  "dark": "داكن",
-  "@dark": {
-    "description": "Dark theme option"
-  },
-  "sectionLanguage": "اللغة",
-  "@sectionLanguage": {
-    "description": "Settings section: language"
-  },
-  "language": "اللغة",
-  "@language": {
-    "description": "Language setting title"
-  },
-  "languageSubtitle": "العربية",
-  "@languageSubtitle": {
-    "description": "Language setting subtitle - currently selected language"
-  },
-  "selectLanguage": "اختيار اللغة",
-  "@selectLanguage": {
-    "description": "Language selection dialog title"
-  },
-  "languageEnglish": "الإنجليزية",
-  "@languageEnglish": {
-    "description": "English language option"
-  },
-  "languageChinese": "الصينية",
-  "@languageChinese": {
-    "description": "Chinese language option"
-  },
-  "languageSpanish": "الإسبانية",
-  "@languageSpanish": {
-    "description": "Spanish language option"
-  },
-  "languageHindi": "الهندية",
-  "@languageHindi": {
-    "description": "Hindi language option"
-  },
-  "languageArabic": "العربية",
-  "@languageArabic": {
-    "description": "Arabic language option"
-  },
-  "languageFrench": "الفرنسية",
-  "@languageFrench": {
-    "description": "French language option"
-  },
-  "languagePortuguese": "البرتغالية",
-  "@languagePortuguese": {
-    "description": "Portuguese language option"
-  },
-  "languageRussian": "الروسية",
-  "@languageRussian": {
-    "description": "Russian language option"
-  },
-  "languageJapanese": "اليابانية",
-  "@languageJapanese": {
-    "description": "Japanese language option"
-  },
-  "languageGerman": "الألمانية",
-  "@languageGerman": {
-    "description": "German language option"
-  },
-  "languageKorean": "الكورية",
-  "@languageKorean": {
-    "description": "Korean language option"
-  },
-  "languageItalian": "الإيطالية",
-  "@languageItalian": {
-    "description": "Italian language option"
-  },
-  "sectionLegal": "قانوني",
-  "@sectionLegal": {
-    "description": "Settings section: legal"
-  },
-  "privacyPolicy": "سياسة الخصوصية",
-  "@privacyPolicy": {
-    "description": "Privacy policy setting title"
-  },
-  "openSourceLicenses": "تراخيص المصدر المفتوح",
-  "@openSourceLicenses": {
-    "description": "Open source licenses setting title"
-  },
-  "noFeedsFoundOpml": "لم يتم العثور على تغذية في OPML",
-  "@noFeedsFoundOpml": {
-    "description": "Snackbar when no feeds found in OPML"
-  },
-  "importedCount": "تم استيراد {count} تغذية{count, plural, one {} other {}}",
-  "@importedCount": {
-    "description": "Snackbar when import succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "allFeedsAlreadyAdded": "تمت إضافة جميع التغذية مسبقًا",
-  "@allFeedsAlreadyAdded": {
-    "description": "Snackbar when all feeds already exist"
-  },
-  "importFailed": "فشل الاستيراد: {error}",
-  "@importFailed": {
-    "description": "Snackbar when import fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "noSubscriptionsToExport": "لا توجد اشتراكات للتصدير",
-  "@noSubscriptionsToExport": {
-    "description": "Snackbar when no subscriptions to export"
-  },
-  "exportedCount": "تم تصدير {count} تغذية",
-  "@exportedCount": {
-    "description": "Snackbar when export succeeds",
-    "placeholders": {
-      "count": {}
-    }
-  },
-  "exportFailed": "فشل التصدير: {error}",
-  "@exportFailed": {
-    "description": "Snackbar when export fails",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "exportShareText": "تصدير اشتراكات Aware",
-  "@exportShareText": {
-    "description": "Share text for OPML export"
-  },
-  "exportShareSubject": "تصدير اشتراكات Aware",
-  "@exportShareSubject": {
-    "description": "Share subject for OPML export"
-  },
-  "savedArticlesTitle": "المقالات المحفوظة",
-  "@savedArticlesTitle": {
-    "description": "Title of saved articles screen"
-  },
-  "noSavedArticlesYet": "لا توجد مقالات محفوظة بعد.",
-  "@noSavedArticlesYet": {
-    "description": "Empty state for saved articles"
-  },
-  "error": "خطأ: {error}",
-  "@error": {
-    "description": "Error message format",
-    "placeholders": {
-      "error": {}
-    }
-  },
-  "privacyPolicyTitle": "سياسة الخصوصية",
-  "@privacyPolicyTitle": {
-    "description": "Privacy policy screen title"
-  },
-  "privacyPolicyLastUpdated": "آخر تحديث: 20 يونيو 2026",
-  "@privacyPolicyLastUpdated": {
-    "description": "Privacy policy last updated date"
-  },
-  "privacyInfoWeCollect": "المعلومات التي نجمعها",
-  "@privacyInfoWeCollect": {
-    "description": "Privacy section: information we collect"
-  },
-  "privacyInfoWeCollectBody": "Aware لا يجمع أو يخزن أو ينقل أي بيانات شخصية. جميع بيانات التطبيق (التغذية، المقالات، تقدم القراءة، التفضيلات، والإعدادات) تُخزن محليًا على جهازك ولا تُرسل أبدًا إلى أي خادم.",
-  "@privacyInfoWeCollectBody": {
-    "description": "Privacy section body: information we collect"
-  },
-  "privacyThirdParty": "خدمات الطرف الثالث",
-  "@privacyThirdParty": {
-    "description": "Privacy section: third-party services"
-  },
-  "privacyThirdPartyBody": "يستخدم Aware Google AdMob لعرض الإعلانات. قد يجمع AdMob بيانات استخدام غير شخصية ومعرفات الجهاز لعرض إعلانات ملائمة. يتم عرض الإعلانات فقط مع طلبات إعلانات غير مخصصة. لا تتم مشاركة أي بيانات مستخدم مع المعلنين.\n\nتنطبق سياسة خصوصية Google على البيانات التي يجمعها AdMob:\n",
-  "@privacyThirdPartyBody": {
-    "description": "Privacy section body: third-party services"
-  },
-  "privacyDataStorage": "تخزين البيانات",
-  "@privacyDataStorage": {
-    "description": "Privacy section: data storage"
-  },
-  "privacyDataStorageBody": "جميع اشتراكات التغذية، المقالات، تقدم القراءة، وتفضيلات التطبيق تُخزن محليًا في قاعدة بيانات SQLite على جهازك. يمكنك تصدير بياناتك في أي وقت عبر ميزة تصدير OPML في الإعدادات.\n\nلحذف جميع البيانات، قم بإلغاء تثبيت التطبيق أو مسح بيانات التطبيق من إعدادات جهازك.",
-  "@privacyDataStorageBody": {
-    "description": "Privacy section body: data storage"
-  },
-  "privacyContact": "اتصل بنا",
-  "@privacyContact": {
-    "description": "Privacy section: contact"
-  },
-  "privacyContactBody": "إذا كانت لديك أسئلة حول سياسة الخصوصية هذه، يرجى الاتصال بنا عبر قنوات الدعم في التطبيق.",
-  "@privacyContactBody": {
-    "description": "Privacy section body: contact"
-  }
+    "@@locale":  "ar",
+    "appName":  "aware",
+    "@appName":  {
+                     "description":  "The name of the application"
+                 },
+    "appTitle":  "Aware",
+    "@appTitle":  {
+                      "description":  "Application title shown in settings/about"
+                  },
+    "appVersion":  "1.0.0",
+    "@appVersion":  {
+                        "description":  "Application version number"
+                    },
+    "splashTagline":  "ابق على اطلاع بسهولة",
+    "@splashTagline":  {
+                           "description":  "Tagline shown on splash screen"
+                       },
+    "onboardingLanguageTitle":  "اختر لغتك",
+    "@onboardingLanguageTitle":  {
+                                     "description":  "Title for onboarding language selection page"
+                                 },
+    "onboardingLanguageDesc":  "اختر لغتك المفضلة لواجهة التطبيق.",
+    "@onboardingLanguageDesc":  {
+                                    "description":  "Description for onboarding language selection page"
+                                },
+    "onboardingWelcomeTitle":  "مرحبًا بك في aware",
+    "@onboardingWelcomeTitle":  {
+                                    "description":  "Title for first onboarding page"
+                                },
+    "onboardingWelcomeDesc":  "قارئ التغذية الخاص بك. ابق على اطلاع بما يهم، كل ذلك في مكان واحد.",
+    "@onboardingWelcomeDesc":  {
+                                   "description":  "Description for first onboarding page"
+                               },
+    "onboardingOfflineTitle":  "القراءة بدون اتصال",
+    "@onboardingOfflineTitle":  {
+                                    "description":  "Title for second onboarding page"
+                                },
+    "onboardingOfflineDesc":  "يتم تنزيل التغذية لتتمكن من القراءة في أي وقت وأي مكان. استمع باستخدام تحويل النص إلى كلام.",
+    "@onboardingOfflineDesc":  {
+                                   "description":  "Description for second onboarding page"
+                               },
+    "onboardingNotifyTitle":  "لا تفوت أي منشور",
+    "@onboardingNotifyTitle":  {
+                                   "description":  "Title for third onboarding page"
+                               },
+    "onboardingNotifyDesc":  "احصل على إشعارات عند وصول مقالات جديدة. أضف أول تغذية للبدء.",
+    "@onboardingNotifyDesc":  {
+                                  "description":  "Description for third onboarding page"
+                              },
+    "next":  "التالي",
+    "@next":  {
+                  "description":  "Next button"
+              },
+    "getStarted":  "ابدأ",
+    "@getStarted":  {
+                        "description":  "Get Started button on last onboarding page"
+                    },
+    "skip":  "تخطي",
+    "@skip":  {
+                  "description":  "Skip button on onboarding"
+              },
+    "tabFeeds":  "التغذية",
+    "@tabFeeds":  {
+                      "description":  "Bottom navigation tab for feeds"
+                  },
+    "tabMarketplace":  "المتجر",
+    "@tabMarketplace":  {
+                            "description":  "Bottom navigation tab for marketplace"
+                        },
+    "tabSettings":  "الإعدادات",
+    "@tabSettings":  {
+                         "description":  "Bottom navigation tab for settings"
+                     },
+    "addFeedTitle":  "إضافة تغذية RSS",
+    "@addFeedTitle":  {
+                          "description":  "Title of the add feed dialog"
+                      },
+    "addFeedUrlLabel":  "رابط التغذية",
+    "@addFeedUrlLabel":  {
+                             "description":  "Label for feed URL input"
+                         },
+    "addFeedUrlHint":  "https://مثال.com/feed.xml",
+    "@addFeedUrlHint":  {
+                            "description":  "Hint text for feed URL input"
+                        },
+    "cancel":  "إلغاء",
+    "@cancel":  {
+                    "description":  "Cancel button text"
+                },
+    "add":  "إضافة",
+    "@add":  {
+                 "description":  "Add button text"
+             },
+    "feedAdded":  "تمت إضافة التغذية",
+    "@feedAdded":  {
+                       "description":  "Snackbar message when feed is added"
+                   },
+    "failedToAddFeed":  "فشل في إضافة التغذية: {error}",
+    "@failedToAddFeed":  {
+                             "description":  "Snackbar message when adding a feed fails",
+                             "placeholders":  {
+                                                  "error":  {
+
+                                                            }
+                                              }
+                         },
+    "feedUrlRequired":  "رابط التغذية مطلوب",
+    "@feedUrlRequired":  {
+                             "description":  "Validation message when feed URL is empty"
+                         },
+    "marketplaceTitle":  "المتجر",
+    "@marketplaceTitle":  {
+                              "description":  "Title of marketplace screen"
+                          },
+    "marketplaceSubtitle":  "روابط RSS مختارة حسب الفئة",
+    "@marketplaceSubtitle":  {
+                                 "description":  "Subtitle of marketplace screen"
+                             },
+    "marketplaceHeroTitle":  "اكتشف تغذية عالية الجودة بسرعة",
+    "@marketplaceHeroTitle":  {
+                                  "description":  "Hero section title on marketplace"
+                              },
+    "marketplaceHeroDesc":  "تصفح المصادر الموثوقة حسب الموضوع. اضغط على متابعة لإضافتها إلى تغذيتك الرئيسية فورًا.",
+    "@marketplaceHeroDesc":  {
+                                 "description":  "Hero section description on marketplace"
+                             },
+    "marketplaceCategoriesCount":  "{count} فئة",
+    "@marketplaceCategoriesCount":  {
+                                        "description":  "Category count stat",
+                                        "placeholders":  {
+                                                             "count":  {
+
+                                                                       }
+                                                         }
+                                    },
+    "marketplaceFeedsCount":  "{count} تغذية",
+    "@marketplaceFeedsCount":  {
+                                   "description":  "Feed count stat",
+                                   "placeholders":  {
+                                                        "count":  {
+
+                                                                  }
+                                                    }
+                               },
+    "marketplaceSearchHint":  "بحث في التغذية...",
+    "@marketplaceSearchHint":  {
+                                   "description":  "Search field placeholder"
+                               },
+    "marketplaceUntitledFeed":  "تغذية بدون عنوان",
+    "@marketplaceUntitledFeed":  {
+                                     "description":  "Fallback title for unnamed feed"
+                                 },
+    "marketplaceSubscribed":  "مشترك",
+    "@marketplaceSubscribed":  {
+                                   "description":  "Tooltip when feed is subscribed"
+                               },
+    "marketplaceFollow":  "متابعة",
+    "@marketplaceFollow":  {
+                               "description":  "Follow button tooltip"
+                           },
+    "marketplaceSubscribedTo":  "مشترك في {title}",
+    "@marketplaceSubscribedTo":  {
+                                     "description":  "Snackbar when subscribing to a feed",
+                                     "placeholders":  {
+                                                          "title":  {
+
+                                                                    }
+                                                      }
+                                 },
+    "marketplaceInvalidUrl":  "رابط التغذية غير صالح",
+    "@marketplaceInvalidUrl":  {
+                                   "description":  "Error when feed URL is invalid"
+                               },
+    "marketplaceUnreachable":  "فشل الاشتراك: قد تكون التغذية غير متاحة",
+    "@marketplaceUnreachable":  {
+                                    "description":  "Error when feed subscription fails"
+                                },
+    "marketplaceCuratedSources":  "{count} مصدر مختار",
+    "@marketplaceCuratedSources":  {
+                                       "description":  "Subtitle showing curated source count",
+                                       "placeholders":  {
+                                                            "count":  {
+
+                                                                      }
+                                                        }
+                                   },
+    "signIn":  "تسجيل الدخول",
+    "@signIn":  {
+                    "description":  "Sign in button / title"
+                },
+    "emailLabel":  "البريد الإلكتروني",
+    "@emailLabel":  {
+                        "description":  "Email field label"
+                    },
+    "passwordLabel":  "كلمة المرور",
+    "@passwordLabel":  {
+                           "description":  "Password field label"
+                       },
+    "emailRequired":  "أدخل بريدك الإلكتروني",
+    "@emailRequired":  {
+                           "description":  "Validation for empty email"
+                       },
+    "passwordRequired":  "أدخل كلمة المرور",
+    "@passwordRequired":  {
+                              "description":  "Validation for empty password"
+                          },
+    "subscriptionsTitle":  "الاشتراكات",
+    "@subscriptionsTitle":  {
+                                "description":  "Title of subscriptions screen"
+                            },
+    "subscriptionsEmpty":  "لا توجد اشتراكات بعد. أضف تغذية من المتجر!",
+    "@subscriptionsEmpty":  {
+                                "description":  "Empty state message"
+                            },
+    "untitledFeed":  "تغذية بدون عنوان",
+    "@untitledFeed":  {
+                          "description":  "Fallback title for unnamed feed"
+                      },
+    "paused":  "متوقف مؤقتًا",
+    "@paused":  {
+                    "description":  "Paused feed label"
+                },
+    "resume":  "استئناف",
+    "@resume":  {
+                    "description":  "Resume feed action"
+                },
+    "pause":  "إيقاف مؤقت",
+    "@pause":  {
+                   "description":  "Pause feed action"
+               },
+    "unsubscribe":  "إلغاء الاشتراك",
+    "@unsubscribe":  {
+                         "description":  "Unsubscribe action"
+                     },
+    "unsubscribeTitle":  "إلغاء الاشتراك",
+    "@unsubscribeTitle":  {
+                              "description":  "Unsubscribe dialog title"
+                          },
+    "unsubscribeConfirm":  "إلغاء الاشتراك في {title}؟",
+    "@unsubscribeConfirm":  {
+                                "description":  "Unsubscribe confirmation message",
+                                "placeholders":  {
+                                                     "title":  {
+
+                                                               }
+                                                 }
+                            },
+    "create":  "إنشاء",
+    "@create":  {
+                    "description":  "Create button"
+                },
+    "rename":  "إعادة تسمية",
+    "@rename":  {
+                    "description":  "Rename button"
+                },
+    "delete":  "حذف",
+    "@delete":  {
+                    "description":  "Delete button"
+                },
+    "feedCount":  "{count} تغذية{count, plural, one {} other {}}",
+    "@feedCount":  {
+                       "description":  "Feed count with pluralization",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "filters":  "عوامل تصفية",
+    "@filters":  {
+                     "description":  "Filters button"
+                 },
+    "unread":  "غير مقروء",
+    "@unread":  {
+                    "description":  "Unread filter chip"
+                },
+    "liked":  "معجب",
+    "@liked":  {
+                   "description":  "Liked filter chip"
+               },
+    "saved":  "محفوظ",
+    "@saved":  {
+                   "description":  "Saved filter chip"
+               },
+    "last24h":  "آخر 24 ساعة",
+    "@last24h":  {
+                     "description":  "Time filter: last 24 hours"
+                 },
+    "last7d":  "آخر 7 أيام",
+    "@last7d":  {
+                    "description":  "Time filter: last 7 days"
+                },
+    "last30d":  "آخر 30 يومًا",
+    "@last30d":  {
+                     "description":  "Time filter: last 30 days"
+                 },
+    "engagement":  "المشاركة",
+    "@engagement":  {
+                        "description":  "Filter section: engagement"
+                    },
+    "unreadOnly":  "غير مقروء فقط",
+    "@unreadOnly":  {
+                        "description":  "Unread only filter option"
+                    },
+    "lengthPreview":  "الطول / المعاينة",
+    "@lengthPreview":  {
+                           "description":  "Filter section: length/preview"
+                       },
+    "any":  "أي",
+    "@any":  {
+                 "description":  "Any length filter"
+             },
+    "short":  "قصير \u003c100 كلمة",
+    "@short":  {
+                   "description":  "Short article filter"
+               },
+    "medium":  "متوسط 100-300",
+    "@medium":  {
+                    "description":  "Medium article filter"
+                },
+    "long":  "طويل \u003e300",
+    "@long":  {
+                  "description":  "Long article filter"
+              },
+    "multiParagraph":  "فقرة+ 2",
+    "@multiParagraph":  {
+                            "description":  "Multi-paragraph filter"
+                        },
+    "timeWindow":  "النطاق الزمني",
+    "@timeWindow":  {
+                        "description":  "Filter section: time window"
+                    },
+    "all":  "الكل",
+    "@all":  {
+                 "description":  "All filter option"
+             },
+    "sources":  "المصادر",
+    "@sources":  {
+                     "description":  "Filter section: sources"
+                 },
+    "allSources":  "جميع المصادر",
+    "@allSources":  {
+                        "description":  "All sources filter option"
+                    },
+    "keyword":  "كلمة مفتاحية",
+    "@keyword":  {
+                     "description":  "Filter section: keyword"
+                 },
+    "keywordHint":  "العنوان، الملخص، أو المحتوى",
+    "@keywordHint":  {
+                         "description":  "Keyword search hint"
+                     },
+    "reset":  "إعادة تعيين",
+    "@reset":  {
+                   "description":  "Reset filters button"
+               },
+    "done":  "تم",
+    "@done":  {
+                  "description":  "Done button"
+              },
+    "searchArticlesHint":  "بحث في المقالات...",
+    "@searchArticlesHint":  {
+                                "description":  "Search field placeholder in article list"
+                            },
+    "retry":  "إعادة المحاولة",
+    "@retry":  {
+                   "description":  "Retry button"
+               },
+    "noArticlesYet":  "لا توجد مقالات بعد. اسحب للتحديث.",
+    "@noArticlesYet":  {
+                           "description":  "Empty state for article list"
+                       },
+    "noArticlesMatch":  "لا توجد مقالات تطابق عوامل التصفية الحالية.",
+    "@noArticlesMatch":  {
+                             "description":  "Empty state when filters match nothing"
+                         },
+    "untitled":  "بدون عنوان",
+    "@untitled":  {
+                      "description":  "Fallback article title"
+                  },
+    "removedLike":  "تمت إزالة الإعجاب",
+    "@removedLike":  {
+                         "description":  "Snackbar when removing a like"
+                     },
+    "likedArticle":  "أعجبك المقال",
+    "@likedArticle":  {
+                          "description":  "Snackbar when liking an article"
+                      },
+    "removedFromSaved":  "تمت الإزالة من المحفوظات",
+    "@removedFromSaved":  {
+                              "description":  "Snackbar when removing from saved"
+                          },
+    "savedForLater":  "تم الحفظ لوقت لاحق",
+    "@savedForLater":  {
+                           "description":  "Snackbar when saving for later"
+                       },
+    "markedUnread":  "تم وضع علامة غير مقروء",
+    "@markedUnread":  {
+                          "description":  "Snackbar when marking unread"
+                      },
+    "markedRead":  "تم وضع علامة مقروء",
+    "@markedRead":  {
+                        "description":  "Snackbar when marking read"
+                    },
+    "undo":  "تراجع",
+    "@undo":  {
+                  "description":  "Undo action label"
+              },
+    "publishDateUnknown":  "تاريخ النشر غير معروف",
+    "@publishDateUnknown":  {
+                                "description":  "Fallback when publish date is unknown"
+                            },
+    "justNow":  "الآن",
+    "@justNow":  {
+                     "description":  "Time label: just now"
+                 },
+    "minutesAgo":  "منذ {count} دقيقة",
+    "@minutesAgo":  {
+                        "description":  "Time label: minutes ago",
+                        "placeholders":  {
+                                             "count":  {
+
+                                                       }
+                                         }
+                    },
+    "hoursAgo":  "منذ {count} ساعة",
+    "@hoursAgo":  {
+                      "description":  "Time label: hours ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "daysAgo":  "منذ {count} يوم",
+    "@daysAgo":  {
+                     "description":  "Time label: days ago",
+                     "placeholders":  {
+                                          "count":  {
+
+                                                    }
+                                      }
+                 },
+    "weeksAgo":  "منذ {count} أسبوع",
+    "@weeksAgo":  {
+                      "description":  "Time label: weeks ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "monthsAgo":  "منذ {count} شهر",
+    "@monthsAgo":  {
+                       "description":  "Time label: months ago",
+                       "placeholders":  {
+                                            "count":  {
+
+                                                      }
+                                        }
+                   },
+    "yearsAgo":  "منذ {count} سنة",
+    "@yearsAgo":  {
+                      "description":  "Time label: years ago",
+                      "placeholders":  {
+                                           "count":  {
+
+                                                     }
+                                       }
+                  },
+    "fetched":  "تم الجلب",
+    "@fetched":  {
+                     "description":  "Indicator that timestamp is fallback fetched time"
+                 },
+    "continueReading":  "متابعة القراءة",
+    "@continueReading":  {
+                             "description":  "FAB label for continue reading"
+                         },
+    "readerSavedForLater":  "تم الحفظ لوقت لاحق",
+    "@readerSavedForLater":  {
+                                 "description":  "Snackbar when saving in reader"
+                             },
+    "readerRemovedFromSaved":  "تمت الإزالة من المحفوظات",
+    "@readerRemovedFromSaved":  {
+                                    "description":  "Snackbar when removing save in reader"
+                                },
+    "resumingLastRead":  "استئناف آخر مقالة مقروءة",
+    "@resumingLastRead":  {
+                              "description":  "Snackbar when resuming playback"
+                          },
+    "startingPlayback":  "بدء التشغيل لمقالة غير مقروءة",
+    "@startingPlayback":  {
+                              "description":  "Snackbar when auto-playing"
+                          },
+    "showReader":  "إظهار القارئ",
+    "@showReader":  {
+                        "description":  "Tooltip to show reader view"
+                    },
+    "showWebView":  "إظهار عرض الويب",
+    "@showWebView":  {
+                         "description":  "Tooltip to show web view"
+                     },
+    "webviewUnsupported":  "عرض الويب المدمج مدعوم فقط على Android/iOS.\nسيتم عرض عرض النص بدلاً من ذلك.",
+    "@webviewUnsupported":  {
+                                "description":  "Message when WebView is unsupported on platform"
+                            },
+    "byAuthor":  "بواسطة {author}",
+    "@byAuthor":  {
+                      "description":  "Article author attribution",
+                      "placeholders":  {
+                                           "author":  {
+
+                                                      }
+                                       }
+                  },
+    "markedReadSkipped":  "وُضعت علامة مقروء وانتقل إلى التالي",
+    "@markedReadSkipped":  {
+                               "description":  "Snackbar when marking read and skipping"
+                           },
+    "markUnread":  "وضع علامة غير مقروء",
+    "@markUnread":  {
+                        "description":  "Tooltip to mark as unread"
+                    },
+    "markReadPlay":  "وضع علامة مقروء وتشغيل التالي",
+    "@markReadPlay":  {
+                          "description":  "Tooltip to mark read and play next"
+                      },
+    "previousArticle":  "المقالة السابقة",
+    "@previousArticle":  {
+                             "description":  "Tooltip for previous article button"
+                         },
+    "nextArticle":  "المقالة التالية",
+    "@nextArticle":  {
+                         "description":  "Tooltip for next article button"
+                     },
+    "playingSection":  "تشغيل القسم {current}/{total}",
+    "@playingSection":  {
+                            "description":  "Audio playback progress text",
+                            "placeholders":  {
+                                                 "current":  {
+
+                                                             },
+                                                 "total":  {
+
+                                                           }
+                                             }
+                        },
+    "readAloudNotAvailable":  "القراءة بصوت عالٍ غير متاحة لهذه المقالة.",
+    "@readAloudNotAvailable":  {
+                                   "description":  "Message when TTS is not available"
+                               },
+    "unreadCount":  "غير مقروء: {count}",
+    "@unreadCount":  {
+                         "description":  "Unread article count badge",
+                         "placeholders":  {
+                                              "count":  {
+
+                                                        }
+                                          }
+                     },
+    "embeddedVideoUnsupported":  "الفيديو المضمن مدعوم فقط على Android/iOS.",
+    "@embeddedVideoUnsupported":  {
+                                      "description":  "Message when embedded video is unsupported"
+                                  },
+    "loadVideo":  "تحميل الفيديو",
+    "@loadVideo":  {
+                       "description":  "Button to load embedded video"
+                   },
+    "settingsTitle":  "الإعدادات",
+    "@settingsTitle":  {
+                           "description":  "Title of settings screen"
+                       },
+    "goAdFree":  "بدون إعلانات",
+    "@goAdFree":  {
+                      "description":  "Premium card title"
+                  },
+    "goAdFreeSubtitle":  "فقط $1/شهر. ادعم مطورًا مستقلاً.",
+    "@goAdFreeSubtitle":  {
+                              "description":  "Premium card subtitle"
+                          },
+    "pricePerMonth":  "$1/شهر",
+    "@pricePerMonth":  {
+                           "description":  "Price label"
+                       },
+    "premiumTitle":  "Aware بريميوم",
+    "@premiumTitle":  {
+                          "description":  "Premium dialog title"
+                      },
+    "premiumSubscribeDesc":  "اشترك مقابل $1/شهر واحصل على:",
+    "@premiumSubscribeDesc":  {
+                                  "description":  "Premium dialog description"
+                              },
+    "premiumRemoveAds":  "إزالة جميع الإعلانات",
+    "@premiumRemoveAds":  {
+                              "description":  "Premium feature: remove ads"
+                          },
+    "premiumCloudStorage":  "تخزين سحابي لبياناتك",
+    "@premiumCloudStorage":  {
+                                 "description":  "Premium feature: cloud storage"
+                             },
+    "premiumCloudSubscriptions":  "حفظ الاشتراكات في السحابة",
+    "@premiumCloudSubscriptions":  {
+                                       "description":  "Premium feature: cloud subscriptions"
+                                   },
+    "premiumSync":  "تسجيل الدخول والمزامنة عبر الأجهزة",
+    "@premiumSync":  {
+                         "description":  "Premium feature: sync"
+                     },
+    "notNow":  "ليس الآن",
+    "@notNow":  {
+                    "description":  "Not now button"
+                },
+    "comingSoon":  "قريبًا",
+    "@comingSoon":  {
+                        "description":  "Coming soon badge label"
+                    },
+    "subscribeNow":  "اشترك $1/شهر",
+    "@subscribeNow":  {
+                          "description":  "Subscribe button"
+                      },
+    "subscriptionComingSoon":  "الاشتراك قريبًا! سيتم خصم $1/شهر.",
+    "@subscriptionComingSoon":  {
+                                    "description":  "Snackbar when subscription is coming soon"
+                                },
+    "sectionAdvanced":  "متقدم",
+    "@sectionAdvanced":  {
+                             "description":  "Settings section: advanced"
+                         },
+    "readTracking":  "تتبع القراءة",
+    "@readTracking":  {
+                          "description":  "Read tracking setting title"
+                      },
+    "readTrackingSubtitle":  "وضع علامة تلقائيًا على المقالات كمقروءة بناءً على تقدم القراءة",
+    "@readTrackingSubtitle":  {
+                                  "description":  "Read tracking setting subtitle"
+                              },
+    "autoMarkRead":  "وضع علامة تلقائي حسب التقدم",
+    "@autoMarkRead":  {
+                          "description":  "Auto-mark read setting title"
+                      },
+    "autoMarkReadSubtitle":  "يضع علامة مقروء عندما يصل التمرير أو الصوت إلى الحد الخاص بك",
+    "@autoMarkReadSubtitle":  {
+                                  "description":  "Auto-mark read setting subtitle"
+                              },
+    "autoMarkThreshold":  "حد العلامة التلقائية",
+    "@autoMarkThreshold":  {
+                               "description":  "Auto-mark threshold setting title"
+                           },
+    "progressNeeded":  "مطلوب تقدم بنسبة {percent}%",
+    "@progressNeeded":  {
+                            "description":  "Progress threshold label",
+                            "placeholders":  {
+                                                 "percent":  {
+
+                                                             }
+                                             }
+                        },
+    "sectionVoice":  "الصوت والقراءة بصوت عالٍ",
+    "@sectionVoice":  {
+                          "description":  "Settings section: voice \u0026 read aloud"
+                      },
+    "narrationSpeed":  "سرعة السرد الافتراضية",
+    "@narrationSpeed":  {
+                            "description":  "Narration speed setting title"
+                        },
+    "speedLabel":  "{speed}x (1x = هادئ افتراضي)",
+    "@speedLabel":  {
+                        "description":  "Speed slider label",
+                        "placeholders":  {
+                                             "speed":  {
+
+                                                       }
+                                         }
+                    },
+    "defaultVoice":  "الصوت الافتراضي",
+    "@defaultVoice":  {
+                          "description":  "Default voice setting title"
+                      },
+    "systemDefault":  "إعدادات النظام",
+    "@systemDefault":  {
+                           "description":  "System default voice option"
+                       },
+    "autoPlayNext":  "تشغيل المقالة التالية تلقائيًا",
+    "@autoPlayNext":  {
+                          "description":  "Auto-play next setting title"
+                      },
+    "autoPlayNextSubtitle":  "عند انتهاء السرد، الانتقال إلى العنصر التالي",
+    "@autoPlayNextSubtitle":  {
+                                  "description":  "Auto-play next setting subtitle"
+                              },
+    "sectionAccessibility":  "إمكانية الوصول",
+    "@sectionAccessibility":  {
+                                  "description":  "Settings section: accessibility"
+                              },
+    "textSize":  "حجم النص",
+    "@textSize":  {
+                      "description":  "Text size setting title"
+                  },
+    "textSizeSubtitle":  "يسري على التطبيق بالكامل، بما في ذلك المقالات والتنقل.",
+    "@textSizeSubtitle":  {
+                              "description":  "Text size setting subtitle"
+                          },
+    "sampleText":  "نص تجريبي لحجم النص.",
+    "@sampleText":  {
+                        "description":  "Sample text for text size preview"
+                    },
+    "save":  "Save",
+    "@save":  {
+                  "description":  "Menu item to save article"
+              },
+    "unsave":  "Unsave",
+    "@unsave":  {
+                    "description":  "Menu item to unsave article"
+                },
+    "copyLink":  "Copy link",
+    "@copyLink":  {
+                      "description":  "Menu item to copy article URL"
+                  },
+    "linkCopied":  "Link copied to clipboard",
+    "@linkCopied":  {
+                        "description":  "Snackbar when link is copied"
+                    },
+    "sectionSubscriptions":  "الاشتراكات",
+    "@sectionSubscriptions":  {
+                                  "description":  "Settings section: subscriptions"
+                              },
+    "manageSubscriptions":  "إدارة الاشتراكات",
+    "@manageSubscriptions":  {
+                                 "description":  "Manage subscriptions setting title"
+                             },
+    "manageSubscriptionsSubtitle":  "إضافة أو إزالة التغذية التي تتابعها",
+    "@manageSubscriptionsSubtitle":  {
+                                         "description":  "Manage subscriptions setting subtitle"
+                                     },
+    "importSubscriptions":  "استيراد الاشتراكات",
+    "@importSubscriptions":  {
+                                 "description":  "Import subscriptions setting title"
+                             },
+    "importSubscriptionsSubtitle":  "استيراد عبر ملف OPML",
+    "@importSubscriptionsSubtitle":  {
+                                         "description":  "Import subscriptions setting subtitle"
+                                     },
+    "exportSubscriptions":  "تصدير الاشتراكات",
+    "@exportSubscriptions":  {
+                                 "description":  "Export subscriptions setting title"
+                             },
+    "exportSubscriptionsSubtitle":  "تصدير التغذية إلى OPML",
+    "@exportSubscriptionsSubtitle":  {
+                                         "description":  "Export subscriptions setting subtitle"
+                                     },
+    "sectionThemes":  "السمات",
+    "@sectionThemes":  {
+                           "description":  "Settings section: themes"
+                       },
+    "themes":  "السمات",
+    "@themes":  {
+                    "description":  "Themes setting title"
+                },
+    "themesSubtitle":  "فاتح / داكن / النظام",
+    "@themesSubtitle":  {
+                            "description":  "Themes setting subtitle"
+                        },
+    "selectTheme":  "اختيار السمة",
+    "@selectTheme":  {
+                         "description":  "Theme selection dialog title"
+                     },
+    "system":  "النظام",
+    "@system":  {
+                    "description":  "System theme option"
+                },
+    "light":  "فاتح",
+    "@light":  {
+                   "description":  "Light theme option"
+               },
+    "dark":  "داكن",
+    "@dark":  {
+                  "description":  "Dark theme option"
+              },
+    "sectionLanguage":  "اللغة",
+    "@sectionLanguage":  {
+                             "description":  "Settings section: language"
+                         },
+    "language":  "اللغة",
+    "@language":  {
+                      "description":  "Language setting title"
+                  },
+    "languageSubtitle":  "العربية",
+    "@languageSubtitle":  {
+                              "description":  "Language setting subtitle - currently selected language"
+                          },
+    "selectLanguage":  "اختيار اللغة",
+    "@selectLanguage":  {
+                            "description":  "Language selection dialog title"
+                        },
+    "sectionLegal":  "قانوني",
+    "@sectionLegal":  {
+                          "description":  "Settings section: legal"
+                      },
+    "privacyPolicy":  "سياسة الخصوصية",
+    "@privacyPolicy":  {
+                           "description":  "Privacy policy setting title"
+                       },
+    "openSourceLicenses":  "تراخيص المصدر المفتوح",
+    "@openSourceLicenses":  {
+                                "description":  "Open source licenses setting title"
+                            },
+    "noFeedsFoundOpml":  "لم يتم العثور على تغذية في OPML",
+    "@noFeedsFoundOpml":  {
+                              "description":  "Snackbar when no feeds found in OPML"
+                          },
+    "importedCount":  "تم استيراد {count} تغذية{count, plural, one {} other {}}",
+    "@importedCount":  {
+                           "description":  "Snackbar when import succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "allFeedsAlreadyAdded":  "تمت إضافة جميع التغذية مسبقًا",
+    "@allFeedsAlreadyAdded":  {
+                                  "description":  "Snackbar when all feeds already exist"
+                              },
+    "importFailed":  "فشل الاستيراد: {error}",
+    "@importFailed":  {
+                          "description":  "Snackbar when import fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "noSubscriptionsToExport":  "لا توجد اشتراكات للتصدير",
+    "@noSubscriptionsToExport":  {
+                                     "description":  "Snackbar when no subscriptions to export"
+                                 },
+    "exportedCount":  "تم تصدير {count} تغذية",
+    "@exportedCount":  {
+                           "description":  "Snackbar when export succeeds",
+                           "placeholders":  {
+                                                "count":  {
+
+                                                          }
+                                            }
+                       },
+    "exportFailed":  "فشل التصدير: {error}",
+    "@exportFailed":  {
+                          "description":  "Snackbar when export fails",
+                          "placeholders":  {
+                                               "error":  {
+
+                                                         }
+                                           }
+                      },
+    "exportShareText":  "تصدير اشتراكات Aware",
+    "@exportShareText":  {
+                             "description":  "Share text for OPML export"
+                         },
+    "exportShareSubject":  "تصدير اشتراكات Aware",
+    "@exportShareSubject":  {
+                                "description":  "Share subject for OPML export"
+                            },
+    "savedArticlesTitle":  "المقالات المحفوظة",
+    "@savedArticlesTitle":  {
+                                "description":  "Title of saved articles screen"
+                            },
+    "noSavedArticlesYet":  "لا توجد مقالات محفوظة بعد.",
+    "@noSavedArticlesYet":  {
+                                "description":  "Empty state for saved articles"
+                            },
+    "error":  "خطأ: {error}",
+    "@error":  {
+                   "description":  "Error message format",
+                   "placeholders":  {
+                                        "error":  {
+
+                                                  }
+                                    }
+               },
+    "privacyPolicyTitle":  "سياسة الخصوصية",
+    "@privacyPolicyTitle":  {
+                                "description":  "Privacy policy screen title"
+                            },
+    "privacyPolicyLastUpdated":  "آخر تحديث: 20 يونيو 2026",
+    "@privacyPolicyLastUpdated":  {
+                                      "description":  "Privacy policy last updated date"
+                                  },
+    "privacyInfoWeCollect":  "المعلومات التي نجمعها",
+    "@privacyInfoWeCollect":  {
+                                  "description":  "Privacy section: information we collect"
+                              },
+    "privacyInfoWeCollectBody":  "Aware لا يجمع أو يخزن أو ينقل أي بيانات شخصية. جميع بيانات التطبيق (التغذية، المقالات، تقدم القراءة، التفضيلات، والإعدادات) تُخزن محليًا على جهازك ولا تُرسل أبدًا إلى أي خادم.",
+    "@privacyInfoWeCollectBody":  {
+                                      "description":  "Privacy section body: information we collect"
+                                  },
+    "privacyThirdParty":  "خدمات الطرف الثالث",
+    "@privacyThirdParty":  {
+                               "description":  "Privacy section: third-party services"
+                           },
+    "privacyThirdPartyBody":  "يستخدم Aware Google AdMob لعرض الإعلانات. قد يجمع AdMob بيانات استخدام غير شخصية ومعرفات الجهاز لعرض إعلانات ملائمة. يتم عرض الإعلانات فقط مع طلبات إعلانات غير مخصصة. لا تتم مشاركة أي بيانات مستخدم مع المعلنين.\n\nتنطبق سياسة خصوصية Google على البيانات التي يجمعها AdMob:\n",
+    "@privacyThirdPartyBody":  {
+                                   "description":  "Privacy section body: third-party services"
+                               },
+    "privacyDataStorage":  "تخزين البيانات",
+    "@privacyDataStorage":  {
+                                "description":  "Privacy section: data storage"
+                            },
+    "privacyDataStorageBody":  "جميع اشتراكات التغذية، المقالات، تقدم القراءة، وتفضيلات التطبيق تُخزن محليًا في قاعدة بيانات SQLite على جهازك. يمكنك تصدير بياناتك في أي وقت عبر ميزة تصدير OPML في الإعدادات.\n\nلحذف جميع البيانات، قم بإلغاء تثبيت التطبيق أو مسح بيانات التطبيق من إعدادات جهازك.",
+    "@privacyDataStorageBody":  {
+                                    "description":  "Privacy section body: data storage"
+                                },
+    "privacyContact":  "اتصل بنا",
+    "@privacyContact":  {
+                            "description":  "Privacy section: contact"
+                        },
+    "privacyContactBody":  "إذا كانت لديك أسئلة حول سياسة الخصوصية هذه، يرجى الاتصال بنا عبر قنوات الدعم في التطبيق.",
+    "@privacyContactBody":  {
+                                "description":  "Privacy section body: contact"
+                            }
 }

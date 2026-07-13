@@ -183,42 +183,13 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => '文件夹';
-
-  @override
-  String get createFolderTitle => '新建文件夹';
-
-  @override
-  String get folderNameHint => '文件夹名称';
-
-  @override
   String get create => '创建';
 
   @override
   String get rename => '重命名';
 
   @override
-  String get renameFolderTitle => '重命名文件夹';
-
-  @override
   String get delete => '删除';
-
-  @override
-  String get deleteFolderTitle => '删除文件夹';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return '移除\"$name\"并取消其订阅源的分组？';
-  }
-
-  @override
-  String get createFolderTooltip => '创建文件夹';
-
-  @override
-  String get noFoldersYet => '还没有文件夹';
-
-  @override
-  String get createFirstFolder => '创建你的第一个文件夹';
 
   @override
   String feedCount(num count) {
@@ -475,9 +446,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get premiumSync => '登录并在设备间同步';
 
   @override
-  String get premiumFolders => '无限文件夹组织';
-
-  @override
   String get notNow => '稍后';
 
   @override
@@ -536,15 +504,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get autoPlayNextSubtitle => '朗读结束时，转到下一项';
 
   @override
-  String get sectionData => '数据';
-
-  @override
-  String get lowDataMode => '低数据模式预取';
-
-  @override
-  String get lowDataModeSubtitle => '在后台预取文章文本，并在可用时优先使用缓存内容';
-
-  @override
   String get sectionAccessibility => '无障碍';
 
   @override
@@ -564,12 +523,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get manageSubscriptionsSubtitle => '添加或删除你关注的订阅源';
-
-  @override
-  String get manageFolders => '管理文件夹';
-
-  @override
-  String get manageFoldersSubtitle => '将订阅源组织到文件夹中';
 
   @override
   String get importSubscriptions => '导入订阅';
@@ -615,42 +568,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get selectLanguage => '选择语言';
-
-  @override
-  String get languageEnglish => '英语';
-
-  @override
-  String get languageChinese => '中文';
-
-  @override
-  String get languageSpanish => '西班牙语';
-
-  @override
-  String get languageHindi => '印地语';
-
-  @override
-  String get languageArabic => '阿拉伯语';
-
-  @override
-  String get languageFrench => '法语';
-
-  @override
-  String get languagePortuguese => '葡萄牙语';
-
-  @override
-  String get languageRussian => '俄语';
-
-  @override
-  String get languageJapanese => '日语';
-
-  @override
-  String get languageGerman => '德语';
-
-  @override
-  String get languageKorean => '韩语';
-
-  @override
-  String get languageItalian => '意大利语';
 
   @override
   String get sectionLegal => '法律信息';

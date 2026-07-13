@@ -191,42 +191,13 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get foldersTitle => 'Ordner';
-
-  @override
-  String get createFolderTitle => 'Neuer Ordner';
-
-  @override
-  String get folderNameHint => 'Ordnername';
-
-  @override
   String get create => 'Erstellen';
 
   @override
   String get rename => 'Umbenennen';
 
   @override
-  String get renameFolderTitle => 'Ordner umbenennen';
-
-  @override
   String get delete => 'Löschen';
-
-  @override
-  String get deleteFolderTitle => 'Ordner löschen';
-
-  @override
-  String deleteFolderConfirm(Object name) {
-    return '\"$name\" entfernen und seine Feeds entgruppieren?';
-  }
-
-  @override
-  String get createFolderTooltip => 'Ordner erstellen';
-
-  @override
-  String get noFoldersYet => 'Noch keine Ordner';
-
-  @override
-  String get createFirstFolder => 'Erstelle deinen ersten Ordner';
 
   @override
   String feedCount(num count) {
@@ -495,9 +466,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get premiumSync => 'Anmelden & geräteübergreifend synchronisieren';
 
   @override
-  String get premiumFolders => 'Unbegrenzte Ordnerorganisation';
-
-  @override
   String get notNow => 'Nicht jetzt';
 
   @override
@@ -560,16 +528,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wenn die Vorlesung endet, zum nächsten Element wechseln';
 
   @override
-  String get sectionData => 'Daten';
-
-  @override
-  String get lowDataMode => 'Datensparmodus Vorabruf';
-
-  @override
-  String get lowDataModeSubtitle =>
-      'Artikeltext im Hintergrund vorab laden und bevorzugt zwischengespeicherte Inhalte verwenden';
-
-  @override
   String get sectionAccessibility => 'Barrierefreiheit';
 
   @override
@@ -592,12 +550,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get manageSubscriptionsSubtitle =>
       'Feeds, denen du folgst, hinzufügen oder entfernen';
-
-  @override
-  String get manageFolders => 'Ordner verwalten';
-
-  @override
-  String get manageFoldersSubtitle => 'Feeds in Ordnern organisieren';
 
   @override
   String get importSubscriptions => 'Abonnements importieren';
@@ -643,42 +595,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Sprache auswählen';
-
-  @override
-  String get languageEnglish => 'English';
-
-  @override
-  String get languageChinese => 'Chinese';
-
-  @override
-  String get languageSpanish => 'Spanish';
-
-  @override
-  String get languageHindi => 'Hindi';
-
-  @override
-  String get languageArabic => 'Arabic';
-
-  @override
-  String get languageFrench => 'French';
-
-  @override
-  String get languagePortuguese => 'Portuguese';
-
-  @override
-  String get languageRussian => 'Russian';
-
-  @override
-  String get languageJapanese => 'Japanese';
-
-  @override
-  String get languageGerman => 'German';
-
-  @override
-  String get languageKorean => 'Korean';
-
-  @override
-  String get languageItalian => 'Italian';
 
   @override
   String get sectionLegal => 'Rechtliches';
