@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:aware/models/article.dart';
 import 'package:aware/services/feed_service.dart';
 
+import 'package:readability/article.dart' as readability_article;
 import 'package:readability/readability.dart' as readability;
 
 import 'package:aware/services/feed_service.dart';
@@ -30,6 +31,12 @@ void main() {
     service = FeedService(client: mockClient, readability: mockReadability);
     when(() => mockReadability.parseAsync(any()))
         .thenThrow(Exception('readability unavailable'));
+  });
+
+  group('DefaultReadabilityClient', () {
+    test('implements ReadabilityClient', () {
+      expect(DefaultReadabilityClient(), isA<ReadabilityClient>());
+    });
   });
 
   group('URL validation', () {
@@ -340,6 +347,73 @@ void main() {
   });
 
   group('fetchFullArticle', () {
+    test('uses readability when available', () async {
+      when(() => mockReadability.parseAsync(any())).thenAnswer((_) async =>
+          readability_article.Article(
+            title: null,
+            author: null,
+            length: 0,
+            excerpt: null,
+            siteName: null,
+            imageUrl: null,
+            faviconUrl: null,
+            content: '<p>Readable content</p>',
+            textContent: null,
+            language: null,
+            publishedTime: null,
+          ));
+
+      final result = await service.fetchFullArticle('https://example.com/article');
+      expect(result, '<p>Readable content</p>');
+    });
+
+    test('removes noise and aside elements from readability content', () async {
+      when(() => mockReadability.parseAsync(any())).thenAnswer((_) async =>
+          readability_article.Article(
+            title: null,
+            author: null,
+            length: 0,
+            excerpt: null,
+            siteName: null,
+            imageUrl: null,
+            faviconUrl: null,
+            content: '<html><body><aside>Sidebar</aside><div class="trending">Noise</div><p>Main text</p></body></html>',
+            textContent: null,
+            language: null,
+            publishedTime: null,
+          ));
+
+      final result = await service.fetchFullArticle('https://example.com/article');
+      expect(result, isNot(contains('Sidebar')));
+      expect(result, isNot(contains('Noise')));
+      expect(result, contains('Main text'));
+    });
+
+    test('falls back to HTTP when readability returns empty content', () async {
+      when(() => mockReadability.parseAsync(any())).thenAnswer((_) async =>
+          readability_article.Article(
+            title: null,
+            author: null,
+            length: 0,
+            excerpt: null,
+            siteName: null,
+            imageUrl: null,
+            faviconUrl: null,
+            content: null,
+            textContent: null,
+            language: null,
+            publishedTime: null,
+          ));
+      when(() => mockClient.get(any(), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '<html><body><article>Fallback content</article></body></html>',
+                200,
+              ));
+
+      final result = await service.fetchFullArticle('https://example.com/article');
+      expect(result, 'Fallback content');
+    });
+
     test('returns null when HTTP request fails', () async {
       when(() => mockClient.get(any(), headers: any(named: 'headers')))
           .thenAnswer((_) async => http.Response('Not Found', 404));
