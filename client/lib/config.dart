@@ -1,11 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class AppConfig {
   AppConfig._();
 
   static String? _serverUrl;
   static bool _initialized = false;
+
+  @visibleForTesting
+  static void setTestServerUrl(String url) {
+    _serverUrl = url;
+  }
 
   static String? get serverUrl => _serverUrl;
 

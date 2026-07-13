@@ -5,24 +5,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:html2md/html2md.dart' as html2md;
 import 'package:html/parser.dart' as html_parser;
 import 'package:html/dom.dart' as dom;
 import 'package:markdown/markdown.dart' as md;
-import 'package:readability/readability.dart' as readability;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart' as webview;
 
 import '../models/article.dart';
 import '../providers/app_state.dart';
-import '../services/reader_audio_service.dart';
 import '../services/database_service.dart';
+import '../services/feed_service.dart';
+import '../services/reader_audio_service.dart';
 import '../services/storage_service.dart';
-import '../theme/theme.dart';
 import '../widgets/ad_banner.dart';
+import '../theme/theme.dart';
 import '../l10n/app_localizations.dart';
 
 class ReaderScreen extends StatefulWidget {
@@ -42,9 +41,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
   late int _currentIndex;
   bool _showWebView = false;
   bool _loadingReader = false;
-  final Map<String, String> _readerCache = {};
-  final Set<String> _prefetchInFlight = {};
-  final DatabaseService _db = DatabaseService();
   StreamSubscription<ReaderPlaybackSnapshot>? _readerStateSubscription;
   bool _isPlaying = false;
   bool _isPaused = false;
@@ -72,6 +68,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
   bool _showOnboarding = false;
   int _onboardingStep = 0;
   bool _hasAutoPlayed = false;
+  bool _isFetchingFull = false;
+  final Set<String> _fetchingGuids = {};
 
   @override
   void initState() {
@@ -94,10 +92,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
         setState(() => _showOnboarding = true);
         await storage.write('reader_onboarding_seen', 'true');
       }
-      final lowDataMode = context.read<AppState>().lowDataMode;
-      _prefetchReader(widget.articles[_currentIndex], showLoader: true);
       _updateTextForArticle(widget.articles[_currentIndex], _currentIndex);
-      _prefetchUpcomingArticles(lowDataMode ? 4 : 2);
     });
   }
 
@@ -211,6 +206,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final articleChanged = snapshot.currentArticleIndex != _currentIndex;
     if (articleChanged) {
       debugPrint('[ReaderScreen] snapshot: article changed from $_currentIndex to ${snapshot.currentArticleIndex}');
+      final newIndex = snapshot.currentArticleIndex;
+      if (newIndex >= 0 && newIndex < widget.articles.length && !readerAudioHandler.hasContentFor(newIndex)) {
+        _registerTtsContentForArticle(widget.articles[newIndex], newIndex);
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         _goToArticle(snapshot.currentArticleIndex);
@@ -231,10 +230,57 @@ class _ReaderScreenState extends State<ReaderScreen> {
     }
   }
 
+  Future<void> _registerTtsContentForArticle(Article article, int articleIndex) async {
+    final html = _bodyHtml(article);
+    final markdown = _htmlToMarkdown(html, featuredImageUrl: article.imageUrl);
+    final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown.trim());
+
+    final ttsParagraphs = <String>[];
+    for (final para in markdownParagraphs) {
+      final sanitized = _sanitizeForTts(para);
+      final isVideo = para.contains('VIDEO_EMBED_START:');
+      if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized) || _isAdText(sanitized))) continue;
+      ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
+    }
+
+    if (ttsParagraphs.isEmpty) {
+      final textParagraphs = _extractParagraphsFromHtml(html);
+      for (final para in textParagraphs) {
+        final sanitized = _sanitizeForTts(para);
+        final isVideo = para.contains('VIDEO_EMBED_START:');
+        if (!isVideo && (sanitized.isEmpty || _isMostlySymbols(sanitized) || _isAdText(sanitized))) continue;
+        ttsParagraphs.add(sanitized.isEmpty ? ' ' : sanitized);
+      }
+    }
+
+    if (ttsParagraphs.isEmpty) {
+      readerAudioHandler.registerArticleContent(
+        articleIndex: articleIndex,
+        paragraphs: const [],
+        paragraphOffsets: const [],
+        plainText: '',
+      );
+      return;
+    }
+
+    var offset = 0;
+    final offsets = <int>[];
+    for (final p in ttsParagraphs) {
+      offsets.add(offset);
+      offset += p.length + 2;
+    }
+    readerAudioHandler.registerArticleContent(
+      articleIndex: articleIndex,
+      paragraphs: ttsParagraphs,
+      paragraphOffsets: offsets,
+      plainText: ttsParagraphs.join('\n\n'),
+    );
+  }
+
   void _updateTextForArticle(Article article, int articleIndex) {
     debugPrint('[ReaderScreen] _updateTextForArticle: articleIndex=$articleIndex, guid=${article.guid}');
     final html = _bodyHtml(article);
-    final markdown = _htmlToMarkdown(html);
+    final markdown = _htmlToMarkdown(html, featuredImageUrl: article.imageUrl);
     final safeMarkdown = markdown.trim();
     final markdownParagraphs = _splitMarkdownIntoParagraphs(markdown);
 
@@ -332,6 +378,46 @@ class _ReaderScreenState extends State<ReaderScreen> {
         );
         _startPlayback();
       }
+    }
+
+    _ensureFullContent(article, articleIndex);
+
+    if (articleIndex == _currentIndex) {
+      if (articleIndex > 0 && !readerAudioHandler.hasContentFor(articleIndex - 1)) {
+        _registerTtsContentForArticle(widget.articles[articleIndex - 1], articleIndex - 1);
+      }
+      if (articleIndex < widget.articles.length - 1 && !readerAudioHandler.hasContentFor(articleIndex + 1)) {
+        _registerTtsContentForArticle(widget.articles[articleIndex + 1], articleIndex + 1);
+      }
+    }
+  }
+
+  Future<void> _ensureFullContent(Article article, int articleIndex) async {
+    if (!_isTruncated(article)) return;
+    if (_fetchingGuids.contains(article.guid)) return;
+
+    _fetchingGuids.add(article.guid);
+    if (mounted) setState(() => _isFetchingFull = true);
+
+    try {
+      final feedService = FeedService();
+      final fullHtml = await feedService.fetchFullArticle(article.url!);
+      if (fullHtml != null && fullHtml.isNotEmpty && mounted) {
+        await DatabaseService().updateArticleContent(
+          article.guid,
+          content: fullHtml,
+          rawData: fullHtml,
+        );
+        if (articleIndex == _currentIndex) {
+          final fullArticle = article.copyWith(content: fullHtml, rawData: fullHtml);
+          _updateTextForArticle(fullArticle, articleIndex);
+        }
+      }
+    } catch (e) {
+      debugPrint('[ReaderScreen] Failed to fetch full article: $e');
+    } finally {
+      if (mounted) setState(() => _isFetchingFull = false);
+      _fetchingGuids.remove(article.guid);
     }
   }
 
@@ -497,6 +583,28 @@ class _ReaderScreenState extends State<ReaderScreen> {
       'this content was produced by',
       'brought to you by',
       'presented by',
+      // Cookie / privacy / consent banners
+      'accept cookies',
+      'cookie policy',
+      'this site uses cookies',
+      'we use cookies',
+      'accept all cookies',
+      'manage cookies',
+      'cookie settings',
+      // Comment policy junk
+      'comment policy',
+      'comments are closed',
+      'comment moderation',
+      'please keep your comments',
+      'comments are moderated',
+      // Generic site junk
+      'privacy policy',
+      'terms of service',
+      'terms and conditions',
+      'follow us on',
+      'share this',
+      'share on facebook',
+      'share on twitter',
     ];
     return adPatterns.any((p) => lower.contains(p));
   }
@@ -544,15 +652,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     final idx = paragraphIdx < 0 ? 0 : paragraphIdx;
     debugPrint('[ReaderScreen] _seekToProgress: targetOffset=$targetOffset, paragraphIdx=$paragraphIdx, finalIdx=$idx');
     readerAudioHandler.playFromParagraph(idx);
-  }
-
-  void _prefetchUpcomingArticles(int count) {
-    for (int i = 1; i <= count; i++) {
-      final nextIndex = _currentIndex + i;
-      if (nextIndex < widget.articles.length) {
-        _prefetchReader(widget.articles[nextIndex]);
-      }
-    }
   }
 
   void _goToArticle(int index) {
@@ -693,7 +792,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   setState(() {
                     _showWebView = false;
                   });
-                  _prefetchReader(article);
                   break;
                 case 'copylink':
                   if (article.url != null) {
@@ -752,7 +850,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
                 const NeverScrollableScrollPhysics(), // Disable horizontal scrolling
             onPageChanged: (index) async {
               debugPrint('[ReaderScreen] onPageChanged: index=$index');
-              final lowDataMode = context.read<AppState>().lowDataMode;
               setState(() {
                 _currentIndex = index;
                 _progress = _currentArticleCombinedProgress();
@@ -777,9 +874,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   }
                 }
               } else {
-                _prefetchReader(widget.articles[index], showLoader: true);
                 _updateTextForArticle(widget.articles[index], index);
-                _prefetchUpcomingArticles(lowDataMode ? 3 : 1);
               }
             },
             itemBuilder: (context, index) {
@@ -887,6 +982,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
                                     ],
                                   ),
                           ),
+                          if (_isFetchingFull)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+                              child: LinearProgressIndicator(
+                                minHeight: 2,
+                                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              ),
+                            ),
                           ..._buildReaderParagraphs(
                             item,
                             markdownStyleSheet,
@@ -923,7 +1026,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AdBanner(isTtsActive: _isPlaying || _isPaused),
               Row(
                 children: [
                   _UnreadBadge(articles: widget.articles),
@@ -972,6 +1074,8 @@ class _ReaderScreenState extends State<ReaderScreen> {
               ),
               const SizedBox(height: 8),
               _buildAudioControls(article),
+              const SizedBox(height: AppSpacing.s8),
+              const AdBanner(),
             ],
           ),
         ),
@@ -1144,7 +1248,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
   ) {
     final fallbackMarkdown = _markdownContent.isNotEmpty
         ? _markdownContent
-        : _htmlToMarkdown(_bodyHtml(article));
+        : _htmlToMarkdown(_bodyHtml(article), featuredImageUrl: article.imageUrl);
 
     if (_displayParagraphs.isEmpty) {
       return [
@@ -1199,20 +1303,88 @@ class _ReaderScreenState extends State<ReaderScreen> {
     });
   }
 
-  String _htmlToMarkdown(String html) {
+  bool _hasJunkClassOrId(dom.Element el) {
+    final cl = (el.className ?? '').toLowerCase();
+    final id = (el.attributes['id'] ?? '').toLowerCase();
+    final combined = '$cl $id';
+
+    const patterns = [
+      'author-bio', 'author-about', 'author-card', 'author-profile', 'author-box',
+      'about-author', 'article-author', 'byline-bio', 'author-image',
+      'social-share', 'share-this', 'post-share', 'social-action', 'sharing',
+      'comment-policy', 'comment-guideline', 'comment-polici', 'comment-rules',
+      'related-post', 'recommended', 'you-may-also-like', 'more-article',
+      'newsletter', 'subscribe', 'mailing-list', 'signup-form', 'email-subscribe',
+      'ad-', 'advertisement', 'sponsored', 'promoted-content', 'paid-content',
+      'breadcrumb', 'post-meta', 'entry-meta',
+      'cookie-consent', 'cookie-policy', 'cookie-notice', 'cookie-banner',
+      'privacy-policy', 'gdpr',
+      'trending', 'sidebar', 'widget', 'popular', 'latest-news',
+      'most-read', 'also-read', 'must-read', 'in-content-related',
+      'aside', 'secondary',
+    ];
+    return patterns.any((p) => combined.contains(p));
+  }
+
+  String _htmlToMarkdown(String html, {String? featuredImageUrl}) {
     final trimmed = html.trim();
     if (trimmed.isEmpty) {
       return '';
     }
+
     final doc = html_parser.parse(trimmed);
-    // Remove scripts/styles/trackers that end up as junk paragraphs.
-    const junkSelectors =
-        'script,style,noscript,template,svg,nav,footer,header';
+
+    // Remove known junk elements.
+    const junkSelectors = 'script,style,noscript,template,svg,nav,footer,header,aside';
     for (final node in doc.querySelectorAll(junkSelectors)) {
       node.remove();
     }
-    
-    // Replace iframe and video tags with our custom markdown
+
+    // Remove elements matching junk class/id patterns (collect snapshot first).
+    final allElements = doc.querySelectorAll('*');
+    final toRemove = <dom.Element>[];
+    for (final el in allElements) {
+      if (_hasJunkClassOrId(el)) {
+        toRemove.add(el);
+        continue;
+      }
+      // Remove tiny images (icons, avatars, tracking pixels).
+      if (el.localName == 'img') {
+        final w = el.attributes['width'];
+        final h = el.attributes['height'];
+        final src = (el.attributes['src'] ?? '').toLowerCase();
+        if (src.contains('gravatar') || src.contains('avatar') ||
+            src.contains('1x1') || src.contains('pixel') ||
+            (w != null && int.tryParse(w) != null && int.parse(w) < 100) ||
+            (h != null && int.tryParse(h) != null && int.parse(h) < 100)) {
+          toRemove.add(el);
+          continue;
+        }
+      }
+      // Remove cookie/privacy banners that don't have a recognizable class.
+      if (el.localName == 'div' || el.localName == 'section') {
+        final text = el.text.toLowerCase();
+        if (text.contains('accept cookies') ||
+            text.contains('cookie policy') ||
+            text.contains('this site uses cookies') ||
+            text.contains('we use cookies') ||
+            text.contains('accept all cookies')) {
+          toRemove.add(el);
+        }
+      }
+    }
+    for (final el in toRemove) {
+      el.remove();
+    }
+
+    // Remove duplicate featured image to avoid showing it twice.
+    if (featuredImageUrl != null && featuredImageUrl.isNotEmpty) {
+      for (final img in doc.querySelectorAll('img[src="$featuredImageUrl"]')) {
+        img.remove();
+      }
+    }
+
+    // Replace iframe and video tags with our custom markdown.
     for (final node in doc.querySelectorAll('iframe, video')) {
       var src = node.attributes['src'];
       if (src != null && src.isNotEmpty) {
@@ -1230,150 +1402,32 @@ class _ReaderScreenState extends State<ReaderScreen> {
   }
 
   String _bodyHtml(Article article) {
-    final cached = _readerCache[article.guid];
-    if (cached != null) return cached;
-    // Prefer full content, then summary, then rawData; default empty.
     return article.content ?? article.summary ?? article.rawData ?? '';
   }
 
-  Future<void> _prefetchReader(
-    Article article, {
-    bool showLoader = false,
-  }) async {
-    final url = article.url;
-    debugPrint('[ReaderScreen] _prefetchReader: guid=${article.guid}, url=$url, showLoader=$showLoader');
-    if (url == null || url.isEmpty) {
-      debugPrint('[ReaderScreen] _prefetchReader: no URL');
-      return;
+  bool _isTruncated(Article article) {
+    if (article.url == null || article.url!.isEmpty) return false;
+
+    final html = _bodyHtml(article).trim();
+    if (html.isEmpty) return true;
+
+    if (html.length > 500) return false;
+    if (html.contains('<p>') && html.contains('</p>') && html.length > 300) return false;
+
+    final lower = html.toLowerCase();
+    if (RegExp(
+      r'(continua\s+a\s+leggere|read\s+more|full\s+story|leggi\s+tutto|…\s*$|\[\.\.\.\]|\[\+\])',
+    ).hasMatch(lower)) {
+      return true;
     }
-    if (_readerCache.containsKey(article.guid)) {
-      debugPrint('[ReaderScreen] _prefetchReader: already cached');
-      return;
+    if (RegExp(
+      r'(accept\s+cookies?|cookie\s+(policy|notice|banner)|this\s+site\s+uses\s+cookies|we\s+use\s+cookies)',
+    ).hasMatch(lower)) {
+      return true;
     }
-    if (_prefetchInFlight.contains(article.guid)) {
-      debugPrint('[ReaderScreen] _prefetchReader: already in flight');
-      return;
-    }
-    _prefetchInFlight.add(article.guid);
+    if (html.length < 200) return true;
 
-    if (showLoader && mounted) {
-      setState(() {
-        _loadingReader = true;
-      });
-    }
-
-    try {
-      final cached = await _db.getPrefetchedArticleContent(article.guid);
-      if (cached != null && cached.trim().isNotEmpty) {
-        debugPrint('[ReaderScreen] _prefetchReader: using cached content, length=${cached.length}');
-        _readerCache[article.guid] = cached;
-        if (mounted && article.guid == widget.articles[_currentIndex].guid) {
-          _updateTextForArticle(article, widget.articles.indexOf(article));
-        }
-        return;
-      }
-
-      debugPrint('[ReaderScreen] _prefetchReader: parsing from URL');
-      String content = '';
-      try {
-        final parsed = await readability.parseAsync(url);
-        content = (parsed.content ?? parsed.textContent ?? '').trim();
-        debugPrint('[ReaderScreen] _prefetchReader: readability content length=${content.length}');
-      } catch (e) {
-        debugPrint('[ReaderScreen] _prefetchReader: readability parse error: $e');
-      }
-
-      // Fetch raw HTML to extract images and videos readability might have missed
-      String? rawHtml;
-      try {
-        final response = await http.get(
-          Uri.parse(url),
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          },
-        );
-        if (response.statusCode == 200) {
-          rawHtml = response.body;
-        }
-      } catch (e) {
-        debugPrint('[ReaderScreen] _prefetchReader: raw HTML fetch error: $e');
-      }
-
-      if (rawHtml != null) {
-        final doc = html_parser.parse(rawHtml);
-        final mediaHtml = StringBuffer();
-
-        // Extract <img> tags not already in content
-        for (final img in doc.querySelectorAll('img')) {
-          var src = img.attributes['src'];
-          if (src == null || src.isEmpty) continue;
-          src = _resolveUrl(src, url);
-          if (content.contains(src)) continue;
-          final alt = img.attributes['alt'] ?? '';
-          mediaHtml.writeln('<p><img src="$src" alt="$alt" /></p>');
-        }
-
-        // Extract <picture> <source> srcset images
-        for (final picture in doc.querySelectorAll('picture')) {
-          final img = picture.querySelector('img');
-          if (img == null) continue;
-          var src = img.attributes['src'];
-          if (src == null || src.isEmpty) {
-            // Try srcset
-            final source = picture.querySelector('source');
-            src = source?.attributes['srcset'];
-            if (src != null) {
-              src = src.split(' ').first;
-            }
-          }
-          if (src == null || src.isEmpty) continue;
-          src = _resolveUrl(src, url);
-          if (content.contains(src)) continue;
-          final alt = img.attributes['alt'] ?? '';
-          mediaHtml.writeln('<p><img src="$src" alt="$alt" /></p>');
-        }
-
-        // Extract <iframe> embeds (YouTube, etc.) not already in content
-        for (final iframe in doc.querySelectorAll('iframe')) {
-          var src = iframe.attributes['src'];
-          if (src == null || src.isEmpty) continue;
-          src = _resolveUrl(src, url);
-          if (content.contains(src)) continue;
-          mediaHtml.writeln('<iframe src="$src"></iframe>');
-        }
-
-        if (mediaHtml.isNotEmpty) {
-          content = '$content\n${mediaHtml.toString()}';
-          debugPrint('[ReaderScreen] _prefetchReader: appended media HTML, content length=${content.length}');
-        }
-      }
-
-      if (content.isNotEmpty) {
-        _readerCache[article.guid] = content;
-        await _db.upsertPrefetchedArticleContent(article.guid, content);
-        if (mounted && article.guid == widget.articles[_currentIndex].guid) {
-          _updateTextForArticle(article, widget.articles.indexOf(article));
-        }
-      } else {
-        debugPrint('[ReaderScreen] _prefetchReader: no content extracted');
-      }
-    } finally {
-      _prefetchInFlight.remove(article.guid);
-      if (showLoader && mounted) {
-        setState(() {
-          _loadingReader = false;
-        });
-      }
-    }
-  }
-
-  String _resolveUrl(String src, String baseUrl) {
-    if (src.startsWith('http://') || src.startsWith('https://')) return src;
-    final base = Uri.tryParse(baseUrl);
-    if (base == null) return src;
-    if (src.startsWith('//')) return '${base.scheme}:$src';
-    return base.resolve(src).toString();
+    return false;
   }
 
   Future<void> _handleMarkdownLink(String? href) async {

@@ -8,9 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../providers/app_state.dart';
-import '../screens/folders_screen.dart';
-import '../screens/login_screen.dart';
 import '../screens/privacy_policy_screen.dart';
 import '../screens/subscriptions_screen.dart';
 import '../services/opml_service.dart';
@@ -327,9 +327,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _featureRow(Icons.bookmark, AppLocalizations.of(context)!.premiumCloudSubscriptions),
               const SizedBox(height: 12),
               _featureRow(Icons.sync, AppLocalizations.of(context)!.premiumSync),
-              const SizedBox(height: 12),
-              _featureRow(
-                  Icons.folder_special, AppLocalizations.of(context)!.premiumFolders),
               const SizedBox(height: 20),
               Center(
                 child: Container(
@@ -529,26 +526,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 12.0),
                 child: Text(
-                  AppLocalizations.of(context)!.sectionData,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.lowDataMode),
-                subtitle: Text(
-                    AppLocalizations.of(context)!.lowDataModeSubtitle),
-                value: context.select<AppState, bool>((s) => s.lowDataMode),
-                onChanged: (value) =>
-                    context.read<AppState>().setLowDataMode(value),
-              ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 12.0),
-                child: Text(
                   AppLocalizations.of(context)!.sectionAccessibility,
                   style: Theme.of(context)
                       .textTheme
@@ -607,16 +584,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => const SubscriptionsScreen(),
-                  ));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.folder),
-                title: Text(AppLocalizations.of(context)!.manageFolders),
-                subtitle: Text(AppLocalizations.of(context)!.manageFoldersSubtitle),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const FoldersScreen(),
                   ));
                 },
               ),
@@ -726,28 +693,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           builder: (context, appState, child) {
                             final currentCode =
                                 appState.locale?.languageCode ?? 'en';
-                            final localeLabels = <String, String Function(AppLocalizations)>{
-                              'en': (l) => l.languageEnglish,
-                              'zh': (l) => l.languageChinese,
-                              'es': (l) => l.languageSpanish,
-                              'hi': (l) => l.languageHindi,
-                              'ar': (l) => l.languageArabic,
-                              'fr': (l) => l.languageFrench,
-                              'pt': (l) => l.languagePortuguese,
-                              'ru': (l) => l.languageRussian,
-                              'ja': (l) => l.languageJapanese,
-                              'de': (l) => l.languageGerman,
-                              'ko': (l) => l.languageKorean,
-                              'it': (l) => l.languageItalian,
+                            const localeLabels = <String, String>{
+                              'en': 'English',
+                              'zh': '中文',
+                              'es': 'Español',
+                              'hi': 'हिन्दी',
+                              'ar': 'العربية',
+                              'fr': 'Français',
+                              'pt': 'Português',
+                              'ru': 'Русский',
+                              'ja': '日本語',
+                              'de': 'Deutsch',
+                              'ko': '한국어',
+                              'it': 'Italiano',
                             };
-                            final l10n = AppLocalizations.of(context)!;
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: localeLabels.entries.map((entry) {
                                 return RadioListTile<String>(
                                   value: entry.key,
                                   groupValue: currentCode,
-                                  title: Text(entry.value(l10n)),
+                                  title: Text(entry.value),
                                   onChanged: (code) {
                                     if (code != null) {
                                       Navigator.of(context).pop(code);
@@ -814,7 +780,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 leading: const Icon(Icons.bug_report, color: Colors.red),
                 title: const Text('Test Crash'),
                 subtitle: const Text('Force a crash to verify Crashlytics'),
-                onTap: () => throw Exception('Test crash from Settings'),
+                onTap: () => FirebaseCrashlytics.instance.crash(),
               ),
             ],
           );

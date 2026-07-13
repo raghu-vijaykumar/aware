@@ -56,7 +56,11 @@ class NotificationService {
   static Future<void> showNewArticles(int count) async {
     if (count <= 0 || kIsWeb) return;
     if (!_initialized) {
-      await ensureInitialized();
+      try {
+        await ensureInitialized();
+      } catch (_) {
+        return;
+      }
     }
 
     final title =

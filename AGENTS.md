@@ -18,6 +18,12 @@
 - Keep responses concise; avoid unnecessary preamble/postamble.
 - Follow existing patterns when creating components (same library choices, naming, typing).
 
+## Test Helper Conventions
+- `client/test/helpers/` contains `pump_app.dart` for wrapping widgets with providers/themes
+- `client/test/helpers/mocks.dart` contains shared mock declarations (MockDatabaseService, etc.)
+- `client/test/helpers/` also contains `test_reader_audio_handler.dart` for standalone TTS handler creation
+- Always use `pumpApp` instead of `pumpWidget` in widget tests to include proper provider wrapping
+
 ## Project Structure
 - `client/` — Flutter app
 - `client/lib/screens/` — screen widgets

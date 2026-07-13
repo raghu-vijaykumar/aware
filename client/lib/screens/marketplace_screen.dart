@@ -700,7 +700,7 @@ class _CategoryMeta {
   });
 }
 
-extension _ColorUtils on Color {
+extension ColorUtils on Color {
   Color darken([double amount = 0.12]) {
     final hsl = HSLColor.fromColor(this);
     final lightness = (hsl.lightness - amount).clamp(0.0, 1.0);

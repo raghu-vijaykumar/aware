@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/feed.dart';
 import '../models/article.dart';
-import '../models/folder.dart';
 import '../models/user_article_state.dart';
 
 class DatabaseService {
@@ -12,7 +12,6 @@ class DatabaseService {
 
   Database? _database;
   bool _ensuredLikedColumn = false;
-  bool _ensuredPrefetchCacheTable = false;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -80,29 +79,6 @@ class DatabaseService {
       )
     ''');
 
-    await db.execute('''
-      CREATE TABLE folders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        parent_id INTEGER REFERENCES folders(id)
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE feed_folders (
-        feed_id INTEGER REFERENCES feeds(id),
-        folder_id INTEGER REFERENCES folders(id),
-        PRIMARY KEY (feed_id, folder_id)
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE article_prefetch_cache (
-        article_guid TEXT PRIMARY KEY,
-        content TEXT NOT NULL,
-        cached_at INTEGER NOT NULL
-      )
-    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -121,15 +97,6 @@ class DatabaseService {
         await db.execute(
             'ALTER TABLE user_article_state ADD COLUMN liked_at INTEGER');
       }
-    }
-    if (oldVersion < 4) {
-      await db.execute('''
-        CREATE TABLE IF NOT EXISTS article_prefetch_cache (
-          article_guid TEXT PRIMARY KEY,
-          content TEXT NOT NULL,
-          cached_at INTEGER NOT NULL
-        )
-      ''');
     }
     if (oldVersion < 5) {
       final columns =
@@ -164,7 +131,6 @@ class DatabaseService {
       await db.execute(
           'ALTER TABLE user_article_state ADD COLUMN last_paragraph_index INTEGER');
     }
-    await _ensurePrefetchCacheTable(db);
   }
 
   // Feed operations
@@ -246,6 +212,17 @@ class DatabaseService {
     final db = await database;
     final rows = await db.query('articles', columns: ['guid']);
     return rows.map((row) => row['guid'] as String).toSet();
+  }
+
+  Future<void> updateArticleContent(String guid, {String? content, String? rawData}) async {
+    final db = await database;
+    final values = <String, dynamic>{};
+    if (content != null) values['content'] = content;
+    if (rawData != null) values['raw_data'] = rawData;
+    if (values.isNotEmpty) {
+      await db.update('articles', values, where: 'guid = ?', whereArgs: [guid]);
+      print('[DatabaseService] updated content for article $guid');
+    }
   }
 
   // User state operations
@@ -334,106 +311,19 @@ class DatabaseService {
     _ensuredLikedColumn = true;
   }
 
-  Future<void> upsertPrefetchedArticleContent(
-    String articleGuid,
-    String content,
-  ) async {
-    final db = await database;
-    await _ensurePrefetchCacheTable(db);
-    await db.insert(
-      'article_prefetch_cache',
-      {
-        'article_guid': articleGuid,
-        'content': content,
-        'cached_at': DateTime.now().millisecondsSinceEpoch,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<String?> getPrefetchedArticleContent(String articleGuid) async {
-    final db = await database;
-    await _ensurePrefetchCacheTable(db);
-    final rows = await db.query(
-      'article_prefetch_cache',
-      columns: ['content'],
-      where: 'article_guid = ?',
-      whereArgs: [articleGuid],
-      limit: 1,
-    );
-    if (rows.isEmpty) return null;
-    return rows.first['content'] as String?;
-  }
-
-  Future<void> _ensurePrefetchCacheTable(Database db) async {
-    if (_ensuredPrefetchCacheTable) return;
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS article_prefetch_cache (
-        article_guid TEXT PRIMARY KEY,
-        content TEXT NOT NULL,
-        cached_at INTEGER NOT NULL
-      )
-    ''');
-    _ensuredPrefetchCacheTable = true;
-  }
-
-  Future<int> insertFolder(Folder folder) async {
-    final db = await database;
-    return await db.insert('folders', folder.toMap());
-  }
-
-  Future<void> renameFolder(int id, String newName) async {
-    final db = await database;
-    await db.update('folders', {'name': newName}, where: 'id = ?', whereArgs: [id]);
-  }
-
-  Future<void> deleteFolder(int id) async {
-    final db = await database;
-    await db.delete('feed_folders', where: 'folder_id = ?', whereArgs: [id]);
-    await db.delete('folders', where: 'id = ?', whereArgs: [id]);
-  }
-
-  Future<List<Folder>> getFolders() async {
-    final db = await database;
-    final maps = await db.query('folders', orderBy: 'name ASC');
-    return maps.map((m) => Folder.fromMap(m)).toList();
-  }
-
-  Future<void> assignFeedToFolder(int feedId, int folderId) async {
-    final db = await database;
-    await db.insert('feed_folders', {
-      'feed_id': feedId,
-      'folder_id': folderId,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<void> removeFeedFromFolder(int feedId, int folderId) async {
-    final db = await database;
-    await db.delete('feed_folders',
-        where: 'feed_id = ? AND folder_id = ?', whereArgs: [feedId, folderId]);
-  }
-
-  Future<void> removeFeedFromAllFolders(int feedId) async {
-    final db = await database;
-    await db.delete('feed_folders', where: 'feed_id = ?', whereArgs: [feedId]);
-  }
-
-  Future<List<int>> getFeedIdsInFolder(int folderId) async {
-    final db = await database;
-    final maps = await db.query('feed_folders',
-        columns: ['feed_id'], where: 'folder_id = ?', whereArgs: [folderId]);
-    return maps.map((m) => m['feed_id'] as int).toList();
-  }
-
-  Future<Map<int, List<int>>> getFeedFolderAssignments() async {
-    final db = await database;
-    final maps = await db.query('feed_folders');
-    final result = <int, List<int>>{};
-    for (final m in maps) {
-      final feedId = m['feed_id'] as int;
-      final folderId = m['folder_id'] as int;
-      result.putIfAbsent(folderId, () => []).add(feedId);
+  /// Resets the singleton state for testing.
+  @visibleForTesting
+  static Future<void> resetForTesting() async {
+    final db = _instance._database;
+    if (db != null) {
+      await db.close();
+      _instance._database = null;
     }
-    return result;
+    _instance._ensuredLikedColumn = false;
+    // Delete the database file so the next openDatabase call creates a fresh DB.
+    try {
+      final path = join(await getDatabasesPath(), 'aware.db');
+      await deleteDatabase(path);
+    } catch (_) {}
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -44,6 +45,11 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   final _searchController = TextEditingController();
   final _searchFocusNode = FocusNode();
   final _scrollController = ScrollController();
+  final GlobalKey _listViewKey = GlobalKey();
+  final Map<int, GlobalKey> _itemKeys = {};
+  List<MapEntry<String, List<Article>>> _currentGroups = [];
+  int _currentAdCount = 0;
+  String? _activeDateKey;
 
   @override
   void initState() {
@@ -64,6 +70,68 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 500) {
       _loadMore();
+    }
+
+    _updateActiveDate();
+  }
+
+  void _updateActiveDate() {
+    if (!mounted) return;
+    if (!_scrollController.hasClients) return;
+
+    final RenderBox? listViewBox = _listViewKey.currentContext?.findRenderObject() as RenderBox?;
+    if (listViewBox == null) return;
+    final listViewTop = listViewBox.localToGlobal(Offset.zero).dy;
+
+    int? topIndex;
+    int? fallbackIndex;
+    double minDyGreaterThanTop = double.infinity;
+
+    for (final entry in _itemKeys.entries) {
+      final context = entry.value.currentContext;
+      if (context == null) continue;
+      final box = context.findRenderObject() as RenderBox?;
+      if (box == null) continue;
+
+      final dy = box.localToGlobal(Offset.zero).dy;
+      final height = box.size.height;
+      final bottom = dy + height;
+
+      if (dy <= listViewTop + 2.0 && bottom >= listViewTop - 2.0) {
+        topIndex = entry.key;
+        break;
+      }
+
+      if (dy > listViewTop && dy < minDyGreaterThanTop) {
+        minDyGreaterThanTop = dy;
+        fallbackIndex = entry.key;
+      }
+    }
+
+    final activeIndex = topIndex ?? fallbackIndex;
+    if (activeIndex != null && _currentGroups.isNotEmpty) {
+      final timelineTotal = _timelineItemCount(_currentGroups);
+      final loadingIndex = timelineTotal + _currentAdCount;
+
+      int adOffset = 0;
+      for (int i = 0; i < activeIndex; i++) {
+        final adPos = (i + 1) % 5 == 0;
+        final isLastLoading = (i == loadingIndex);
+        if (adPos && !isLastLoading) adOffset++;
+      }
+      final adjustedIndex = activeIndex - adOffset;
+
+      if (adjustedIndex >= 0 && adjustedIndex < timelineTotal) {
+        final (groupIdx, _) = _timelineIndexFor(_currentGroups, adjustedIndex);
+        if (groupIdx >= 0 && groupIdx < _currentGroups.length) {
+          final activeDateKey = _currentGroups[groupIdx].key;
+          if (activeDateKey != _activeDateKey) {
+            setState(() {
+              _activeDateKey = activeDateKey;
+            });
+          }
+        }
+      }
     }
   }
 
@@ -164,6 +232,12 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
       final adCount = articleCount ~/ 10;
       final grouped = _groupByDate(filteredArticles);
 
+      _currentGroups = grouped;
+      _currentAdCount = adCount;
+
+      final totalItemsCount = _timelineItemCount(grouped) + adCount + (_hasMore ? 1 : 0);
+      _itemKeys.removeWhere((key, value) => key >= totalItemsCount);
+
       return Column(
         children: [
           _buildQuickFilters(
@@ -192,79 +266,89 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                 ? Center(
                     child: Text(AppLocalizations.of(context)!.noArticlesMatch),
                   )
-                : ListView.separated(
-                    controller: _scrollController,
-                    itemCount: _timelineItemCount(grouped) + adCount + (_hasMore ? 1 : 0),
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.s8),
-                    itemBuilder: (context, rawIndex) {
-                      final timelineTotal = _timelineItemCount(grouped);
-                      final loadingIndex = timelineTotal + adCount;
+                : Stack(
+                    children: [
+                      ListView.separated(
+                        key: _listViewKey,
+                        controller: _scrollController,
+                        itemCount: _timelineItemCount(grouped) + adCount + (_hasMore ? 1 : 0),
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: AppSpacing.s8),
+                        itemBuilder: (context, rawIndex) {
+                          final timelineTotal = _timelineItemCount(grouped);
+                          final loadingIndex = timelineTotal + adCount;
 
-                      if (rawIndex == loadingIndex && _hasMore) {
-                        return Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                          key: ValueKey('loading_$rawIndex'),
-                        );
-                      }
+                          if (rawIndex == loadingIndex && _hasMore) {
+                            return Padding(
+                              key: _itemKeys.putIfAbsent(rawIndex, () => GlobalKey()),
+                              padding: const EdgeInsets.all(16),
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            );
+                          }
 
-                      // Map rawIndex -> (timelineItemIndex) accounting for ads
-                      // Ads occupy positions where (timelineTotal + adIndex + 1) % 5 == 0
-                      int adOffset = 0;
-                      for (int i = 0; i < rawIndex; i++) {
-                        final adPos = (i + 1) % 5 == 0;
-                        final isLastLoading = (i == loadingIndex);
-                        if (adPos && !isLastLoading) adOffset++;
-                      }
-                      final adjustedIndex = rawIndex - adOffset;
+                          // Map rawIndex -> (timelineItemIndex) accounting for ads
+                          // Ads occupy positions where (timelineTotal + adIndex + 1) % 5 == 0
+                          int adOffset = 0;
+                          for (int i = 0; i < rawIndex; i++) {
+                            final adPos = (i + 1) % 5 == 0;
+                            final isLastLoading = (i == loadingIndex);
+                            if (adPos && !isLastLoading) adOffset++;
+                          }
+                          final adjustedIndex = rawIndex - adOffset;
 
-                      if (adjustedIndex >= timelineTotal) {
-                        return const SizedBox.shrink();
-                      }
+                          if (adjustedIndex >= timelineTotal) {
+                            return const SizedBox.shrink();
+                          }
 
-                      // Is this position an ad slot?
-                      final posInTimeline = rawIndex - adOffset;
-                      if (posInTimeline > 0 && (posInTimeline) % 5 == 0) {
-                        return NativeAdTile(key: ValueKey('ad_$rawIndex'));
-                      }
+                          // Is this position an ad slot?
+                          final posInTimeline = rawIndex - adOffset;
+                          if (posInTimeline > 0 && (posInTimeline) % 5 == 0) {
+                            return NativeAdTile(
+                              key: _itemKeys.putIfAbsent(rawIndex, () => GlobalKey()),
+                            );
+                          }
 
-                      // Determine if it's a header or article
-                      final (groupIdx, articleIdx) = _timelineIndexFor(grouped, adjustedIndex);
-                      if (groupIdx < 0) return const SizedBox.shrink();
+                          // Determine if it's a header or article
+                          final (groupIdx, articleIdx) = _timelineIndexFor(grouped, adjustedIndex);
+                          if (groupIdx < 0) return const SizedBox.shrink();
 
-                      // Date header
-                      if (articleIdx == -1) {
-                        return _buildDateHeader(
-                          grouped[groupIdx].key,
-                          colorScheme: colorScheme,
-                          textTheme: textTheme,
-                        );
-                      }
+                          // Date header
+                          if (articleIdx == -1) {
+                            return _buildDateHeader(
+                              grouped[groupIdx].key,
+                              key: _itemKeys.putIfAbsent(rawIndex, () => GlobalKey()),
+                              colorScheme: colorScheme,
+                              textTheme: textTheme,
+                              appState: appState,
+                              groupArticles: grouped[groupIdx].value,
+                            );
+                          }
 
-                      final article = grouped[groupIdx].value[articleIdx];
-                      final state =
-                          appState.getArticleState(article.guid);
-                      final isRead = state?.readAt != null;
-                      final isLiked = state?.likedAt != null;
-                      final isStarred = state?.starredAt != null;
-                      final readProgress = state?.readProgress ?? 0.0;
-                      final isPartiallyRead = !isRead && readProgress > 0.0;
+                          final article = grouped[groupIdx].value[articleIdx];
+                          final state =
+                              appState.getArticleState(article.guid);
+                          final isRead = state?.readAt != null;
+                          final isLiked = state?.likedAt != null;
+                          final isStarred = state?.starredAt != null;
+                          final readProgress = state?.readProgress ?? 0.0;
+                          final isPartiallyRead = !isRead && readProgress > 0.0;
 
-                      final likeIconColor = isLiked
-                          ? colorScheme.error
-                          : colorScheme.onSurface.withOpacity(0.6);
-                      final saveIconColor = isStarred
-                          ? colorScheme.secondary
-                          : colorScheme.onSurface.withOpacity(0.6);
+                          final likeIconColor = isLiked
+                              ? colorScheme.error
+                              : colorScheme.onSurface.withOpacity(0.6);
+                          final saveIconColor = isStarred
+                              ? colorScheme.secondary
+                              : colorScheme.onSurface.withOpacity(0.6);
 
-                      return Dismissible(
+                          return KeyedSubtree(
+                            key: _itemKeys.putIfAbsent(rawIndex, () => GlobalKey()),
+                            child: Dismissible(
                         key: ValueKey(article.guid),
                         background: Container(
                           decoration: BoxDecoration(
@@ -326,8 +410,18 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                             ),
                             child: Ink(
                               decoration: BoxDecoration(
-                                color: theme.cardColor,
                                 borderRadius: BorderRadius.circular(16),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: isRead
+                                      ? [theme.cardColor, theme.cardColor]
+                                      : [
+                                          colorScheme.primaryContainer,
+                                          theme.cardColor,
+                                        ],
+                                  stops: const [0.0, 0.5],
+                                ),
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
@@ -514,9 +608,34 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
+                ),  // closes ListView.separated
+                if (_activeDateKey != null)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: SafeArea(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 180),
+                        child: Padding(
+                          key: ValueKey(_activeDateKey),
+                          padding: EdgeInsets.zero,
+                          child: _buildStickyDateHeader(
+                            _activeDateKey!,
+                            colorScheme: colorScheme,
+                            textTheme: textTheme,
+                            appState: appState,
+                            groupArticles: _articlesInGroup(_activeDateKey!, grouped),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
+              ],
+            ),
           ),
         ],
       );
@@ -558,6 +677,16 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_activeDateKey == null && _currentGroups.isNotEmpty) {
+        setState(() {
+          _activeDateKey = _currentGroups[0].key;
+        });
+      } else if (_scrollController.hasClients) {
+        _updateActiveDate();
+      }
+    });
     return Scaffold(
       appBar: _showSearch
           ? AppBar(
@@ -792,9 +921,8 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              reverse: true,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ChoiceChip(
                     label: Text(AppLocalizations.of(context)!.all),
@@ -1176,13 +1304,23 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   }
 
   Widget _buildDateHeader(String dateKey, {
+    Key? key,
     required ColorScheme colorScheme,
     required TextTheme textTheme,
+    required AppState appState,
+    required List<Article> groupArticles,
   }) {
     final label = dateKey == '__unknown__'
         ? AppLocalizations.of(context)!.publishDateUnknown
         : _dateLabel(dateKey);
+
+    final readCount = groupArticles.where((a) {
+      final state = appState.getArticleState(a.guid);
+      return state?.readAt != null;
+    }).length;
+
     return Padding(
+      key: key,
       padding: const EdgeInsets.fromLTRB(AppSpacing.s16, AppSpacing.s8, AppSpacing.s16, AppSpacing.s4),
       child: Row(
         children: [
@@ -1202,7 +1340,90 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
               color: colorScheme.onSurface,
             ),
           ),
+          const Spacer(),
+          Text(
+            '$readCount/${groupArticles.length}',
+            style: textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  List<Article> _articlesInGroup(String dateKey, List<MapEntry<String, List<Article>>> groups) {
+    for (final group in groups) {
+      if (group.key == dateKey) return group.value;
+    }
+    return const [];
+  }
+
+  Widget _buildStickyDateHeader(
+    String dateKey, {
+    required ColorScheme colorScheme,
+    required TextTheme textTheme,
+    required AppState appState,
+    required List<Article> groupArticles,
+  }) {
+    final label = dateKey == '__unknown__'
+        ? AppLocalizations.of(context)!.publishDateUnknown
+        : _dateLabel(dateKey);
+
+    final readCount = groupArticles.where((a) {
+      final state = appState.getArticleState(a.guid);
+      return state?.readAt != null;
+    }).length;
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surface.withValues(alpha: 0.85),
+            border: Border(
+              bottom: BorderSide(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                width: 1.0,
+              ),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.s16,
+            AppSpacing.s8,
+            AppSpacing.s16,
+            AppSpacing.s8,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 4,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.s12),
+              Text(
+                label,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '$readCount/${groupArticles.length}',
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

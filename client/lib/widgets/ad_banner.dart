@@ -4,9 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../services/ad_service.dart';
 
 class AdBanner extends StatefulWidget {
-  final bool isTtsActive;
-
-  const AdBanner({super.key, required this.isTtsActive});
+  const AdBanner({super.key});
 
   @override
   State<AdBanner> createState() => _AdBannerState();
@@ -46,7 +44,7 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_adLoaded || _bannerAd == null || widget.isTtsActive) {
+    if (!_adLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
     return SizedBox(

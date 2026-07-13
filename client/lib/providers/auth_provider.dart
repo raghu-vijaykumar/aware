@@ -5,8 +5,12 @@ import '../services/api_service.dart';
 import '../services/storage_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final ApiService _api = ApiService();
+  final ApiService _api;
   StorageService? _storage;
+
+  AuthProvider({ApiService? api, StorageService? storage})
+      : _api = api ?? ApiService(),
+        _storage = storage;
 
   String? _authToken;
   String? get authToken => _authToken;
@@ -19,7 +23,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isAvailable => AppConfig.hasServer;
 
   Future<void> load() async {
-    _storage = await StorageService.getInstance();
+    _storage ??= await StorageService.getInstance();
     _authToken = await _storage!.read('auth_token');
     _userEmail = await _storage!.read('auth_email');
     notifyListeners();

@@ -3,15 +3,12 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../services/background_feed_worker.dart';
-
 class SettingsProvider extends ChangeNotifier {
   static const String _themeKey = 'app_theme_mode';
   static const String _ttsRateRatioKey = 'app_tts_rate_ratio';
   static const String _ttsRateLegacyKey = 'app_tts_rate';
   static const String _ttsVoiceIdKey = 'app_tts_voice_id';
   static const String _ttsAutoPlayKey = 'app_tts_autoplay_next';
-  static const String _lowDataModeKey = 'app_low_data_mode';
   static const String _autoMarkReadKey = 'app_auto_mark_read_enabled';
   static const String _autoMarkReadThresholdKey = 'app_auto_mark_read_threshold';
   static const String _textScaleKey = 'app_text_scale';
@@ -38,9 +35,6 @@ class SettingsProvider extends ChangeNotifier {
 
   bool _autoPlayNext = false;
   bool get autoPlayNext => _autoPlayNext;
-
-  bool _lowDataMode = false;
-  bool get lowDataMode => _lowDataMode;
 
   bool _autoMarkReadEnabled = true;
   bool get autoMarkReadEnabled => _autoMarkReadEnabled;
@@ -91,7 +85,6 @@ class SettingsProvider extends ChangeNotifier {
 
     _voiceId = prefs.getString(_ttsVoiceIdKey);
     _autoPlayNext = prefs.getBool(_ttsAutoPlayKey) ?? false;
-    _lowDataMode = prefs.getBool(_lowDataModeKey) ?? false;
     _autoMarkReadEnabled = prefs.getBool(_autoMarkReadKey) ?? true;
     _autoMarkReadThreshold = (prefs.getInt(_autoMarkReadThresholdKey) ?? 70).clamp(1, 100);
     _textScaleFactor = (prefs.getDouble(_textScaleKey) ?? 1.0).clamp(
@@ -151,14 +144,6 @@ class SettingsProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(_textScaleKey, _textScaleFactor);
     notifyListeners();
-  }
-
-  Future<void> setLowDataMode(bool enabled) async {
-    _lowDataMode = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_lowDataModeKey, enabled);
-    notifyListeners();
-    await BackgroundFeedWorker.schedulePeriodicRefresh();
   }
 
   Future<void> setAutoMarkReadEnabled(bool enabled) async {

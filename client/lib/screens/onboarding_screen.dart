@@ -124,21 +124,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             builder: (context, appState, child) {
                               final currentCode =
                                   appState.locale?.languageCode ?? 'en';
-                              final localeLabels = <String, String Function(AppLocalizations)>{
-                                'en': (l) => l.languageEnglish,
-                                'zh': (l) => l.languageChinese,
-                                'es': (l) => l.languageSpanish,
-                                'hi': (l) => l.languageHindi,
-                                'ar': (l) => l.languageArabic,
-                                'fr': (l) => l.languageFrench,
-                                'pt': (l) => l.languagePortuguese,
-                                'ru': (l) => l.languageRussian,
-                                'ja': (l) => l.languageJapanese,
-                                'de': (l) => l.languageGerman,
-                                'ko': (l) => l.languageKorean,
-                                'it': (l) => l.languageItalian,
+                              const localeLabels = <String, String>{
+                                'en': 'English',
+                                'zh': '中文',
+                                'es': 'Español',
+                                'hi': 'हिन्दी',
+                                'ar': 'العربية',
+                                'fr': 'Français',
+                                'pt': 'Português',
+                                'ru': 'Русский',
+                                'ja': '日本語',
+                                'de': 'Deutsch',
+                                'ko': '한국어',
+                                'it': 'Italiano',
                               };
-                              final l10n = AppLocalizations.of(context)!;
                               return Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 16),
                                 decoration: BoxDecoration(
@@ -154,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   items: localeLabels.entries.map((entry) {
                                     return DropdownMenuItem(
                                       value: entry.key,
-                                      child: Text(entry.value(l10n)),
+                                      child: Text(entry.value),
                                     );
                                   }).toList(),
                                   onChanged: (code) {

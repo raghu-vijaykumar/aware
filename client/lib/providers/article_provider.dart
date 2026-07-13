@@ -5,7 +5,9 @@ import '../models/user_article_state.dart';
 import '../services/database_service.dart';
 
 class ArticleProvider extends ChangeNotifier {
-  final DatabaseService _db = DatabaseService();
+  final DatabaseService _db;
+
+  ArticleProvider({DatabaseService? db}) : _db = db ?? DatabaseService();
 
   final Map<String, UserArticleState> _articleStateCache = {};
 

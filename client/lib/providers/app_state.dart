@@ -13,8 +13,8 @@ import 'settings_provider.dart';
 import 'sync_provider.dart';
 
 class AppState extends ChangeNotifier {
-  final DatabaseService _db = DatabaseService();
-  final FeedService _feedService = FeedService();
+  final DatabaseService _db;
+  final FeedService _feedService;
 
   final FeedProvider feed;
   final ArticleProvider article;
@@ -28,7 +28,10 @@ class AppState extends ChangeNotifier {
     required this.auth,
     required this.settings,
     required this.sync,
-  }) {
+    DatabaseService? db,
+    FeedService? feedService,
+  })  : _db = db ?? DatabaseService(),
+        _feedService = feedService ?? FeedService() {
     feed.addListener(notifyListeners);
     article.addListener(notifyListeners);
     auth.addListener(notifyListeners);
@@ -85,7 +88,6 @@ class AppState extends ChangeNotifier {
   double get speechRateTts => settings.speechRateTts;
   String? get voiceId => settings.voiceId;
   bool get autoPlayNext => settings.autoPlayNext;
-  bool get lowDataMode => settings.lowDataMode;
   bool get autoMarkReadEnabled => settings.autoMarkReadEnabled;
   int get autoMarkReadThreshold => settings.autoMarkReadThreshold;
   double get textScaleFactor => settings.textScaleFactor;
@@ -168,7 +170,6 @@ class AppState extends ChangeNotifier {
   Future<void> setVoiceId(String? voiceId) => settings.setVoiceId(voiceId);
   Future<void> setAutoPlayNext(bool enabled) => settings.setAutoPlayNext(enabled);
   Future<void> setTextScaleFactor(double scale) => settings.setTextScaleFactor(scale);
-  Future<void> setLowDataMode(bool enabled) => settings.setLowDataMode(enabled);
   Future<void> setAutoMarkReadEnabled(bool enabled) => settings.setAutoMarkReadEnabled(enabled);
   Future<void> setAutoMarkReadThreshold(int thresholdPercent) =>
       settings.setAutoMarkReadThreshold(thresholdPercent);

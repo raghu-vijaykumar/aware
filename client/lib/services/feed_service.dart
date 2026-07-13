@@ -1,16 +1,33 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as html_parser;
 import 'package:intl/intl.dart';
+import 'package:readability/readability.dart' as readability;
+import 'package:readability/article.dart' as readability_article;
 import 'package:xml/xml.dart';
 
 import '../models/article.dart';
 import '../models/feed.dart';
 
+/// Wraps the readability package so it can be injected in tests.
+abstract class ReadabilityClient {
+  Future<readability_article.Article> parseAsync(String url);
+}
+
+class DefaultReadabilityClient implements ReadabilityClient {
+  @override
+  Future<readability_article.Article> parseAsync(String url) =>
+      readability.parseAsync(url);
+}
+
 class FeedService {
   final http.Client _client;
+  final ReadabilityClient _readability;
 
-  FeedService({http.Client? client}) : _client = client ?? http.Client();
+  FeedService({http.Client? client, ReadabilityClient? readability})
+      : _client = client ?? http.Client(),
+        _readability = readability ?? DefaultReadabilityClient();
 
   void _validateUrl(String url) {
     final uri = Uri.tryParse(url);
@@ -65,9 +82,11 @@ class FeedService {
     final articles = items.map((item) {
       final guidElem = item.getElement('guid') ?? item.getElement('id');
       final title = item.getElement('title')?.innerText ?? '';
-      final link = item.getElement('link')?.innerText ??
-          item.getElement('link')?.getAttribute('href') ??
-          '';
+      final linkEl = item.getElement('link');
+      final linkText = linkEl?.innerText ?? '';
+      final link = linkText.isNotEmpty
+          ? linkText
+          : linkEl?.getAttribute('href') ?? '';
       final publishedText = item.getElement('pubDate')?.innerText ??
           item.getElement('published')?.innerText ??
           item.getElement('updated')?.innerText ??
@@ -117,6 +136,65 @@ class FeedService {
     }).toList();
 
     return articles;
+  }
+
+  Future<String?> fetchFullArticle(String url) async {
+    try {
+      final article = await _readability.parseAsync(url);
+      if (article.content != null && article.content!.isNotEmpty) {
+        print('[FeedService] readability extracted ${article.content!.length} chars from $url');
+        final doc = html_parser.parse(article.content!);
+        for (final node in doc.querySelectorAll('aside')) {
+          node.remove();
+        }
+        const noisePatterns = [
+          'trending', 'sidebar', 'widget', 'popular', 'latest-news',
+          'most-read', 'also-read', 'recommended', 'related',
+          'aside', 'secondary', 'must-read', 'you-may-also-like',
+          'in-content-related',
+        ];
+        for (final el in doc.querySelectorAll('*')) {
+          final cl = el.className.toLowerCase();
+          final id = (el.attributes['id'] ?? '').toLowerCase();
+          if (noisePatterns.any((p) => cl.contains(p) || id.contains(p))) {
+            el.remove();
+          }
+        }
+        final cleaned = doc.body?.innerHtml ?? article.content!;
+        print('[FeedService] cleaned content: ${cleaned.length} chars');
+        return cleaned;
+      }
+      print('[FeedService] readability returned empty content for $url');
+    } catch (e) {
+      print('[FeedService] readability parseAsync failed for $url: $e');
+    }
+
+    try {
+      final response = await _client.get(
+        Uri.parse(url),
+        headers: {
+          'User-Agent':
+              'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36',
+        },
+      );
+      if (response.statusCode != 200) {
+        print('[FeedService] HTTP ${response.statusCode} for $url');
+        return null;
+      }
+      final doc = html_parser.parse(response.body);
+      var container = doc.querySelector('article');
+      container ??= doc.querySelector('[role="main"]');
+      container ??= doc.querySelector('main');
+      container ??= doc.querySelector('.post-content, .entry-content, .article-content, .story-body');
+      if (container != null) {
+        return container.innerHtml;
+      }
+      print('[FeedService] no article container found in $url');
+    } catch (e) {
+      print('[FeedService] fallback HTTP fetch failed for $url: $e');
+    }
+
+    return null;
   }
 
   DateTime? _parseDate(String raw) {

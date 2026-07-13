@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../models/article.dart';
@@ -109,7 +110,7 @@ class ReaderAudioService {
 class ReaderAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final bool isAudioServiceBacked;
-  final FlutterTts _tts = FlutterTts();
+  final FlutterTts _tts;
   final BehaviorSubject<ReaderPlaybackSnapshot> readerState =
       BehaviorSubject.seeded(const ReaderPlaybackSnapshot.idle());
 
@@ -127,7 +128,8 @@ class ReaderAudioHandler extends BaseAudioHandler
   bool _pendingAutoplay = false;
   String _currentWord = '';
 
-  ReaderAudioHandler({this.isAudioServiceBacked = true}) {
+  ReaderAudioHandler({this.isAudioServiceBacked = true, FlutterTts? tts})
+      : _tts = tts ?? FlutterTts() {
     _init();
   }
 
@@ -217,9 +219,24 @@ class ReaderAudioHandler extends BaseAudioHandler
       mediaItem.add(_buildMediaItem(articleIndex));
       _broadcastState();
       if (_pendingAutoplay) {
+        if (_currentIndex != articleIndex) {
+          debugPrint(_logTag('registerArticleContent: article index changed during pending autoplay, skipping'));
+          _pendingAutoplay = false;
+          _isBuffering = false;
+          _broadcastState();
+          return;
+        }
         debugPrint(_logTag('registerArticleContent: triggering pending autoplay at paragraph $_currentParagraphIndex'));
         _pendingAutoplay = false;
-        await _startPlayback(paragraphIndex: _currentParagraphIndex);
+        try {
+          await _startPlayback(paragraphIndex: _currentParagraphIndex);
+        } catch (e) {
+          debugPrint(_logTag('registerArticleContent: playback error: $e'));
+          _isPlaying = false;
+          _isPaused = false;
+          _isBuffering = false;
+          _broadcastState(processingState: AudioProcessingState.idle);
+        }
       }
     }
   }
@@ -264,6 +281,8 @@ class ReaderAudioHandler extends BaseAudioHandler
     });
   }
 
+  bool hasContentFor(int articleIndex) => _contentByIndex.containsKey(articleIndex);
+
   Future<void> activateArticle(
     int index, {
     bool autoplay = false,
@@ -278,9 +297,15 @@ class ReaderAudioHandler extends BaseAudioHandler
     final targetIndex = _clampIndex(index);
     final changedArticle = targetIndex != _currentIndex;
     debugPrint(_logTag('activateArticle: targetIndex=$targetIndex, changedArticle=$changedArticle, oldIndex=$_currentIndex'));
-    if (changedArticle) {
+    if (!changedArticle) {
+      debugPrint(_logTag('activateArticle: same article, returning'));
+      return;
+    }
+    try {
       debugPrint(_logTag('activateArticle: stopping current TTS'));
       await _tts.stop();
+    } catch (e) {
+      debugPrint(_logTag('activateArticle: TTS stop error: $e'));
     }
 
     _currentIndex = targetIndex;
@@ -350,6 +375,10 @@ class ReaderAudioHandler extends BaseAudioHandler
       return;
     }
     await _tts.pause();
+    _isPlaying = false;
+    _isPaused = true;
+    _publishSnapshot();
+    _broadcastState(processingState: AudioProcessingState.ready);
     debugPrint(_logTag('pause: TTS paused'));
   }
 
@@ -376,7 +405,7 @@ class ReaderAudioHandler extends BaseAudioHandler
       return;
     }
 
-    final duration = _estimatedDurationForContent(content);
+    final duration = estimatedDurationForContent(content);
     debugPrint(_logTag('seek: estimated duration=${duration.inMilliseconds}ms'));
     if (duration.inMilliseconds <= 0) return;
 
@@ -414,8 +443,9 @@ class ReaderAudioHandler extends BaseAudioHandler
       debugPrint(_logTag('skipToPrevious: already at first article'));
       return;
     }
+    final targetIndex = _currentIndex - 1;
     await activateArticle(
-      _currentIndex - 1,
+      targetIndex,
       autoplay: _isPlaying,
       paragraphIndex: 0,
     );
@@ -432,17 +462,22 @@ class ReaderAudioHandler extends BaseAudioHandler
       return;
     }
 
-    final targetParagraph =
-        paragraphIndex.clamp(0, content.paragraphs.length - 1);
+    final maxParagraph = content.paragraphs.length - 1;
+    if (maxParagraph < 0) {
+      debugPrint(_logTag('_startPlayback: no paragraphs to play'));
+      _isBuffering = false;
+      _isPlaying = false;
+      _broadcastState(processingState: AudioProcessingState.idle);
+      return;
+    }
+    final targetParagraph = paragraphIndex.clamp(0, maxParagraph);
     debugPrint(_logTag('_startPlayback: targetParagraph=$targetParagraph, totalParagraphs=${content.paragraphs.length}'));
 
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
       final session = await AudioSession.instance;
       final activated = await session.setActive(true);
-      debugPrint(_logTag('_startPlayback: audio session activated=$activated'));
       if (!activated) {
-        debugPrint(_logTag('_startPlayback: audio session activation failed'));
-        return;
+        debugPrint(_logTag('_startPlayback: audio session activation failed, continuing'));
       }
     }
 
@@ -461,10 +496,18 @@ class ReaderAudioHandler extends BaseAudioHandler
     _broadcastState(processingState: AudioProcessingState.ready);
 
     debugPrint(_logTag('_startPlayback: stopping previous TTS and speaking paragraph'));
-    await _tts.stop();
-    final text = content.paragraphs[targetParagraph];
-    debugPrint(_logTag('_startPlayback: speaking text (length=${text.length})'));
-    await _tts.speak(text);
+    try {
+      await _tts.stop();
+      final text = content.paragraphs[targetParagraph];
+      debugPrint(_logTag('_startPlayback: speaking text (length=${text.length})'));
+      await _tts.speak(text);
+    } catch (e) {
+      debugPrint(_logTag('_startPlayback: TTS error: $e'));
+      _isPlaying = false;
+      _isPaused = false;
+      _isBuffering = false;
+      _broadcastState(processingState: AudioProcessingState.idle);
+    }
     debugPrint(_logTag('_startPlayback: speak() returned'));
   }
 
@@ -582,7 +625,7 @@ class ReaderAudioHandler extends BaseAudioHandler
     final article = _articles[index];
     final content = _contentByIndex[index];
     final duration =
-        content == null ? null : _estimatedDurationForContent(content);
+        content == null ? null : estimatedDurationForContent(content);
     final artUri = article.imageUrl == null || article.imageUrl!.isEmpty
         ? null
         : Uri.tryParse(article.imageUrl!);
@@ -598,7 +641,8 @@ class ReaderAudioHandler extends BaseAudioHandler
     );
   }
 
-  Duration _estimatedDurationForContent(_ArticleSpeechContent content) {
+  @visibleForTesting
+  Duration estimatedDurationForContent(_ArticleSpeechContent content) {
     final words = RegExp(r'\S+').allMatches(content.plainText).length;
     if (words == 0) return Duration.zero;
     final speedRatio = (_speechRate / AppState.speechRateBase).clamp(0.5, 4.0);
@@ -639,11 +683,11 @@ class ReaderAudioHandler extends BaseAudioHandler
     int end,
     String? reportedWord,
   ) {
-    final fromReported = _normalizeWord(reportedWord ?? '');
+    final fromReported = normalizeWord(reportedWord ?? '');
     if (fromReported.isNotEmpty) return fromReported;
 
     if (start >= 0 && end > start && end <= ttsText.length) {
-      final fromRange = _normalizeWord(ttsText.substring(start, end));
+      final fromRange = normalizeWord(ttsText.substring(start, end));
       if (fromRange.isNotEmpty) return fromRange;
     }
 
@@ -658,12 +702,13 @@ class ReaderAudioHandler extends BaseAudioHandler
       right += 1;
     }
     if (right > left) {
-      return _normalizeWord(plainText.substring(left, right));
+      return normalizeWord(plainText.substring(left, right));
     }
     return '';
   }
 
-  String _normalizeWord(String input) {
+  @visibleForTesting
+  String normalizeWord(String input) {
     return input.replaceAll(RegExp(r'^[^\w]+|[^\w]+$'), '').trim();
   }
 
@@ -694,7 +739,7 @@ class ReaderAudioHandler extends BaseAudioHandler
   }) {
     final content = _currentContent;
     final duration =
-        content == null ? Duration.zero : _estimatedDurationForContent(content);
+        content == null ? Duration.zero : estimatedDurationForContent(content);
     final progress = readerState.value.progress.clamp(0.0, 1.0);
     final position = Duration(
       milliseconds: (duration.inMilliseconds * progress).round(),

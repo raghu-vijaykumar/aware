@@ -6,8 +6,12 @@ import '../services/database_service.dart';
 import 'auth_provider.dart';
 
 class SyncProvider extends ChangeNotifier {
-  final ApiService _api = ApiService();
-  final DatabaseService _db = DatabaseService();
+  final ApiService _api;
+  final DatabaseService _db;
+
+  SyncProvider({ApiService? api, DatabaseService? db})
+      : _api = api ?? ApiService(),
+        _db = db ?? DatabaseService();
 
   bool _isSyncing = false;
   bool get isSyncing => _isSyncing;
