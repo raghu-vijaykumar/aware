@@ -178,15 +178,14 @@ void main() {
       expect(mockTts.spoken, isFalse);
     });
 
-    test('playback TTS error resets state', () async {
-      await handler.configureQueue(sampleArticles, currentIndex: 0);
+    test('playback TTS error in startPlayback resets state', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 1);
       await handler.registerArticleContent(
         articleIndex: 0,
         paragraphs: ['speak error'],
         paragraphOffsets: [0],
         plainText: 'speak error',
       );
-      // Make TTS speak throw
       mockTts.speakThrows = true;
       await handler.activateArticle(0, autoplay: true);
       expect(handler.readerState.value.isPlaying, isFalse);
@@ -666,6 +665,147 @@ void main() {
         // Never call configureQueue — articles list is empty
         await handler.activateArticle(0, autoplay: false);
         expect(handler.readerState.value.currentArticleIndex, 0);
+      });
+    });
+
+    group('registerArticleContent TTS error', () {
+      test('catches playback error in pending autoplay and resets state', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.activateArticle(1, autoplay: true);
+        mockTts.speakThrows = true;
+        await handler.registerArticleContent(
+          articleIndex: 1,
+          paragraphs: ['error text'],
+          paragraphOffsets: [0],
+          plainText: 'error text',
+        );
+        expect(handler.readerState.value.isPlaying, isFalse);
+      });
+    });
+
+    group('auto-play next', () {
+      test('completion handler auto-advances to next article', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.updateSpeechConfig(
+          speechRate: 0.5,
+          voiceId: null,
+          autoPlayNext: true,
+        );
+        await handler.registerArticleContent(
+          articleIndex: 0,
+          paragraphs: ['single paragraph'],
+          paragraphOffsets: [0],
+          plainText: 'single paragraph',
+        );
+        await handler.registerArticleContent(
+          articleIndex: 1,
+          paragraphs: ['next article content'],
+          paragraphOffsets: [0],
+          plainText: 'next article content',
+        );
+        await handler.activateArticle(0, autoplay: true);
+        mockTts.spoken = false;
+        mockTts.spokenText = null;
+        mockTts.completionHandler!();
+        await _pump();
+        expect(mockTts.spoken, isTrue);
+        expect(mockTts.spokenText, 'next article content');
+      });
+    });
+
+    group('progress handler edge cases', () {
+      test('returns silently when no content registered', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await _pump();
+        mockTts.progressHandler!('text', 0, 4, 'text');
+        expect(handler.readerState.value.currentWord, '');
+      });
+
+      test('resolves word via range extraction when word is empty', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.registerArticleContent(
+          articleIndex: 0,
+          paragraphs: ['hello world'],
+          paragraphOffsets: [0],
+          plainText: 'hello world',
+        );
+        await handler.activateArticle(0, autoplay: true);
+        await _pump();
+        mockTts.progressHandler!('hello', 0, 5, '');
+        expect(handler.readerState.value.currentWord, 'hello');
+      });
+
+      test('resolves word via word boundary search when range extraction fails', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.registerArticleContent(
+          articleIndex: 0,
+          paragraphs: ['hello world'],
+          paragraphOffsets: [0],
+          plainText: 'hello world',
+        );
+        await handler.activateArticle(0, autoplay: true);
+        await _pump();
+        // end exceeds ttsText.length (2) so range extraction is skipped
+        mockTts.progressHandler!('hi', 0, 5, '');
+        expect(handler.readerState.value.currentWord, 'hello');
+      });
+
+      test('uses word boundary left and right search when in middle of word', () async {
+        await handler.configureQueue(sampleArticles, currentIndex: 0);
+        await handler.registerArticleContent(
+          articleIndex: 0,
+          paragraphs: ['hello world'],
+          paragraphOffsets: [5],
+          plainText: 'hello world',
+        );
+        await handler.playFromParagraph(0);
+        await _pump();
+        // absoluteIndex = 5 (offsetBase) + 2 (start) = 7, in middle of "world"
+        // Left: 7 checks plainText[6]='w' → left=6; 6 checks plainText[5]=' ' → stop
+        // Right: 7 checks plainText[7]='o' → right=8 ... up to 11
+        mockTts.progressHandler!('ab', 2, 4, '');
+        expect(handler.readerState.value.currentWord, 'world');
+      });
+    });
+
+    group('_buildMediaItem', () {
+      test('sets artUri from article imageUrl', () async {
+        final articlesWithImage = [
+          Article(
+            feedId: 1,
+            guid: 'guid-img',
+            title: 'Image Article',
+            author: 'Author',
+            summary: 'Summary',
+            imageUrl: 'https://example.com/image.jpg',
+            publishedAt: 1000,
+          ),
+        ];
+        await handler.configureQueue(articlesWithImage, currentIndex: 0);
+        expect(handler.queue.value.length, 1);
+        expect(handler.queue.value[0].artUri, isNotNull);
+      });
+    });
+
+    group('ReaderPlaybackSnapshot', () {
+      test('copyWith updates all fields', () {
+        const base = ReaderPlaybackSnapshot.idle();
+        final updated = base.copyWith(
+          isPlaying: true,
+          isPaused: true,
+          isBuffering: true,
+          currentArticleIndex: 5,
+          currentParagraphIndex: 3,
+          progress: 0.5,
+          currentWord: 'test',
+        );
+        expect(updated.isPlaying, isTrue);
+        expect(updated.isPaused, isTrue);
+        expect(updated.isBuffering, isTrue);
+        expect(updated.currentArticleIndex, 5);
+        expect(updated.currentParagraphIndex, 3);
+        expect(updated.progress, 0.5);
+        expect(updated.currentWord, 'test');
       });
     });
   });

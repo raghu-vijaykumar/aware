@@ -235,6 +235,7 @@ class ReaderAudioHandler extends BaseAudioHandler
           _isPlaying = false;
           _isPaused = false;
           _isBuffering = false;
+          _publishSnapshot();
           _broadcastState(processingState: AudioProcessingState.idle);
         }
       }
@@ -506,6 +507,7 @@ class ReaderAudioHandler extends BaseAudioHandler
       _isPlaying = false;
       _isPaused = false;
       _isBuffering = false;
+      _publishSnapshot();
       _broadcastState(processingState: AudioProcessingState.idle);
     }
     debugPrint(_logTag('_startPlayback: speak() returned'));
