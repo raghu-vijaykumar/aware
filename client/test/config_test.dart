@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:aware/config.dart';
 
 void main() {
   setUp(() {
-    // Reset state between tests.
+    AppConfig.resetForTesting();
     AppConfig.setTestServerUrl('');
   });
 
@@ -31,8 +34,30 @@ void main() {
 
     test('init sets initialized flag and does not throw', () async {
       await AppConfig.init();
-      // Second call is a no-op (early return).
       await AppConfig.init();
+    });
+
+    test('init reads server_url from config.json', () async {
+      const testUrl = 'https://test-server.example.com';
+      final configFile = File('config.json');
+      await configFile.writeAsString(jsonEncode({'server_url': testUrl}));
+      AppConfig.setTestServerUrl('');
+
+      await AppConfig.init();
+
+      expect(AppConfig.serverUrl, testUrl);
+      await configFile.delete();
+    });
+
+    test('init handles malformed config.json', () async {
+      final configFile = File('config.json');
+      await configFile.writeAsString('not json');
+      AppConfig.setTestServerUrl('');
+
+      await AppConfig.init();
+
+      expect(AppConfig.serverUrl, isEmpty);
+      await configFile.delete();
     });
 
     test('serverUrl getter returns current value', () {

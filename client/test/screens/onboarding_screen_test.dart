@@ -13,21 +13,21 @@ import 'package:aware/screens/home_screen.dart';
 class MockAppState extends Mock implements AppState {}
 
 Widget createTestWidget(AppState appState) {
-  return MaterialApp(
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: ChangeNotifierProvider<AppState>.value(
-      value: appState,
-      child: const OnboardingScreen(),
+  return ChangeNotifierProvider<AppState>.value(
+    value: appState,
+    child: MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const OnboardingScreen(),
+      routes: {
+        '/home': (_) => const HomeScreen(),
+      },
     ),
-    routes: {
-      '/home': (_) => const HomeScreen(),
-    },
   );
 }
 
@@ -72,11 +72,9 @@ void main() {
       await tester.pumpWidget(createTestWidget(mockAppState));
       await tester.pump();
 
-      // Drag the PageView to advance one page
       await tester.drag(find.byType(PageView), const Offset(-600, 0));
       await tester.pump();
 
-      // Check the button text is still Next (not last page)
       expect(find.text('Next'), findsWidgets);
     });
 
@@ -84,15 +82,75 @@ void main() {
       await tester.pumpWidget(createTestWidget(mockAppState));
       await tester.pump();
 
-      // Tap the dropdown
       await tester.tap(find.text('English'));
       await tester.pump();
 
-      // Select French
       await tester.tap(find.text('Français').last);
       await tester.pump();
 
       verify(() => mockAppState.setLocale('fr')).called(1);
+    });
+
+    testWidgets('advances to next page on Next button tap', (tester) async {
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+
+      await tester.tap(find.text('Next'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Skip'), findsOneWidget);
+    });
+
+    testWidgets('shows Get started on last page after multiple Next taps',
+        (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+
+      for (int i = 0; i < 3; i++) {
+        await tester.tap(find.text('Next'));
+        for (int j = 0; j < 5; j++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      expect(find.text('Get Started'), findsOneWidget);
+      expect(find.text('Skip'), findsNothing);
+    });
+
+    testWidgets('completes onboarding via Skip', (tester) async {
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+
+      await tester.tap(find.text('Skip'));
+      await tester.runAsync(
+          () => Future.delayed(const Duration(milliseconds: 100)));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(HomeScreen), findsOneWidget);
+    });
+
+    testWidgets('completes onboarding via Get Started on last page',
+        (tester) async {
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+
+      for (int i = 0; i < 3; i++) {
+        await tester.tap(find.text('Next'));
+        for (int j = 0; j < 5; j++) {
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+      }
+
+      await tester.tap(find.text('Get Started'));
+      await tester.runAsync(
+          () => Future.delayed(const Duration(milliseconds: 100)));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
   });
 }

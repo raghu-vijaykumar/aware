@@ -36,6 +36,12 @@ void main() {
       await worker.run();
     });
 
+    test('uses default DatabaseService when not injected', () async {
+      await DatabaseService.resetForTesting();
+      final worker = BackgroundFeedWorker();
+      await worker.run();
+    });
+
     test('no-ops when all feeds are paused', () async {
       await db.insertFeed(Feed(
         url: 'https://example.com/paused.xml',

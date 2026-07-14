@@ -1,37 +1,49 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:google_mobile_ads/src/ad_instance_manager.dart';
 
 import 'package:aware/services/ad_service.dart';
 import 'package:aware/services/ad_config.dart';
 
 void main() {
-  setUpAll(() {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/google_mobile_ads'),
-      (MethodCall methodCall) async {
-        // Return null for all calls - this prevents MissingPluginException
-        // and lets the Google Mobile Ads package's own error handling work
-        return null;
-      },
-    );
-  });
-
-  tearDownAll(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/google_mobile_ads'),
-      null,
-    );
-  });
-
   group('AdService', () {
-    test('initAdMob handles platform unavailability', () async {
+    setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      AdService.resetForTesting();
+    });
+
+    MethodChannel _channel() => MethodChannel(
+          'plugins.flutter.io/google_mobile_ads',
+          StandardMethodCodec(AdMessageCodec()),
+        );
+
+    test('initAdMob handles platform error', () async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        _channel(),
+        _adsMockHandler,
+      );
+      await AdService.instance.initAdMob();
+    });
+
+    test('initAdMob succeeds', () async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        _channel(),
+        _adsInitializeHandler,
+      );
+
       await AdService.instance.initAdMob();
     });
 
     test('initAdMob guard prevents double initialization', () async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        _channel(),
+        _adsInitializeHandler,
+      );
+
       await AdService.instance.initAdMob();
       await AdService.instance.initAdMob();
     });
@@ -52,4 +64,17 @@ void main() {
       expect(AdConfig.instance.nativeAdUnitId, AdConfig.test.nativeAdUnitId);
     });
   });
+}
+
+Future<dynamic> _adsMockHandler(MethodCall methodCall) async {
+  return null;
+}
+
+Future<dynamic> _adsInitializeHandler(MethodCall methodCall) async {
+  switch (methodCall.method) {
+    case 'MobileAds#initialize':
+      return InitializationStatus(<String, AdapterStatus>{});
+    default:
+      return null;
+  }
 }

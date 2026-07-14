@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'ad_config.dart';
@@ -16,6 +17,11 @@ class AdService {
     } catch (e) {
       print('AdService.initAdMob failed: $e');
     }
+  }
+
+  @visibleForTesting
+  static void resetForTesting() {
+    instance._initialized = false;
   }
 
   NativeAd loadNativeAd({

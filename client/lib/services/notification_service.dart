@@ -95,4 +95,8 @@ class NotificationService {
     }
   }
 
+  @visibleForTesting
+  static void resetForTesting() {
+    _initialized = false;
+  }
 }

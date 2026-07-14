@@ -9,7 +9,7 @@ status: in-progress
 
 Aware lacks systematic test coverage. Most features have no tests at all,
 making refactoring risky and bug detection manual. Current measured coverage
-is **21.2%** across the Dart client (214 tests, 1468/6933 lines) and ~42% on the
+is **39.0%** across the Dart client (273 tests, 1621/4154 lines excl. l10n) and ~42% on the
 backend (1 test file). The goal is 95% line/branch coverage across the
 Dart client and 80% on the backend.
 

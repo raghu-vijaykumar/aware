@@ -24,6 +24,11 @@
 - `client/test/helpers/` also contains `test_reader_audio_handler.dart` for standalone TTS handler creation
 - Always use `pumpApp` instead of `pumpWidget` in widget tests to include proper provider wrapping
 
+## Git Workflow
+- Always commit and push at regular intervals during implementation, not all at once.
+- Commit logical units of work as they complete (e.g., one screen's test, one service feature).
+- Each commit should represent a coherent, reviewable step.
+
 ## Project Structure
 - `client/` — Flutter app
 - `client/lib/screens/` — screen widgets

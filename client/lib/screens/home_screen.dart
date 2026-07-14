@@ -16,8 +16,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final TextEditingController _urlController = TextEditingController();
-  bool _isAdding = false;
 
   static const List<Widget> _widgetOptions = <Widget>[
     FeedList(),
@@ -39,74 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> _promptAddFeed(BuildContext context) async {
-    final appState = context.read<AppState>();
-    final messenger = ScaffoldMessenger.of(context);
-
-    final shouldAdd = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.addFeedTitle),
-          content: TextField(
-            controller: _urlController,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.addFeedUrlHint,
-              labelText: AppLocalizations.of(context)!.addFeedUrlLabel,
-            ),
-            keyboardType: TextInputType.url,
-            autofocus: true,
-            enabled: !_isAdding,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            TextButton(
-              onPressed:
-                  _isAdding ? null : () => Navigator.of(context).pop(true),
-              child: _isAdding
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : Text(AppLocalizations.of(context)!.add),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (shouldAdd == true) {
-      setState(() => _isAdding = true);
-      try {
-        final url = _urlController.text.trim();
-        if (url.isEmpty) throw AppLocalizations.of(context)!.feedUrlRequired;
-        await appState.addFeedFromUrl(url);
-        if (!mounted) return;
-        _urlController.clear();
-        messenger.showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.feedAdded)),
-        );
-      } catch (err) {
-        if (mounted) {
-          messenger.showSnackBar(
-            SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddFeed('$err'))),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isAdding = false);
-        }
-      }
-    }
-  }
-
   @override
   void dispose() {
-    _urlController.dispose();
     super.dispose();
   }
 

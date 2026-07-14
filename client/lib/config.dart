@@ -13,6 +13,12 @@ class AppConfig {
     _serverUrl = url;
   }
 
+  @visibleForTesting
+  static void resetForTesting() {
+    _initialized = false;
+    _serverUrl = null;
+  }
+
   static String? get serverUrl => _serverUrl;
 
   static bool get hasServer => _serverUrl != null && _serverUrl!.isNotEmpty;

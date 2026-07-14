@@ -107,6 +107,22 @@ void main() {
       expect(state?.lastAccessedAt, isNotNull);
     });
 
+    test('recordArticleProgress preserves existing state from cache', () async {
+      when(() => mockDb.insertUserState(any())).thenAnswer((_) async => 1);
+      await provider.markArticleRead('guid-1', read: true);
+      await provider.markArticleLiked('guid-1', liked: true);
+      await provider.markArticleStarred('guid-1', starred: true);
+
+      await provider.recordArticleProgress('guid-1', 0.75, 5);
+
+      final state = provider.getArticleState('guid-1');
+      expect(state?.readAt, isNotNull);
+      expect(state?.likedAt, isNotNull);
+      expect(state?.starredAt, isNotNull);
+      expect(state?.readProgress, 0.75);
+      expect(state?.lastParagraphIndex, 5);
+    });
+
     test('getArticlesForFeed delegates to DB', () async {
       when(() => mockDb.getArticlesForFeed(1)).thenAnswer((_) async => []);
       when(() => mockDb.getArticlesForFeed(2)).thenAnswer((_) async => [
