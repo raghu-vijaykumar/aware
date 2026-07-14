@@ -10,6 +10,7 @@ class _MockFlutterTts extends FlutterTts {
   bool stopped = false;
   bool spoken = false;
   bool speakThrows = false;
+  bool stopThrows = false;
   String? spokenText;
   double? lastSpeechRate;
   Map<String, String>? lastVoiceSettings;
@@ -57,6 +58,7 @@ class _MockFlutterTts extends FlutterTts {
 
   @override
   Future<dynamic> stop() async {
+    if (stopThrows) throw Exception('TTS stop error');
     stopped = true;
     return null;
   }
@@ -150,6 +152,14 @@ void main() {
     tearDown(() {
       handler.readerState.close();
     });
+
+    // _init() is async from the constructor; handlers are registered
+    // asynchronously. Pump microtasks to let them complete.
+    Future<void> _pump() async {
+      for (var i = 0; i < 10; i++) {
+        await Future.delayed(Duration.zero);
+      }
+    }
 
     test('standalone factory sets isAudioServiceBacked=false', () {
       // Construct via named constructor with mock TTS to avoid platform calls.
@@ -558,15 +568,63 @@ void main() {
       });
     });
 
-    group('TTS handler callbacks', () {
-      // _init() is async from the constructor; handlers are registered
-      // asynchronously after first await. Pump microtasks to let them complete.
-      Future<void> _pump() async {
-        for (var i = 0; i < 10; i++) {
-          await Future.delayed(Duration.zero);
-        }
-      }
+    test('configureQueue with empty articles adds null mediaItem', () async {
+      await handler.configureQueue([], currentIndex: 0);
+      expect(handler.readerState.value.currentArticleIndex, 0);
+    });
 
+    test('activateArticle TTS stop error does not crash', () async {
+      mockTts.stopThrows = true;
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      await handler.registerArticleContent(
+        articleIndex: 0,
+        paragraphs: ['para'],
+        paragraphOffsets: [0],
+        plainText: 'para',
+      );
+      await handler.activateArticle(1, autoplay: false);
+      expect(handler.readerState.value.currentArticleIndex, 1);
+    });
+
+    test('playFromParagraph starts playback at given paragraph', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      await handler.registerArticleContent(
+        articleIndex: 0,
+        paragraphs: ['first para', 'second para'],
+        paragraphOffsets: [0, 11],
+        plainText: 'first parasecond para',
+      );
+      await handler.playFromParagraph(1);
+      expect(mockTts.spokenText, 'second para');
+    });
+
+    test('pause during pending autoplay cancels and resets state', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      await handler.activateArticle(1, autoplay: true);
+      await _pump();
+      await handler.pause();
+      await _pump();
+      expect(handler.readerState.value.isBuffering, isFalse);
+      expect(handler.readerState.value.isPlaying, isFalse);
+    });
+
+    test('pause when not playing returns silently', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      await handler.pause();
+      // Should not throw
+      expect(handler.readerState.value.isPlaying, isFalse);
+    });
+
+    test('completion handler with no content returns silently', () async {
+      await handler.configureQueue(sampleArticles, currentIndex: 0);
+      // Don't register any content - _currentContent is null
+      await _pump();
+      mockTts.completionHandler!();
+      await _pump();
+      expect(handler.readerState.value.isPlaying, isFalse);
+    });
+
+    group('TTS handler callbacks', () {
       test('cancelHandler resets state', () async {
         await _pump();
         await handler.configureQueue(sampleArticles, currentIndex: 0);
