@@ -96,7 +96,23 @@ void main() {
       expect(find.byIcon(Icons.rss_feed), findsOneWidget);
     });
 
+    testWidgets('shows network image when iconUrl is set', (tester) async {
+      when(() => mockAppState.feeds).thenReturn([
+        Feed(
+          id: 1,
+          url: 'https://example.com/feed.xml',
+          title: 'Icon Feed',
+          iconUrl: 'https://example.com/icon.png',
+        ),
+      ]);
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
 
+      expect(find.byType(Image), findsOneWidget);
+      // Ignore the expected network error from Image.network in test
+      await tester.pump(const Duration(seconds: 1));
+      tester.takeException();
+    });
 
     testWidgets('shows popup menu items', (tester) async {
       when(() => mockAppState.feeds).thenReturn([

@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:aware/models/article.dart';
@@ -256,4 +261,122 @@ void main() {
     });
   });
 
+  group('DatabaseService - Migration', () {
+    /// Repeatedly close the singleton and delete the DB file until it is
+    /// actually gone.  sqflite_ffi's isolate may cache the connection across
+    /// test files, and Windows file-locks can delay release.
+    Future<void> _ensureDbGone() async {
+      await DatabaseService.resetForTesting();
+      final path = join(await getDatabasesPath(), 'aware.db');
+      for (int attempt = 0; attempt < 10; attempt++) {
+        // Tell every layer to release the file.
+        try {
+          await databaseFactory.deleteDatabase(path);
+        } catch (_) {}
+        try {
+          await deleteDatabase(path);
+        } catch (_) {}
+        // Also nuke journal files that may hold a reference on Windows.
+        for (final ext in ['', '-wal', '-shm', '-journal']) {
+          final f = File('$path$ext');
+          try {
+            if (await f.exists()) {
+              await f.delete();
+            }
+          } catch (_) {}
+        }
+        if (!await File(path).exists()) return;
+        // Give the OS / FFI isolate time to release the handle.
+        await Future.delayed(Duration(milliseconds: 100 * (attempt + 1)));
+      }
+      throw Exception(
+        'Could not delete $path after 10 attempts. '
+        'Another test may have left the DB open.',
+      );
+    }
+
+    Future<void> _replaceDbFile(String path) async {
+      // Close everything first
+      await DatabaseService.resetForTesting();
+      await _ensureDbGone();
+    }
+
+    test('onUpgrade from version 1 adds all columns', () async {
+      await _ensureDbGone();
+
+      // Create DB at version 1 with minimal schema (missing category, curator,
+      // paused on feeds; missing liked_at, last_accessed_at on user_article_state)
+      final path = join(await getDatabasesPath(), 'aware.db');
+      var db = await openDatabase(
+        path,
+        version: 1,
+        onCreate: (db, version) async {
+            await db.execute(
+                'CREATE TABLE feeds (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT UNIQUE NOT NULL, title TEXT, description TEXT, site_url TEXT, icon_url TEXT, last_fetched INTEGER, etag TEXT, last_modified TEXT)');
+            await db.execute(
+                'CREATE TABLE articles (id INTEGER PRIMARY KEY AUTOINCREMENT, feed_id INTEGER REFERENCES feeds(id), guid TEXT UNIQUE NOT NULL, url TEXT, title TEXT, summary TEXT, content TEXT, author TEXT, published_at INTEGER, fetched_at INTEGER, image_url TEXT, raw_data TEXT)');
+            await db.execute(
+                'CREATE TABLE user_article_state (id INTEGER PRIMARY KEY AUTOINCREMENT, article_guid TEXT UNIQUE NOT NULL, read_at INTEGER, starred_at INTEGER, tags TEXT)');
+          },
+      );
+      await db.close();
+
+      // DatabaseService opens the version-1 DB and triggers onUpgrade(1 → 5)
+      final database = await DatabaseService().database;
+
+      // Verify v2 columns were added to feeds
+      var feedColumns =
+          await database.rawQuery('PRAGMA table_info(feeds)');
+      var feedNames = feedColumns.map((c) => c['name'] as String).toSet();
+      expect(feedNames, contains('category'));
+      expect(feedNames, contains('curator'));
+      expect(feedNames, contains('paused'));
+
+      // Verify v3 + v5 columns were added to user_article_state
+      var stateColumns =
+          await database.rawQuery('PRAGMA table_info(user_article_state)');
+      var stateNames = stateColumns.map((c) => c['name'] as String).toSet();
+      expect(stateNames, contains('liked_at'));
+      expect(stateNames, contains('last_accessed_at'));
+      expect(stateNames, contains('read_progress'));
+      expect(stateNames, contains('last_paragraph_index'));
+
+      await DatabaseService.resetForTesting();
+    });
+
+    test('onOpen adds missing columns defensively', () async {
+      await _ensureDbGone();
+
+      // Create DB at version 5 but with user_article_state missing liked_at,
+      // last_accessed_at, read_progress, last_paragraph_index
+      final path = join(await getDatabasesPath(), 'aware.db');
+      var db = await openDatabase(
+        path,
+        version: 5,
+        onCreate: (db, version) async {
+            await db.execute(
+                'CREATE TABLE feeds (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT UNIQUE NOT NULL, title TEXT, description TEXT, site_url TEXT, icon_url TEXT, category TEXT, curator TEXT, paused INTEGER DEFAULT 0, last_fetched INTEGER, etag TEXT, last_modified TEXT)');
+            await db.execute(
+                'CREATE TABLE articles (id INTEGER PRIMARY KEY AUTOINCREMENT, feed_id INTEGER REFERENCES feeds(id), guid TEXT UNIQUE NOT NULL, url TEXT, title TEXT, summary TEXT, content TEXT, author TEXT, published_at INTEGER, fetched_at INTEGER, image_url TEXT, raw_data TEXT)');
+            // user_article_state is deliberately missing several columns
+            await db.execute(
+                'CREATE TABLE user_article_state (id INTEGER PRIMARY KEY AUTOINCREMENT, article_guid TEXT UNIQUE NOT NULL, read_at INTEGER, starred_at INTEGER, tags TEXT)');
+          },
+      );
+      await db.close();
+
+      // DatabaseService opens it; _onOpen should add the missing columns
+      final database = await DatabaseService().database;
+
+      var stateColumns =
+          await database.rawQuery('PRAGMA table_info(user_article_state)');
+      var stateNames = stateColumns.map((c) => c['name'] as String).toSet();
+      expect(stateNames, contains('liked_at'));
+      expect(stateNames, contains('last_accessed_at'));
+      expect(stateNames, contains('read_progress'));
+      expect(stateNames, contains('last_paragraph_index'));
+
+      await DatabaseService.resetForTesting();
+    });
+  });
 }

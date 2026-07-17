@@ -5,7 +5,6 @@ import 'text_styles.dart';
 
 /// Centralized theme configuration driven by the structured palette.
 class AppTheme {
-  AppTheme._();
 
   static ThemeData light() {
     final seedScheme = ColorScheme.fromSeed(

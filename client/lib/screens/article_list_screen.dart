@@ -796,15 +796,6 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
     _showActionSnackBar(message: AppLocalizations.of(context)!.markedRead);
   }
 
-  String _articleSource(Article article, List<Feed> feeds) {
-    final source = _sourceLabel(article, feeds);
-    final author = article.author?.trim();
-    if (author != null && author.isNotEmpty) {
-      return '$source - $author';
-    }
-    return source;
-  }
-
   List<Article> _applyFilters(List<Article> articles, List<Feed> feeds) {
     final filtered = articles.where((article) {
       // Read filter
@@ -815,23 +806,18 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
 
       // Time window filter
       final published = article.publishedAt ?? article.fetchedAt;
-      if (_timeWindow != _TimeWindow.all) {
-        if (published == null) return false;
-        final publishedDate = DateTime.fromMillisecondsSinceEpoch(published);
-        final hoursAgo = DateTime.now().difference(publishedDate).inHours;
-        switch (_timeWindow) {
-          case _TimeWindow.last24h:
-            if (hoursAgo > 24) return false;
-            break;
-          case _TimeWindow.last7d:
-            if (hoursAgo > 24 * 7) return false;
-            break;
-          case _TimeWindow.last30d:
-            if (hoursAgo > 24 * 30) return false;
-            break;
-          case _TimeWindow.all:
-            break;
-        }
+      if (published == null) return _timeWindow == _TimeWindow.all;
+      final publishedDate = DateTime.fromMillisecondsSinceEpoch(published);
+      final hoursAgo = DateTime.now().difference(publishedDate).inHours;
+      switch (_timeWindow) {
+        case _TimeWindow.last24h:
+          if (hoursAgo > 24) return false;
+        case _TimeWindow.last7d:
+          if (hoursAgo > 24 * 7) return false;
+        case _TimeWindow.last30d:
+          if (hoursAgo > 24 * 30) return false;
+        case _TimeWindow.all:
+          break;
       }
 
       // Length filter based on summary/content word count
@@ -1186,13 +1172,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
   }
 
   String _sourceLabel(Article article, List<Feed> feeds) {
-    final feedTitle = _feedTitleFor(article, feeds);
-    if (feedTitle != null && feedTitle.isNotEmpty) return feedTitle;
-
-    final host = article.url != null ? Uri.tryParse(article.url!)?.host : null;
-    if (host != null && host.isNotEmpty) return host;
-
-    return widget.feedTitle;
+    return _feedTitleFor(article, feeds);
   }
 
   String _feedTitleFor(Article article, List<Feed> feeds) {
@@ -1300,7 +1280,7 @@ class _ArticleListScreenState extends State<ArticleListScreen> {
         cursor++;
       }
     }
-    return (-1, -1);
+    throw StateError('_timelineIndexFor: $itemIndex out of range');
   }
 
   Widget _buildDateHeader(String dateKey, {

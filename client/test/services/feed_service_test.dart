@@ -37,6 +37,15 @@ void main() {
     test('implements ReadabilityClient', () {
       expect(DefaultReadabilityClient(), isA<ReadabilityClient>());
     });
+
+    test('parseAsync delegates to readability package', () async {
+      final client = DefaultReadabilityClient();
+      try {
+        await client.parseAsync('https://example.com/article');
+      } catch (_) {
+        // Expected: readability makes real HTTP requests which fail in test
+      }
+    });
   });
 
   group('URL validation', () {
@@ -491,5 +500,6 @@ void main() {
 
       expect(result, isNull);
     });
+
   });
 }

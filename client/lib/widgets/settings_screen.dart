@@ -197,7 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final opmlContent = _opml.buildOpml(feeds);
       final dir = await getTemporaryDirectory();
       final filePath =
-          '${dir.path}/aware-subscriptions-${DateTime.now().millisecondsSinceEpoch}.opml';
+          '${dir.path}${Platform.pathSeparator}aware-subscriptions-${DateTime.now().millisecondsSinceEpoch}.opml';
       final file = File(filePath);
       await file.writeAsString(opmlContent);
 
@@ -707,20 +707,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               'ko': '한국어',
                               'it': 'Italiano',
                             };
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: localeLabels.entries.map((entry) {
-                                return RadioListTile<String>(
-                                  value: entry.key,
-                                  groupValue: currentCode,
-                                  title: Text(entry.value),
-                                  onChanged: (code) {
-                                    if (code != null) {
-                                      Navigator.of(context).pop(code);
-                                    }
-                                  },
-                                );
-                              }).toList(),
+                            return SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: localeLabels.entries.map((entry) {
+                                  return RadioListTile<String>(
+                                    value: entry.key,
+                                    groupValue: currentCode,
+                                    title: Text(entry.value),
+                                    onChanged: (code) {
+                                      if (code != null) {
+                                        Navigator.of(context).pop(code);
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                              ),
                             );
                           },
                         ),

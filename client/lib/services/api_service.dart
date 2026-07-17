@@ -10,12 +10,7 @@ class ApiService {
 
   bool get _hasServer => AppConfig.hasServer;
 
-  String get _baseUrl {
-    if (!_hasServer) {
-      throw StateError('No server configured. Set AWARE_SERVER_URL compile flag or create config.json.');
-    }
-    return AppConfig.serverUrl!;
-  }
+  String get _baseUrl => AppConfig.serverUrl!;
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     if (!_hasServer) return {'token': null, 'user': null};

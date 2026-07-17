@@ -681,6 +681,369 @@ void main() {
       verify(() => mockAppState.markArticleRead('guid-1', read: false)).called(1);
     });
 
+    testWidgets('shows article found count on search', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Alpha', summary: 'S1', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pump();
+
+      await tester.enterText(find.byType(TextField), 'Alpha');
+      await tester.pump();
+
+      expect(find.textContaining('articles found'), findsOneWidget);
+    });
+
+    testWidgets('taps unread quick filter chip', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Test', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text('Unread'));
+      await tester.pump();
+    });
+
+    testWidgets('taps liked quick filter chip', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Test', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text('Liked'));
+      await tester.pump();
+    });
+
+    testWidgets('taps saved quick filter chip', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Test', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text('Saved'));
+      await tester.pump();
+    });
+
+    testWidgets('taps last 24h quick filter chip', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Test', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.text('Last 24h'));
+      await tester.pump();
+    });
+
+    testWidgets('taps bookmark star button on article', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'guid-1', title: 'Star Article', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+      when(() => mockAppState.markArticleStarred(any(), starred: any(named: 'starred')))
+          .thenAnswer((_) async {});
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.bookmark_border));
+      await tester.pump();
+
+      verify(() => mockAppState.markArticleStarred('guid-1', starred: true)).called(1);
+    });
+
+    testWidgets('taps refresh button', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(feedId: 1, guid: 'g1', title: 'Test', summary: 'S', publishedAt: now, fetchedAt: now),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.refresh));
+      await tester.pump();
+      await tester.pump();
+    });
+
+    testWidgets('load more handles error gracefully', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = List.generate(
+        10,
+        (i) => Article(
+          feedId: 1,
+          guid: 'guid-$i',
+          title: 'Article $i',
+          summary: 'Summary $i',
+          publishedAt: now - i * 3600000,
+          fetchedAt: now,
+        ),
+      );
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      int callCount = 0;
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 100);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async {
+        callCount++;
+        if (callCount > 1) throw Exception('Simulated load error');
+        return articles;
+      });
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      // Scroll to trigger loadMore (second call to getArticlesPaginated)
+      await tester.drag(find.byType(ListView), const Offset(0, -3000));
+      await tester.pump();
+      await tester.pump();
+    });
+
+    testWidgets('shows just now label for fresh article', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(
+          feedId: 1, guid: 'guid-1', title: 'Fresh',
+          summary: 'Summary',
+          publishedAt: now, fetchedAt: now,
+        ),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.text('Just now'), findsOneWidget);
+    });
+
+    testWidgets('shows hours ago label', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(
+          feedId: 1, guid: 'guid-1', title: 'Oldish',
+          summary: 'Summary',
+          publishedAt: now - 5 * 3600000,
+          fetchedAt: now,
+        ),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.textContaining('h ago'), findsOneWidget);
+    });
+
+    testWidgets('shows days ago label for older article', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(
+          feedId: 1, guid: 'guid-1', title: 'Old',
+          summary: 'Summary',
+          publishedAt: now - 3 * 24 * 3600000,
+          fetchedAt: now,
+        ),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.textContaining('d ago'), findsOneWidget);
+    });
+
+    testWidgets('uses fetchedAt fallback when publishedAt is null', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final articles = [
+        Article(
+          feedId: 1, guid: 'guid-1', title: 'Fetched Article',
+          summary: 'Summary',
+          fetchedAt: now - 24 * 3600000,
+        ),
+      ];
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => articles);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(null);
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.textContaining('d ago'), findsOneWidget);
+      expect(find.textContaining('(fetched)'), findsOneWidget);
+    });
+
+    testWidgets('swipe left on saved article removes bookmark', (tester) async {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final article = Article(
+        feedId: 1, guid: 'guid-1', title: 'Saved Swipe',
+        summary: 'S', publishedAt: now, fetchedAt: now,
+      );
+      final feed = Feed(url: 'https://example.com/feed.xml', title: 'Feed');
+      final state = UserArticleState(articleGuid: 'guid-1', starredAt: now);
+
+      when(() => mockAppState.getArticlesCount(feedId: any(named: 'feedId')))
+          .thenAnswer((_) async => 1);
+      when(() => mockAppState.getArticlesPaginated(
+          feedId: any(named: 'feedId'),
+          limit: any(named: 'limit'),
+          offset: any(named: 'offset'))).thenAnswer((_) async => [article]);
+      when(() => mockAppState.feeds).thenReturn([feed]);
+      when(() => mockAppState.getArticleState(any())).thenReturn(state);
+      when(() => mockAppState.markArticleStarred(any(), starred: any(named: 'starred')))
+          .thenAnswer((_) async {});
+
+      await tester.pumpWidget(createTestWidget(mockAppState));
+      await tester.pump();
+      await tester.pump();
+
+      // Swipe left to unstar
+      await tester.timedDrag(
+        find.text('Saved Swipe'),
+        const Offset(-600, 0),
+        const Duration(milliseconds: 300),
+      );
+      await tester.pumpAndSettle();
+
+      verify(() => mockAppState.markArticleStarred('guid-1', starred: false)).called(1);
+    });
+
     testWidgets('switches tabs when tapping navigation items', (tester) async {
       await tester.pumpWidget(createTestWidget(mockAppState));
       await tester.pump();

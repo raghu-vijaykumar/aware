@@ -159,5 +159,6 @@ void main() {
     test('kFeedRefreshTask constant is accessible', () {
       expect(kFeedRefreshTask, 'feed_refresh_task');
     });
+
   });
 }
