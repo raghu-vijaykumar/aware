@@ -219,13 +219,6 @@ class ReaderAudioHandler extends BaseAudioHandler
       mediaItem.add(_buildMediaItem(articleIndex));
       _broadcastState();
       if (_pendingAutoplay) {
-        if (_currentIndex != articleIndex) {
-          debugPrint(_logTag('registerArticleContent: article index changed during pending autoplay, skipping'));
-          _pendingAutoplay = false;
-          _isBuffering = false;
-          _broadcastState();
-          return;
-        }
         debugPrint(_logTag('registerArticleContent: triggering pending autoplay at paragraph $_currentParagraphIndex'));
         _pendingAutoplay = false;
         try {
@@ -463,15 +456,7 @@ class ReaderAudioHandler extends BaseAudioHandler
       return;
     }
 
-    final maxParagraph = content.paragraphs.length - 1;
-    if (maxParagraph < 0) {
-      debugPrint(_logTag('_startPlayback: no paragraphs to play'));
-      _isBuffering = false;
-      _isPlaying = false;
-      _broadcastState(processingState: AudioProcessingState.idle);
-      return;
-    }
-    final targetParagraph = paragraphIndex.clamp(0, maxParagraph);
+    final targetParagraph = paragraphIndex.clamp(0, content.paragraphs.length - 1);
     debugPrint(_logTag('_startPlayback: targetParagraph=$targetParagraph, totalParagraphs=${content.paragraphs.length}'));
 
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
