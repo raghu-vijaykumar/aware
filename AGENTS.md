@@ -25,8 +25,8 @@
 - Always use `pumpApp` instead of `pumpWidget` in widget tests to include proper provider wrapping
 
 ## Coverage Notes
-- **Overall (excl. l10n)**: 80.5% (3306/4106 lines), **387 tests**.
-- **At 100%**: SplashScreen, OnboardingScreen, ArticleProvider, AppState, ArticleModel, FeedModel, UserArticleState, SettingsProvider, AuthProvider, FeedProvider, SyncProvider, HomeScreen, FeedList, OPMLService, AdConfig, PrivacyPolicyScreen, MarketplaceScreen, ApiService, AppTheme, FeedService.
+- **Overall (excl. l10n)**: 80.7% (3311/4102 lines), **388 tests**.
+- **At 100%**: SplashScreen, OnboardingScreen, ArticleProvider, AppState, ArticleModel, FeedModel, UserArticleState, SettingsProvider, AuthProvider, FeedProvider, SyncProvider, HomeScreen, FeedList, OPMLService, AdConfig, PrivacyPolicyScreen, MarketplaceScreen, ApiService, AppTheme, AppTextStyles, AppConfig, AppColors, AppSpacing.
 - **DatabaseService**: 97.1% (135/139) — 4 unreachable lines are `_ensureLikedColumn` ALTER TABLE branches that `_onOpen` already covers.
 - **AdService**: 90.5% (19/21) — `onAdLoaded` lambdas not triggered by mock channel.
 - **SubscriptionsScreen**: 98.4% (60/61) — `Image.network` for `feed.iconUrl` (network/layout issues in test).

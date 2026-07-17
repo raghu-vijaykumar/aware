@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// Typography scale anchored around three headline/body tiers.
 class AppTextStyles {
-  AppTextStyles._();
 
   static TextTheme base() {
     final base = GoogleFonts.interTextTheme();

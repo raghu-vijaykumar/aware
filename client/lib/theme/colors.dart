@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 /// Brand tokens and shared palette values for the app.
 class AppColors {
-  AppColors._();
 
   static const int _primaryValue = 0xFF4F46E5;
 

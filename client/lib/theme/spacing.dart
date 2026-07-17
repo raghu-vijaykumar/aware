@@ -1,6 +1,5 @@
 /// Spacing tokens aligned to an 8dp grid.
 class AppSpacing {
-  AppSpacing._();
 
   static const double s4 = 4.0;
   static const double s8 = 8.0;

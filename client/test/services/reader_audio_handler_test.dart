@@ -807,6 +807,30 @@ void main() {
         expect(updated.progress, 0.5);
         expect(updated.currentWord, 'test');
       });
+
+      test('copyWith preserves existing fields when params are null', () {
+        const base = ReaderPlaybackSnapshot.idle();
+        final updated = base.copyWith();
+        expect(updated.isPlaying, isFalse);
+        expect(updated.isPaused, isFalse);
+        expect(updated.isBuffering, isFalse);
+        expect(updated.currentArticleIndex, 0);
+        expect(updated.currentParagraphIndex, 0);
+        expect(updated.progress, 0.0);
+        expect(updated.currentWord, '');
+      });
+
+      test('copyWith partial update preserves other fields', () {
+        const base = ReaderPlaybackSnapshot.idle();
+        final updated = base.copyWith(isPlaying: true, progress: 0.75);
+        expect(updated.isPlaying, isTrue);
+        expect(updated.isPaused, isFalse);
+        expect(updated.isBuffering, isFalse);
+        expect(updated.currentArticleIndex, 0);
+        expect(updated.currentParagraphIndex, 0);
+        expect(updated.progress, 0.75);
+        expect(updated.currentWord, '');
+      });
     });
   });
 }
