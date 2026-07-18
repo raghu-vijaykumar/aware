@@ -90,14 +90,17 @@ class BackgroundFeedWorker {
     }
   }
 
+  @visibleForTesting
+  static Future<void> runForegroundRefresh() async {
+    final worker = BackgroundFeedWorker();
+    await worker.run();
+  }
+
   static Future<void> schedulePeriodicRefresh() async {
     _foregroundTimer?.cancel();
     _foregroundTimer = Timer.periodic(
       kDebugMode ? const Duration(minutes: 1) : const Duration(minutes: 15),
-      (timer) async {
-        final worker = BackgroundFeedWorker();
-        await worker.run();
-      },
+      (timer) async => runForegroundRefresh(),
     );
 
     if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;

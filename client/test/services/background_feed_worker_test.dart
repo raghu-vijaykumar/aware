@@ -160,5 +160,15 @@ void main() {
       expect(kFeedRefreshTask, 'feed_refresh_task');
     });
 
+    test('runForegroundRefresh runs without error', () async {
+      // Uses default DatabaseService which works via sqflite_ffi
+      await BackgroundFeedWorker.runForegroundRefresh();
+    });
+
+    test('runForegroundRefresh can be called multiple times', () async {
+      await BackgroundFeedWorker.runForegroundRefresh();
+      await BackgroundFeedWorker.runForegroundRefresh();
+    });
+
   });
 }
